@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+build/
+dist/
+
+# secrets and local state
+.env
+*.pem
+secrets/
+data/
+work/
+*.mp4
+*.wav
+*.mp3

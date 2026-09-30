@@ -1,0 +1,76 @@
+# The whole stack: postgres, prefect server, a one-shot migrate job, the worker and the bot.
+# Nothing is published to the internet. The Prefect UI binds to localhost; reach it over SSH:
+#   ssh -L 4200:localhost:4200 app@<vps>
+name: content-engine
+
+x-app: &app
+  build: .
+  image: content-engine:latest
+  env_file: .env
+  environment:
+    DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+    PREFECT_API_URL: http://prefect-server:4200/api
+  restart: unless-stopped
+  logging: &logging
+    driver: json-file
+    options: { max-size: "10m", max-file: "5" }
+
+services:
+  postgres:
+    image: pgvector/pgvector:0.8.6-pg16-bookworm
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./scripts/postgres-init.sql:/docker-entrypoint-initdb.d/10-prefect.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      retries: 20
+    restart: unless-stopped
+    logging: *logging
+
+  prefect-server:
+    image: prefecthq/prefect:3.8.7-python3.12
+    command: prefect server start --host 0.0.0.0
+    environment:
+      PREFECT_API_DATABASE_CONNECTION_URL: postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/prefect
+      PREFECT_UI_API_URL: http://localhost:4200/api
+    ports:
+      - "127.0.0.1:4200:4200"
+    depends_on:
+      postgres: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:4200/api/health')"]
+      interval: 10s
+      retries: 30
+    restart: unless-stopped
+    logging: *logging
+
+  migrate:
+    <<: *app
+    command: ["engine", "migrate"]
+    restart: "no"
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  worker:
+    <<: *app
+    command: ["engine", "serve"]
+    volumes:
+      - work:/home/app/work
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      prefect-server: { condition: service_healthy }
+
+  bot:
+    <<: *app
+    command: ["python", "-m", "bot.main"]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+
+volumes:
+  pgdata:
+  work:
