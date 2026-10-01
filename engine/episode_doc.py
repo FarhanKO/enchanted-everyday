@@ -21,7 +21,7 @@ def to_markdown(ep: Episode) -> str:
 
     w(f"# {pkg.title}\n")
     w(
-        f"`{ep.id}` · pillar **{card.pillar}** · lane **{card.lane}** · "
+        f"`{ep.id}` · universe **{card.universe}** · "
         f"{script.word_count} words · ~{script.estimated_duration_s:.0f}s narration · "
         f"{board.duration_s:.0f}s cut\n"
     )
@@ -30,6 +30,7 @@ def to_markdown(ep: Episode) -> str:
     w(f"- **Magic:** {card.magical_element}")
     w(f"- **Visual anchor:** {card.visual_anchor}")
     w(f"- **Ending image:** {card.ending_image}")
+    w(f"- **Leaves them thinking:** {card.lingering_question}")
     w(f"- **Universe:** {', '.join(card.recurring) or 'none'}\n")
 
     w("## 1. Script\n")

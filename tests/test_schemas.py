@@ -143,3 +143,31 @@ def test_api_schema_keeps_fields_named_like_keywords():
 def test_api_schema_does_not_mutate_between_calls():
     first = copy.deepcopy(api_schema(Episode))
     assert api_schema(Episode) == first
+
+
+def test_hook_line_must_fit_three_seconds(golden):
+    golden["script"]["beats"][0]["lines"][0]["text"] = (
+        "Theo sold his very first dream at seven minutes past midnight."
+    )
+    with pytest.raises(ValidationError, match="3-second rule"):
+        Script.model_validate(golden["script"])
+
+
+@pytest.mark.parametrize(
+    "line",
+    [
+        "And that's why we should always appreciate our family.",
+        "The moral of the story is simple.",
+        "He learned that money isn't everything.",
+        "Always remember who you were.",
+    ],
+)
+def test_moral_endings_rejected(golden, line):
+    golden["script"]["beats"][5]["lines"][-1]["text"] = line
+    with pytest.raises(ValidationError, match="rule 6"):
+        Script.model_validate(golden["script"])
+
+
+def test_image_endings_allowed(golden):
+    golden["script"]["beats"][5]["lines"][-1]["text"] = "That night, he finally answered the phone."
+    Script.model_validate(golden["script"])

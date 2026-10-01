@@ -9,23 +9,14 @@
           "title": "Title",
           "type": "string"
         },
-        "pillar": {
+        "universe": {
+          "description": "urban: a strange event intrudes on one ordinary city life (hook: what is happening?). emotional: an impossible offer, rule or what-if with a personal cost (hook: what would you do?). bedtime: gentle, warm, nature or sky, no threat",
           "enum": [
-            "strange_thing",
-            "never_said",
-            "price_of_wish",
-            "before_sleep",
-            "nowhere_places"
+            "urban",
+            "emotional",
+            "bedtime"
           ],
-          "title": "Pillar",
-          "type": "string"
-        },
-        "lane": {
-          "enum": [
-            "dark_urban",
-            "cozy_bedtime"
-          ],
-          "title": "Lane",
+          "title": "Universe",
           "type": "string"
         },
         "premise": {
@@ -34,12 +25,12 @@
           "type": "string"
         },
         "human_emotion": {
-          "description": "The feeling the story is really about",
+          "description": "The feeling the story is really about (rule 1)",
           "title": "Human Emotion",
           "type": "string"
         },
         "magical_element": {
-          "description": "The impossible thing, and what it reveals about them",
+          "description": "The impossible thing, and how it embodies or amplifies that emotion (rule 2)",
           "title": "Magical Element",
           "type": "string"
         },
@@ -58,8 +49,13 @@
           "type": "array"
         },
         "ending_image": {
-          "description": "The final image, choice or line",
+          "description": "The final image, choice or line, never a moral",
           "title": "Ending Image",
+          "type": "string"
+        },
+        "lingering_question": {
+          "description": "What the viewer is left thinking about afterwards (rule 7)",
+          "title": "Lingering Question",
           "type": "string"
         },
         "scores": {
@@ -68,14 +64,14 @@
       },
       "required": [
         "title",
-        "pillar",
-        "lane",
+        "universe",
         "premise",
         "human_emotion",
         "magical_element",
         "visual_anchor",
         "recurring",
         "ending_image",
+        "lingering_question",
         "scores"
       ],
       "title": "StoryCard",
@@ -106,7 +102,7 @@
           "type": "number"
         },
         "brand_fit": {
-          "description": "Does it obey the story bible's twelve rules? 0-10",
+          "description": "Does it obey the story bible's rules? 0-10",
           "maximum": 10,
           "minimum": 0,
           "title": "Brand Fit",
