@@ -40,6 +40,6 @@ has no published turnaround. Tick items off here as they land.
 - [ ] Run `scripts/provision_vps.sh`, then confirm `ssh app@<vps>` works
 - [ ] Cloudflare R2 bucket + API token (object read/write on that bucket only); public access or a custom domain for `R2_PUBLIC_BASE_URL`
 - [ ] Anthropic API key with a monthly spend limit set in the Console
-- [ ] Pexels API key
+- [ ] Image model API key (provider still open, see `decisions.md`)
 - [ ] healthchecks.io check: schedule 05:00 Dhaka, grace until 09:00, alerts to Telegram; URL into `HEALTHCHECK_PING_URL`
 - [ ] GitHub repo secrets for deploy: `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY` (a deploy-only key), `VPS_KNOWN_HOSTS`

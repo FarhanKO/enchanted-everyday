@@ -1,24 +1,60 @@
-# Open decisions
+# Decisions
 
-The architecture is settled (see `adr/`). These content choices are still open. **The niche blocks Phase 1.**
+The architecture is settled (see `adr/`). This file tracks the content decisions.
 
-| Decision | Options | Default if undecided | Decide by | Choice |
-|---|---|---|---|---|
-| Niche | Any topic you can fact-check in a minute | none: blocks Phase 1 | Oct 4, 2026 | _open_ |
-| Language | English (bigger audience, more competition) or Bangla (smaller, less crowded) | English | Oct 4, 2026 | _open_ |
-| Voice | Your recorded voice, a clone of your own voice, or stock TTS | Your recorded voice | Oct 4, 2026 | _open_ |
-| Visual style | Stock footage + code-drawn graphics, or add AI clips | Stock and graphics; AI clips capped | Oct 18, 2026 | _open_ |
-| TikTok route | Inbox upload, manual posting, or a managed posting API | Manual until inbox upload is approved | Oct 25, 2026 | _open_ |
+| Decision | Choice | Decided | Notes |
+|---|---|---|---|
+| Niche | **Modern Fairy Tales for Sleepless Souls**: cinematic micro-fables, 70% dark urban / 30% cozy bedtime | 2026-10-01 | Brief: `brand/story_bible.md`, `brand/production_style.md` |
+| Language | **English** | 2026-10-01 | |
+| Voice | _open_ | by Oct 4 | Your recorded voice (default) or TTS. See below |
+| Visual style | **AI-illustrated painterly frames** (night and day poles), code-animated drift, at most 2 AI video clips per episode | 2026-10-01 | Follows from the niche |
+| Image model | _open_ | by Oct 18 | Must support reference-image conditioning for character consistency |
+| Cadence | _open_ | by Oct 18 | Plan says daily; the brief says 3-5 a week until quality is stable. See below |
+| Audience timezone | _open_ | by Oct 25 | Sets the publish slot ("late-night viewers"), e.g. US evening |
+| TikTok route | _open_ | by Oct 25 | Default: manual until inbox upload is approved |
 
-Once decided, set `NICHE`, `CONTENT_LANGUAGE`, `TRENDS_GEO` and `NICHE_RSS_FEEDS` in `.env`,
-and record the choice here with a line on why.
+## What the niche changed in the build plan
 
-## Niche checklist
+The original plan assumed a factual, news-driven niche. Fiction changes these parts:
 
-A good niche for this pipeline:
+| Plan item | Was | Now |
+|---|---|---|
+| Stage 1 | Trend scan (Google Trends, RSS, YouTube) | **Discovery**: the story slate (`brand/slate.toml`), balanced 70/30 by lane; audience comments join in Phase 4 |
+| Stage 3 | Script + fact-checking critic, a source URL on every claim | **Story chain**: story card -> script (6-beat formula) -> storyboard -> package, with a critic that checks the twelve story-bible rules |
+| Length | 110-150 words, 30-60 s | 80-190 words at 120 wpm, **45-90 s** with scripted pauses |
+| Visuals | Pexels stock footage + code-drawn charts | **AI-generated painterly frames**, 6-14 per episode, plus a thumbnail |
+| Motion | Stock clips | Slow drift/parallax in code by default; at most 2 AI video clips |
+| Captions | Word-by-word | **Phrase-level**, calm (the brand forbids frantic captions) |
+| AI disclosure | Only when realistic AI is used | **Every post**: the artwork is AI-assisted |
+| Data | 10 tables | 11: adds `bible_entries` for recurring characters and places with locked descriptors and reference images |
 
-- Claims can be checked against a primary source in about a minute (the critic pass and your approval depend on it)
-- There's a steady news or trend flow, so the trend scan finds 20 items most days
-- Stock footage and simple charts can illustrate it, with no need for other creators' clips
-- You have a genuine view on it. YouTube's inauthentic-content policy demonetizes templated videos with no take
-- It has 3-5 good RSS feeds (put them in `NICHE_RSS_FEEDS`)
+## Open: voice
+
+The brief wants "a secret told at 2 AM". Options:
+
+1. **Your recorded voice** (plan default). The strongest originality signal for YouTube monetization and the most human.
+   About 3 minutes a day to record 150 words plus retakes. Accent is fine; calm delivery matters more.
+2. **A clone of your own voice.** Consistent, no daily recording, still your voice. Disclose that it's synthetic.
+3. **Stock TTS.** Fastest, but the most "generic AI channel"-like, and that is exactly what YouTube's inauthentic-content
+   policy targets.
+
+## Open: cadence and budget
+
+AI art makes the per-episode cost higher than stock footage. A rough estimate, to confirm once the image model is chosen:
+about 14 images with retries, plus 2 short AI clips, comes to roughly **$1-3 per episode**.
+
+- Daily: about $30-90 a month on top of the ~$11-25 baseline. That breaks the plan's "< $30/month" target
+- 3-5 a week: about $12-60 a month
+
+The brief also says "daily posting only after quality and workflow are stable." **Recommendation:** run 3-5 a week from
+Nov 1, and switch to daily after the production gate (Nov 29) if cost per episode and approval rate allow it. The
+on-time KPI then measures scheduled slots, not calendar days.
+
+## Policy notes for this niche
+
+- **YouTube inauthentic content:** narrated AI-image slideshows are the format most at risk of demonetization.
+  The mitigations are your voice, original stories, directed motion and sound, varied structure, and the
+  recurring universe.
+- **No named styles:** prompts never name studios or artists. Validation rejects them (`BANNED_STYLE_TERMS`).
+  The references are described by attributes instead.
+- **Children:** some stories feature children (bedtime lane). Keep them safe and dignified. No peril as a hook.

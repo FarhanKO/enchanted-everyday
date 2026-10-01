@@ -24,11 +24,8 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+psycopg://engine:engine@localhost:5432/engine"
 
     # content
-    niche: str = ""
+    brand_dir: str = "brand"  # story bible, production style, slate
     content_language: str = "en"
-    trends_geo: str = "US"
-    niche_rss_feeds: str = ""
-    youtube_search_query: str = ""
 
     # llm
     anthropic_api_key: SecretStr | None = None
@@ -47,9 +44,7 @@ class Settings(BaseSettings):
     telegram_bot_token: SecretStr | None = None
     telegram_owner_id: int | None = None
 
-    # stock media / platforms
-    pexels_api_key: SecretStr | None = None
-    youtube_api_key: SecretStr | None = None
+    # platforms
     youtube_upload_enabled: bool = False
 
     # monitoring
@@ -58,14 +53,6 @@ class Settings(BaseSettings):
     @property
     def tz(self) -> ZoneInfo:
         return ZoneInfo(self.timezone)
-
-    @property
-    def rss_feeds(self) -> list[str]:
-        return [u.strip() for u in self.niche_rss_feeds.split(",") if u.strip()]
-
-    @property
-    def youtube_query(self) -> str:
-        return self.youtube_search_query or self.niche
 
 
 @lru_cache

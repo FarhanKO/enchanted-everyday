@@ -1,0 +1,323 @@
+{
+  "$defs": {
+    "Character": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z0-9_]+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "role": {
+          "title": "Role",
+          "type": "string"
+        },
+        "descriptor": {
+          "description": "Locked visual description inserted verbatim in every prompt showing them: age, build, hair, face, wardrobe, colour anchor",
+          "minLength": 60,
+          "title": "Descriptor",
+          "type": "string"
+        },
+        "signature": {
+          "description": "Colour item + prop that identify them in silhouette",
+          "title": "Signature",
+          "type": "string"
+        },
+        "recurring": {
+          "description": "True if part of the shared universe (e.g. the Shopkeeper)",
+          "title": "Recurring",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "role",
+        "descriptor",
+        "signature",
+        "recurring"
+      ],
+      "title": "Character",
+      "type": "object"
+    },
+    "Location": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z0-9_]+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "pole": {
+          "enum": [
+            "night",
+            "day"
+          ],
+          "title": "Pole",
+          "type": "string"
+        },
+        "descriptor": {
+          "description": "Locked description of the place",
+          "minLength": 40,
+          "title": "Descriptor",
+          "type": "string"
+        },
+        "lighting": {
+          "title": "Lighting",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "pole",
+        "descriptor",
+        "lighting"
+      ],
+      "title": "Location",
+      "type": "object"
+    },
+    "MusicCue": {
+      "additionalProperties": false,
+      "properties": {
+        "at_s": {
+          "minimum": 0,
+          "title": "At S",
+          "type": "number"
+        },
+        "action": {
+          "enum": [
+            "enter",
+            "swell",
+            "thin",
+            "silence",
+            "resolve",
+            "out"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "note": {
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "at_s",
+        "action",
+        "note"
+      ],
+      "title": "MusicCue",
+      "type": "object"
+    },
+    "Shot": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^S\\d{2}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "beat": {
+          "enum": [
+            "hook",
+            "mystery",
+            "connection",
+            "cost",
+            "reveal",
+            "landing"
+          ],
+          "title": "Beat",
+          "type": "string"
+        },
+        "start_s": {
+          "minimum": 0,
+          "title": "Start S",
+          "type": "number"
+        },
+        "duration_s": {
+          "maximum": 15,
+          "minimum": 1.5,
+          "title": "Duration S",
+          "type": "number"
+        },
+        "description": {
+          "description": "What the viewer sees and why it matters",
+          "title": "Description",
+          "type": "string"
+        },
+        "camera": {
+          "enum": [
+            "push_in",
+            "pull_out",
+            "pan_left",
+            "pan_right",
+            "tilt_up",
+            "tilt_down",
+            "parallax",
+            "static"
+          ],
+          "title": "Camera",
+          "type": "string"
+        },
+        "pole": {
+          "enum": [
+            "night",
+            "day"
+          ],
+          "title": "Pole",
+          "type": "string"
+        },
+        "location": {
+          "pattern": "^[a-z0-9_]+$",
+          "title": "Location",
+          "type": "string"
+        },
+        "characters": {
+          "items": {
+            "pattern": "^[a-z0-9_]+$",
+            "type": "string"
+          },
+          "title": "Characters",
+          "type": "array"
+        },
+        "image_prompt": {
+          "description": "Shot-specific content only: framing, action, emotion, key props. Refer to characters by name; code appends their locked descriptors, location and style block",
+          "title": "Image Prompt",
+          "type": "string"
+        },
+        "motion": {
+          "enum": [
+            "still_drift",
+            "ai_clip"
+          ],
+          "title": "Motion",
+          "type": "string"
+        },
+        "video_prompt": {
+          "description": "Environment and subtle body motion for an image-to-video model; code adds the camera move and the locked motion suffix",
+          "title": "Video Prompt",
+          "type": "string"
+        },
+        "overlays": {
+          "items": {
+            "enum": [
+              "rain_glass",
+              "rain",
+              "fireflies",
+              "dust_motes",
+              "steam",
+              "film_grain",
+              "light_leak"
+            ],
+            "type": "string"
+          },
+          "title": "Overlays",
+          "type": "array"
+        },
+        "sfx": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Sfx",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "beat",
+        "start_s",
+        "duration_s",
+        "description",
+        "camera",
+        "pole",
+        "location",
+        "characters",
+        "image_prompt",
+        "motion",
+        "video_prompt",
+        "overlays",
+        "sfx"
+      ],
+      "title": "Shot",
+      "type": "object"
+    },
+    "Sound": {
+      "additionalProperties": false,
+      "properties": {
+        "music_palette": {
+          "description": "Instruments, tempo and feel of the music bed",
+          "title": "Music Palette",
+          "type": "string"
+        },
+        "cues": {
+          "items": {
+            "$ref": "#/$defs/MusicCue"
+          },
+          "title": "Cues",
+          "type": "array"
+        },
+        "ambience": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Ambience",
+          "type": "array"
+        }
+      },
+      "required": [
+        "music_palette",
+        "cues",
+        "ambience"
+      ],
+      "title": "Sound",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "characters": {
+      "items": {
+        "$ref": "#/$defs/Character"
+      },
+      "title": "Characters",
+      "type": "array"
+    },
+    "locations": {
+      "items": {
+        "$ref": "#/$defs/Location"
+      },
+      "minItems": 1,
+      "title": "Locations",
+      "type": "array"
+    },
+    "shots": {
+      "items": {
+        "$ref": "#/$defs/Shot"
+      },
+      "maxItems": 14,
+      "minItems": 5,
+      "title": "Shots",
+      "type": "array"
+    },
+    "sound": {
+      "$ref": "#/$defs/Sound"
+    }
+  },
+  "required": [
+    "characters",
+    "locations",
+    "shots",
+    "sound"
+  ],
+  "title": "Storyboard",
+  "type": "object"
+}

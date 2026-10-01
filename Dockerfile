@@ -21,8 +21,10 @@ RUN mkdir -p engine bot && touch engine/__init__.py bot/__init__.py \
 
 COPY engine ./engine
 COPY bot ./bot
+COPY brand ./brand
 COPY templates ./templates
-RUN pip install --no-deps .
+# editable, so the package resolves brand/ and templates/ next to it in /app
+RUN pip install --no-deps -e .
 
 USER app
 CMD ["engine", "serve"]

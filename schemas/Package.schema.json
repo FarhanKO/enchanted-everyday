@@ -1,0 +1,148 @@
+{
+  "$defs": {
+    "PlatformCopy": {
+      "additionalProperties": false,
+      "properties": {
+        "youtube_title": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Youtube Title",
+          "type": "string"
+        },
+        "youtube_description": {
+          "title": "Youtube Description",
+          "type": "string"
+        },
+        "tiktok_caption": {
+          "maxLength": 2200,
+          "title": "Tiktok Caption",
+          "type": "string"
+        },
+        "instagram_caption": {
+          "maxLength": 2200,
+          "title": "Instagram Caption",
+          "type": "string"
+        },
+        "facebook_caption": {
+          "title": "Facebook Caption",
+          "type": "string"
+        },
+        "hashtags": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8,
+          "minItems": 3,
+          "title": "Hashtags",
+          "type": "array"
+        }
+      },
+      "required": [
+        "youtube_title",
+        "youtube_description",
+        "tiktok_caption",
+        "instagram_caption",
+        "facebook_caption",
+        "hashtags"
+      ],
+      "title": "PlatformCopy",
+      "type": "object"
+    },
+    "Thumbnail": {
+      "additionalProperties": false,
+      "properties": {
+        "concept": {
+          "description": "One face or object, one emotion, one contrast",
+          "title": "Concept",
+          "type": "string"
+        },
+        "text": {
+          "description": "0-4 words, or empty",
+          "title": "Text",
+          "type": "string"
+        },
+        "pole": {
+          "enum": [
+            "night",
+            "day"
+          ],
+          "title": "Pole",
+          "type": "string"
+        },
+        "location": {
+          "pattern": "^[a-z0-9_]+$",
+          "title": "Location",
+          "type": "string"
+        },
+        "characters": {
+          "items": {
+            "pattern": "^[a-z0-9_]+$",
+            "type": "string"
+          },
+          "title": "Characters",
+          "type": "array"
+        },
+        "image_prompt": {
+          "description": "Shot-specific content only, as for shots",
+          "title": "Image Prompt",
+          "type": "string"
+        }
+      },
+      "required": [
+        "concept",
+        "text",
+        "pole",
+        "location",
+        "characters",
+        "image_prompt"
+      ],
+      "title": "Thumbnail",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "title": {
+      "description": "Simple premise + unanswered question",
+      "maxLength": 60,
+      "title": "Title",
+      "type": "string"
+    },
+    "alt_titles": {
+      "description": "For A/B tests",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 3,
+      "minItems": 2,
+      "title": "Alt Titles",
+      "type": "array"
+    },
+    "thumbnail": {
+      "$ref": "#/$defs/Thumbnail"
+    },
+    "platforms": {
+      "$ref": "#/$defs/PlatformCopy"
+    },
+    "comment_prompt": {
+      "description": "One gentle question that extends the story",
+      "title": "Comment Prompt",
+      "type": "string"
+    },
+    "long_form_path": {
+      "description": "Which long-form collection this story belongs in",
+      "title": "Long Form Path",
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "alt_titles",
+    "thumbnail",
+    "platforms",
+    "comment_prompt",
+    "long_form_path"
+  ],
+  "title": "Package",
+  "type": "object"
+}
