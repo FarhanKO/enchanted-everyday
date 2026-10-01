@@ -1,0 +1,142 @@
+{
+  "$defs": {
+    "StoryCard": {
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "maxLength": 80,
+          "minLength": 3,
+          "title": "Title",
+          "type": "string"
+        },
+        "pillar": {
+          "enum": [
+            "strange_thing",
+            "never_said",
+            "price_of_wish",
+            "before_sleep",
+            "nowhere_places"
+          ],
+          "title": "Pillar",
+          "type": "string"
+        },
+        "lane": {
+          "enum": [
+            "dark_urban",
+            "cozy_bedtime"
+          ],
+          "title": "Lane",
+          "type": "string"
+        },
+        "premise": {
+          "description": "One sentence: ordinary person + impossible element + stakes",
+          "title": "Premise",
+          "type": "string"
+        },
+        "human_emotion": {
+          "description": "The feeling the story is really about",
+          "title": "Human Emotion",
+          "type": "string"
+        },
+        "magical_element": {
+          "description": "The impossible thing, and what it reveals about them",
+          "title": "Magical Element",
+          "type": "string"
+        },
+        "visual_anchor": {
+          "description": "The one object or place viewers will remember",
+          "title": "Visual Anchor",
+          "type": "string"
+        },
+        "recurring": {
+          "description": "Recurring universe entities used, e.g. midnight_shop",
+          "items": {
+            "pattern": "^[a-z0-9_]+$",
+            "type": "string"
+          },
+          "title": "Recurring",
+          "type": "array"
+        },
+        "ending_image": {
+          "description": "The final image, choice or line",
+          "title": "Ending Image",
+          "type": "string"
+        },
+        "scores": {
+          "$ref": "#/$defs/StoryScores"
+        }
+      },
+      "required": [
+        "title",
+        "pillar",
+        "lane",
+        "premise",
+        "human_emotion",
+        "magical_element",
+        "visual_anchor",
+        "recurring",
+        "ending_image",
+        "scores"
+      ],
+      "title": "StoryCard",
+      "type": "object"
+    },
+    "StoryScores": {
+      "additionalProperties": false,
+      "properties": {
+        "hook": {
+          "description": "Would a stranger stop scrolling at the first line? 0-10",
+          "maximum": 10,
+          "minimum": 0,
+          "title": "Hook",
+          "type": "number"
+        },
+        "emotion": {
+          "description": "Is there a true, recognisable human feeling? 0-10",
+          "maximum": 10,
+          "minimum": 0,
+          "title": "Emotion",
+          "type": "number"
+        },
+        "visual": {
+          "description": "Does it have a memorable image or object? 0-10",
+          "maximum": 10,
+          "minimum": 0,
+          "title": "Visual",
+          "type": "number"
+        },
+        "brand_fit": {
+          "description": "Does it obey the story bible's twelve rules? 0-10",
+          "maximum": 10,
+          "minimum": 0,
+          "title": "Brand Fit",
+          "type": "number"
+        }
+      },
+      "required": [
+        "hook",
+        "emotion",
+        "visual",
+        "brand_fit"
+      ],
+      "title": "StoryScores",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "cards": {
+      "items": {
+        "$ref": "#/$defs/StoryCard"
+      },
+      "minItems": 1,
+      "title": "Cards",
+      "type": "array"
+    }
+  },
+  "required": [
+    "cards"
+  ],
+  "title": "StoryCards",
+  "type": "object"
+}

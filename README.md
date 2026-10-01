@@ -1,15 +1,18 @@
 # content-engine
 
-A code-first pipeline that publishes one approved 30-60 second vertical video a day to YouTube,
-Instagram, TikTok and Facebook. The LLM writes text inside fixed stages. It never takes actions,
-and nothing posts without a human tap.
+The studio behind **Modern Fairy Tales for Sleepless Souls**: cinematic 45-90 second micro-fables about ordinary
+people, strange places and very big feelings, published to YouTube Shorts, Instagram Reels, TikTok and Facebook.
+The LLM writes inside fixed stages and never takes actions. Nothing posts without a human tap.
 
 ```
-trend scan -> pick idea -> script + critic -> assets -> render + QC -> approve (Telegram) -> publish -> analytics
+discovery -> story card -> script -> storyboard -> package -> critic
+          -> images + voice + sound -> render + QC -> approve (Telegram) -> publish -> analytics
 ```
 
-**Status:** Phase 0 (setup). Built so far: the repo, Compose stack, schema, CI, the stage runner and the trend scan.
-See [the roadmap](#roadmap).
+**Status:** Phase 0 is complete, and Phase 1 has started. The brand kit ([brand/](brand/)), episode contracts
+([engine/llm/schemas.py](engine/llm/schemas.py)) and the first hand-built episode
+([stories/s000-the-man-who-sold-his-dreams](stories/s000-the-man-who-sold-his-dreams/episode.md)) are done.
+See [the roadmap](#roadmap) and [docs/decisions.md](docs/decisions.md).
 
 ## Architecture
 
@@ -30,8 +33,10 @@ Design rules:
 - **Publishing is idempotent.** The `posts` table is checked, and locked, before any upload. An upload
   interrupted mid-way is flagged for a human rather than retried blind ([engine/publishers/base.py](engine/publishers/base.py)).
 - **The LLM gets text in and gives JSON out.** It gets no tools and no shell. Output is constrained by a JSON schema
-  and then re-validated: 110-150 words, a real source URL on every claim, and sources limited to pages we fetched
-  ([engine/llm/](engine/llm/)).
+  and then re-validated: the six-beat formula, 45-90 s at narration pace, a contiguous storyboard, known characters
+  only, at most 2 AI clips, and no named artists or studios ([engine/llm/schemas.py](engine/llm/schemas.py)).
+- **Locked prompt fragments.** Agents write only the shot-specific text. Code appends character descriptors, locations
+  and the style block verbatim, so every frame shares identical identity and style text ([engine/prompting.py](engine/prompting.py)).
 - **A hard daily spend cap.** Every LLM call is costed and committed before the next one is allowed ([engine/budget.py](engine/budget.py)).
 
 ## Quick start (local)
@@ -45,6 +50,12 @@ docker compose run --rm worker engine check
 docker compose run --rm worker engine run   # one daily run now
 ```
 
+Validate an episode and render its review document:
+
+```bash
+python -m engine episode stories/s000-the-man-who-sold-his-dreams/episode.json
+```
+
 Without Docker (unit tests only):
 
 ```bash
@@ -55,12 +66,17 @@ python -m venv .venv && .venv/bin/pip install -e ".[dev]"
 ## Layout
 
 ```
+brand/               story bible, production style, locked prompt fragments, 20-story slate
+stories/             hand-built and approved episodes (episode.json + rendered episode.md)
+schemas/             JSON Schema export of the agent contracts (`engine schemas`)
 engine/
   config.py          settings from env (.env.example lists them all)
   flows.py           Prefect daily flow
-  db/                models + Alembic migrations (10 tables)
-  llm/               Claude client, JSON-schema contracts, pricing
-  stages/            trend (built); idea, script, assets, render, approve, publish, analytics (next)
+  db/                models + Alembic migrations (11 tables)
+  llm/               Claude client, episode contracts, pricing
+  prompting.py       final image/video prompt assembly
+  episode_doc.py     Episode JSON -> review document
+  stages/            discovery (built); idea, script, storyboard, package, assets, render, approve, publish
   publishers/        idempotent publish guard; one module per platform in Phase 3
   storage.py         Cloudflare R2
   budget.py          daily spend cap

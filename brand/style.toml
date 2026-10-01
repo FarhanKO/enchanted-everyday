@@ -1,0 +1,30 @@
+# Locked prompt fragments. Code appends these verbatim to every image/video prompt
+# (engine/prompting.py), so agents never paraphrase them. Change here = change everywhere.
+
+[style]
+night = """hand-painted cinematic illustration, gouache and soft digital paint texture, visible brush strokes, \
+subtle film grain, detailed lived-in environment, single warm practical light source glowing amber against deep \
+midnight-blue shadows, rose and cream highlights, floating dust motes catching the light, quiet melancholic \
+atmosphere, soft edges, painterly anime-inspired background art, vertical 9:16 composition"""
+
+day = """hand-painted cinematic illustration, gouache and soft digital paint texture, visible brush strokes, \
+subtle film grain, vivid cobalt-blue sky with towering sunlit cumulus clouds, luminous greens, turquoise sea, \
+golden sunlight with dappled shadows, gnarled ancient trees with moss, sense of vast scale with a small human \
+figure, hopeful and serene, painterly anime-inspired background art, vertical 9:16 composition"""
+
+negative = """photorealistic, 3D render, CGI, plastic skin, harsh neon, oversaturated, text, letters, watermark, \
+logo, signature, extra fingers, deformed hands, distorted face, horror, gore, blurry, low detail"""
+
+video_suffix = """slow, gentle camera motion, stable composition, consistent character appearance, no morphing, \
+no flicker, painterly texture preserved"""
+
+[camera]
+# how each storyboard camera move is phrased for image-to-video models
+push_in = "very slow push-in"
+pull_out = "very slow pull-back"
+pan_left = "slow pan to the left"
+pan_right = "slow pan to the right"
+tilt_up = "slow tilt up"
+tilt_down = "slow tilt down"
+parallax = "subtle parallax drift between foreground and background"
+static = "locked-off camera"

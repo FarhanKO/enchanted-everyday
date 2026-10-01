@@ -1,12 +1,10 @@
 from engine.config import Settings
 
 
-def test_feed_list_and_query_defaults():
-    s = Settings(
-        _env_file=None, niche="budget travel", niche_rss_feeds=" https://a/feed ,,https://b "
-    )
-    assert s.rss_feeds == ["https://a/feed", "https://b"]
-    assert s.youtube_query == "budget travel"
+def test_defaults():
+    s = Settings(_env_file=None)
+    assert s.brand_dir == "brand"
+    assert s.content_language == "en"
     assert str(s.tz) == "Asia/Dhaka"
 
 

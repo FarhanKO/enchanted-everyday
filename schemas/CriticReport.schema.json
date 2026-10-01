@@ -1,0 +1,78 @@
+{
+  "$defs": {
+    "CriticIssue": {
+      "additionalProperties": false,
+      "properties": {
+        "area": {
+          "enum": [
+            "story",
+            "script",
+            "visual",
+            "sound",
+            "package",
+            "policy"
+          ],
+          "title": "Area",
+          "type": "string"
+        },
+        "rule": {
+          "description": "Story bible rule number, or 0",
+          "maximum": 12,
+          "minimum": 0,
+          "title": "Rule",
+          "type": "integer"
+        },
+        "problem": {
+          "title": "Problem",
+          "type": "string"
+        },
+        "fix": {
+          "title": "Fix",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "low",
+            "high"
+          ],
+          "title": "Severity",
+          "type": "string"
+        }
+      },
+      "required": [
+        "area",
+        "rule",
+        "problem",
+        "fix",
+        "severity"
+      ],
+      "title": "CriticIssue",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "verdict": {
+      "enum": [
+        "pass",
+        "revise",
+        "reject"
+      ],
+      "title": "Verdict",
+      "type": "string"
+    },
+    "issues": {
+      "items": {
+        "$ref": "#/$defs/CriticIssue"
+      },
+      "title": "Issues",
+      "type": "array"
+    }
+  },
+  "required": [
+    "verdict",
+    "issues"
+  ],
+  "title": "CriticReport",
+  "type": "object"
+}

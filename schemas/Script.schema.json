@@ -1,0 +1,92 @@
+{
+  "$defs": {
+    "Beat": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "enum": [
+            "hook",
+            "mystery",
+            "connection",
+            "cost",
+            "reveal",
+            "landing"
+          ],
+          "title": "Name",
+          "type": "string"
+        },
+        "lines": {
+          "items": {
+            "$ref": "#/$defs/Line"
+          },
+          "minItems": 1,
+          "title": "Lines",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "lines"
+      ],
+      "title": "Beat",
+      "type": "object"
+    },
+    "Line": {
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "description": "Exactly what the narrator says",
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "delivery": {
+          "description": "How to say it: e.g. 'hushed, slower, slight smile'",
+          "title": "Delivery",
+          "type": "string"
+        },
+        "pause_after_s": {
+          "description": "Silence after the line, in seconds",
+          "maximum": 3,
+          "minimum": 0,
+          "title": "Pause After S",
+          "type": "number"
+        }
+      },
+      "required": [
+        "text",
+        "delivery",
+        "pause_after_s"
+      ],
+      "title": "Line",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "narration_direction": {
+      "description": "Overall voice direction for this episode",
+      "title": "Narration Direction",
+      "type": "string"
+    },
+    "beats": {
+      "description": "Exactly six beats, in formula order",
+      "items": {
+        "$ref": "#/$defs/Beat"
+      },
+      "title": "Beats",
+      "type": "array"
+    }
+  },
+  "required": [
+    "title",
+    "narration_direction",
+    "beats"
+  ],
+  "title": "Script",
+  "type": "object"
+}

@@ -1,0 +1,723 @@
+{
+  "$defs": {
+    "Beat": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "enum": [
+            "hook",
+            "mystery",
+            "connection",
+            "cost",
+            "reveal",
+            "landing"
+          ],
+          "title": "Name",
+          "type": "string"
+        },
+        "lines": {
+          "items": {
+            "$ref": "#/$defs/Line"
+          },
+          "minItems": 1,
+          "title": "Lines",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "lines"
+      ],
+      "title": "Beat",
+      "type": "object"
+    },
+    "Character": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z0-9_]+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "role": {
+          "title": "Role",
+          "type": "string"
+        },
+        "descriptor": {
+          "description": "Locked visual description inserted verbatim in every prompt showing them: age, build, hair, face, wardrobe, colour anchor",
+          "minLength": 60,
+          "title": "Descriptor",
+          "type": "string"
+        },
+        "signature": {
+          "description": "Colour item + prop that identify them in silhouette",
+          "title": "Signature",
+          "type": "string"
+        },
+        "recurring": {
+          "description": "True if part of the shared universe (e.g. the Shopkeeper)",
+          "title": "Recurring",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "role",
+        "descriptor",
+        "signature",
+        "recurring"
+      ],
+      "title": "Character",
+      "type": "object"
+    },
+    "Line": {
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "description": "Exactly what the narrator says",
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "delivery": {
+          "description": "How to say it: e.g. 'hushed, slower, slight smile'",
+          "title": "Delivery",
+          "type": "string"
+        },
+        "pause_after_s": {
+          "description": "Silence after the line, in seconds",
+          "maximum": 3,
+          "minimum": 0,
+          "title": "Pause After S",
+          "type": "number"
+        }
+      },
+      "required": [
+        "text",
+        "delivery",
+        "pause_after_s"
+      ],
+      "title": "Line",
+      "type": "object"
+    },
+    "Location": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z0-9_]+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "pole": {
+          "enum": [
+            "night",
+            "day"
+          ],
+          "title": "Pole",
+          "type": "string"
+        },
+        "descriptor": {
+          "description": "Locked description of the place",
+          "minLength": 40,
+          "title": "Descriptor",
+          "type": "string"
+        },
+        "lighting": {
+          "title": "Lighting",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "pole",
+        "descriptor",
+        "lighting"
+      ],
+      "title": "Location",
+      "type": "object"
+    },
+    "MusicCue": {
+      "additionalProperties": false,
+      "properties": {
+        "at_s": {
+          "minimum": 0,
+          "title": "At S",
+          "type": "number"
+        },
+        "action": {
+          "enum": [
+            "enter",
+            "swell",
+            "thin",
+            "silence",
+            "resolve",
+            "out"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "note": {
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "at_s",
+        "action",
+        "note"
+      ],
+      "title": "MusicCue",
+      "type": "object"
+    },
+    "Package": {
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "description": "Simple premise + unanswered question",
+          "maxLength": 60,
+          "title": "Title",
+          "type": "string"
+        },
+        "alt_titles": {
+          "description": "For A/B tests",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 3,
+          "minItems": 2,
+          "title": "Alt Titles",
+          "type": "array"
+        },
+        "thumbnail": {
+          "$ref": "#/$defs/Thumbnail"
+        },
+        "platforms": {
+          "$ref": "#/$defs/PlatformCopy"
+        },
+        "comment_prompt": {
+          "description": "One gentle question that extends the story",
+          "title": "Comment Prompt",
+          "type": "string"
+        },
+        "long_form_path": {
+          "description": "Which long-form collection this story belongs in",
+          "title": "Long Form Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "alt_titles",
+        "thumbnail",
+        "platforms",
+        "comment_prompt",
+        "long_form_path"
+      ],
+      "title": "Package",
+      "type": "object"
+    },
+    "PlatformCopy": {
+      "additionalProperties": false,
+      "properties": {
+        "youtube_title": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Youtube Title",
+          "type": "string"
+        },
+        "youtube_description": {
+          "title": "Youtube Description",
+          "type": "string"
+        },
+        "tiktok_caption": {
+          "maxLength": 2200,
+          "title": "Tiktok Caption",
+          "type": "string"
+        },
+        "instagram_caption": {
+          "maxLength": 2200,
+          "title": "Instagram Caption",
+          "type": "string"
+        },
+        "facebook_caption": {
+          "title": "Facebook Caption",
+          "type": "string"
+        },
+        "hashtags": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8,
+          "minItems": 3,
+          "title": "Hashtags",
+          "type": "array"
+        }
+      },
+      "required": [
+        "youtube_title",
+        "youtube_description",
+        "tiktok_caption",
+        "instagram_caption",
+        "facebook_caption",
+        "hashtags"
+      ],
+      "title": "PlatformCopy",
+      "type": "object"
+    },
+    "Script": {
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "narration_direction": {
+          "description": "Overall voice direction for this episode",
+          "title": "Narration Direction",
+          "type": "string"
+        },
+        "beats": {
+          "description": "Exactly six beats, in formula order",
+          "items": {
+            "$ref": "#/$defs/Beat"
+          },
+          "title": "Beats",
+          "type": "array"
+        }
+      },
+      "required": [
+        "title",
+        "narration_direction",
+        "beats"
+      ],
+      "title": "Script",
+      "type": "object"
+    },
+    "Shot": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^S\\d{2}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "beat": {
+          "enum": [
+            "hook",
+            "mystery",
+            "connection",
+            "cost",
+            "reveal",
+            "landing"
+          ],
+          "title": "Beat",
+          "type": "string"
+        },
+        "start_s": {
+          "minimum": 0,
+          "title": "Start S",
+          "type": "number"
+        },
+        "duration_s": {
+          "maximum": 15,
+          "minimum": 1.5,
+          "title": "Duration S",
+          "type": "number"
+        },
+        "description": {
+          "description": "What the viewer sees and why it matters",
+          "title": "Description",
+          "type": "string"
+        },
+        "camera": {
+          "enum": [
+            "push_in",
+            "pull_out",
+            "pan_left",
+            "pan_right",
+            "tilt_up",
+            "tilt_down",
+            "parallax",
+            "static"
+          ],
+          "title": "Camera",
+          "type": "string"
+        },
+        "pole": {
+          "enum": [
+            "night",
+            "day"
+          ],
+          "title": "Pole",
+          "type": "string"
+        },
+        "location": {
+          "pattern": "^[a-z0-9_]+$",
+          "title": "Location",
+          "type": "string"
+        },
+        "characters": {
+          "items": {
+            "pattern": "^[a-z0-9_]+$",
+            "type": "string"
+          },
+          "title": "Characters",
+          "type": "array"
+        },
+        "image_prompt": {
+          "description": "Shot-specific content only: framing, action, emotion, key props. Refer to characters by name; code appends their locked descriptors, location and style block",
+          "title": "Image Prompt",
+          "type": "string"
+        },
+        "motion": {
+          "enum": [
+            "still_drift",
+            "ai_clip"
+          ],
+          "title": "Motion",
+          "type": "string"
+        },
+        "video_prompt": {
+          "description": "Environment and subtle body motion for an image-to-video model; code adds the camera move and the locked motion suffix",
+          "title": "Video Prompt",
+          "type": "string"
+        },
+        "overlays": {
+          "items": {
+            "enum": [
+              "rain_glass",
+              "rain",
+              "fireflies",
+              "dust_motes",
+              "steam",
+              "film_grain",
+              "light_leak"
+            ],
+            "type": "string"
+          },
+          "title": "Overlays",
+          "type": "array"
+        },
+        "sfx": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Sfx",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "beat",
+        "start_s",
+        "duration_s",
+        "description",
+        "camera",
+        "pole",
+        "location",
+        "characters",
+        "image_prompt",
+        "motion",
+        "video_prompt",
+        "overlays",
+        "sfx"
+      ],
+      "title": "Shot",
+      "type": "object"
+    },
+    "Sound": {
+      "additionalProperties": false,
+      "properties": {
+        "music_palette": {
+          "description": "Instruments, tempo and feel of the music bed",
+          "title": "Music Palette",
+          "type": "string"
+        },
+        "cues": {
+          "items": {
+            "$ref": "#/$defs/MusicCue"
+          },
+          "title": "Cues",
+          "type": "array"
+        },
+        "ambience": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Ambience",
+          "type": "array"
+        }
+      },
+      "required": [
+        "music_palette",
+        "cues",
+        "ambience"
+      ],
+      "title": "Sound",
+      "type": "object"
+    },
+    "StoryCard": {
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "maxLength": 80,
+          "minLength": 3,
+          "title": "Title",
+          "type": "string"
+        },
+        "pillar": {
+          "enum": [
+            "strange_thing",
+            "never_said",
+            "price_of_wish",
+            "before_sleep",
+            "nowhere_places"
+          ],
+          "title": "Pillar",
+          "type": "string"
+        },
+        "lane": {
+          "enum": [
+            "dark_urban",
+            "cozy_bedtime"
+          ],
+          "title": "Lane",
+          "type": "string"
+        },
+        "premise": {
+          "description": "One sentence: ordinary person + impossible element + stakes",
+          "title": "Premise",
+          "type": "string"
+        },
+        "human_emotion": {
+          "description": "The feeling the story is really about",
+          "title": "Human Emotion",
+          "type": "string"
+        },
+        "magical_element": {
+          "description": "The impossible thing, and what it reveals about them",
+          "title": "Magical Element",
+          "type": "string"
+        },
+        "visual_anchor": {
+          "description": "The one object or place viewers will remember",
+          "title": "Visual Anchor",
+          "type": "string"
+        },
+        "recurring": {
+          "description": "Recurring universe entities used, e.g. midnight_shop",
+          "items": {
+            "pattern": "^[a-z0-9_]+$",
+            "type": "string"
+          },
+          "title": "Recurring",
+          "type": "array"
+        },
+        "ending_image": {
+          "description": "The final image, choice or line",
+          "title": "Ending Image",
+          "type": "string"
+        },
+        "scores": {
+          "$ref": "#/$defs/StoryScores"
+        }
+      },
+      "required": [
+        "title",
+        "pillar",
+        "lane",
+        "premise",
+        "human_emotion",
+        "magical_element",
+        "visual_anchor",
+        "recurring",
+        "ending_image",
+        "scores"
+      ],
+      "title": "StoryCard",
+      "type": "object"
+    },
+    "StoryScores": {
+      "additionalProperties": false,
+      "properties": {
+        "hook": {
+          "description": "Would a stranger stop scrolling at the first line? 0-10",
+          "maximum": 10,
+          "minimum": 0,
+          "title": "Hook",
+          "type": "number"
+        },
+        "emotion": {
+          "description": "Is there a true, recognisable human feeling? 0-10",
+          "maximum": 10,
+          "minimum": 0,
+          "title": "Emotion",
+          "type": "number"
+        },
+        "visual": {
+          "description": "Does it have a memorable image or object? 0-10",
+          "maximum": 10,
+          "minimum": 0,
+          "title": "Visual",
+          "type": "number"
+        },
+        "brand_fit": {
+          "description": "Does it obey the story bible's twelve rules? 0-10",
+          "maximum": 10,
+          "minimum": 0,
+          "title": "Brand Fit",
+          "type": "number"
+        }
+      },
+      "required": [
+        "hook",
+        "emotion",
+        "visual",
+        "brand_fit"
+      ],
+      "title": "StoryScores",
+      "type": "object"
+    },
+    "Storyboard": {
+      "additionalProperties": false,
+      "properties": {
+        "characters": {
+          "items": {
+            "$ref": "#/$defs/Character"
+          },
+          "title": "Characters",
+          "type": "array"
+        },
+        "locations": {
+          "items": {
+            "$ref": "#/$defs/Location"
+          },
+          "minItems": 1,
+          "title": "Locations",
+          "type": "array"
+        },
+        "shots": {
+          "items": {
+            "$ref": "#/$defs/Shot"
+          },
+          "maxItems": 14,
+          "minItems": 5,
+          "title": "Shots",
+          "type": "array"
+        },
+        "sound": {
+          "$ref": "#/$defs/Sound"
+        }
+      },
+      "required": [
+        "characters",
+        "locations",
+        "shots",
+        "sound"
+      ],
+      "title": "Storyboard",
+      "type": "object"
+    },
+    "Thumbnail": {
+      "additionalProperties": false,
+      "properties": {
+        "concept": {
+          "description": "One face or object, one emotion, one contrast",
+          "title": "Concept",
+          "type": "string"
+        },
+        "text": {
+          "description": "0-4 words, or empty",
+          "title": "Text",
+          "type": "string"
+        },
+        "pole": {
+          "enum": [
+            "night",
+            "day"
+          ],
+          "title": "Pole",
+          "type": "string"
+        },
+        "location": {
+          "pattern": "^[a-z0-9_]+$",
+          "title": "Location",
+          "type": "string"
+        },
+        "characters": {
+          "items": {
+            "pattern": "^[a-z0-9_]+$",
+            "type": "string"
+          },
+          "title": "Characters",
+          "type": "array"
+        },
+        "image_prompt": {
+          "description": "Shot-specific content only, as for shots",
+          "title": "Image Prompt",
+          "type": "string"
+        }
+      },
+      "required": [
+        "concept",
+        "text",
+        "pole",
+        "location",
+        "characters",
+        "image_prompt"
+      ],
+      "title": "Thumbnail",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "slate_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Slate Id"
+    },
+    "card": {
+      "$ref": "#/$defs/StoryCard"
+    },
+    "script": {
+      "$ref": "#/$defs/Script"
+    },
+    "storyboard": {
+      "$ref": "#/$defs/Storyboard"
+    },
+    "package": {
+      "$ref": "#/$defs/Package"
+    }
+  },
+  "required": [
+    "id",
+    "card",
+    "script",
+    "storyboard",
+    "package"
+  ],
+  "title": "Episode",
+  "type": "object"
+}

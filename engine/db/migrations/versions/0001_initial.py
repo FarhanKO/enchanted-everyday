@@ -1,4 +1,4 @@
-"""initial schema: ten tables + pgvector
+"""initial schema: eleven tables + pgvector
 
 Revision ID: 0001
 Revises:
@@ -44,32 +44,36 @@ def upgrade() -> None:
     )
 
     op.create_table(
-        "trend_items",
+        "discovery_items",
         sa.Column("id", sa.Integer, primary_key=True),
         _fk("run_id", "runs.id"),
-        sa.Column("source", sa.String(64), nullable=False),
+        sa.Column("source", sa.String(32), nullable=False),
+        sa.Column("ref", sa.String(64), nullable=False),
         sa.Column("title", sa.Text, nullable=False),
-        sa.Column("url", sa.Text, nullable=False),
-        sa.Column("summary", sa.Text),
+        sa.Column("premise", sa.Text, nullable=False),
+        sa.Column("meta", JSONB),
         _ts("fetched_at"),
-        sa.UniqueConstraint("run_id", "url"),
+        sa.UniqueConstraint("run_id", "source", "ref"),
     )
-    op.create_index("ix_trend_items_run_id", "trend_items", ["run_id"])
+    op.create_index("ix_discovery_items_run_id", "discovery_items", ["run_id"])
 
     op.create_table(
         "ideas",
         sa.Column("id", sa.Integer, primary_key=True),
         _fk("run_id", "runs.id"),
+        sa.Column("slate_id", sa.String(16)),
         sa.Column("title", sa.Text, nullable=False),
-        sa.Column("angle", sa.Text, nullable=False),
-        sa.Column("fit_score", sa.Float, nullable=False),
-        sa.Column("timeliness_score", sa.Float, nullable=False),
-        sa.Column("value_score", sa.Float, nullable=False),
+        sa.Column("premise", sa.Text, nullable=False),
+        sa.Column("pillar", sa.String(32), nullable=False),
+        sa.Column("lane", sa.String(16), nullable=False),
+        sa.Column("card", JSONB, nullable=False),
+        sa.Column("total_score", sa.Float, nullable=False),
         sa.Column("embedding", Vector(EMBEDDING_DIM)),
         sa.Column("status", sa.String(32), nullable=False),
         _ts("created_at"),
     )
     op.create_index("ix_ideas_run_id", "ideas", ["run_id"])
+    op.create_index("ix_ideas_slate_id", "ideas", ["slate_id"])
     # cosine-distance index for the near-duplicate check
     op.execute(
         "CREATE INDEX ix_ideas_embedding_hnsw ON ideas USING hnsw (embedding vector_cosine_ops)"
@@ -80,10 +84,10 @@ def upgrade() -> None:
         sa.Column("id", sa.Integer, primary_key=True),
         _fk("idea_id", "ideas.id"),
         sa.Column("version", sa.Integer, nullable=False),
-        sa.Column("hook", sa.Text, nullable=False),
-        sa.Column("body", sa.Text, nullable=False),
-        sa.Column("beats", JSONB, nullable=False),
-        sa.Column("captions", JSONB, nullable=False),
+        sa.Column("narration", sa.Text, nullable=False),
+        sa.Column("script", JSONB, nullable=False),
+        sa.Column("storyboard", JSONB),
+        sa.Column("package", JSONB),
         sa.Column("critic_report", JSONB),
         sa.Column("prompt_version", sa.String(32), nullable=False),
         _ts("created_at"),
@@ -170,9 +174,24 @@ def upgrade() -> None:
     )
     op.create_index("ix_experiments_run_id", "experiments", ["run_id"])
 
+    op.create_table(
+        "bible_entries",
+        sa.Column("id", sa.Integer, primary_key=True),
+        sa.Column("slug", sa.String(64), nullable=False, unique=True),
+        sa.Column("kind", sa.String(16), nullable=False),
+        sa.Column("name", sa.Text, nullable=False),
+        sa.Column("descriptor", sa.Text, nullable=False),
+        sa.Column("reference_uris", JSONB, server_default="[]", nullable=False),
+        sa.Column("recurring", sa.Boolean, nullable=False),
+        sa.Column("notes", sa.Text),
+        _ts("created_at"),
+        _ts("updated_at"),
+    )
+
 
 def downgrade() -> None:
     for table in (
+        "bible_entries",
         "experiments",
         "metrics",
         "posts",
@@ -181,7 +200,7 @@ def downgrade() -> None:
         "assets",
         "scripts",
         "ideas",
-        "trend_items",
+        "discovery_items",
         "runs",
     ):
         op.drop_table(table)

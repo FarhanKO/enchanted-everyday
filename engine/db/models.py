@@ -54,16 +54,19 @@ class Run(Base):
     )
 
 
-class TrendItem(Base):
-    __tablename__ = "trend_items"
-    __table_args__ = (UniqueConstraint("run_id", "url"),)
+class DiscoveryItem(Base):
+    """Premise candidates for a run: slate entries now; comments and seasonal moods later."""
+
+    __tablename__ = "discovery_items"
+    __table_args__ = (UniqueConstraint("run_id", "source", "ref"),)
 
     id: Mapped[int] = mapped_column(primary_key=True)
     run_id: Mapped[int] = mapped_column(ForeignKey("runs.id", ondelete="CASCADE"), index=True)
-    source: Mapped[str] = mapped_column(String(64))
+    source: Mapped[str] = mapped_column(String(32))  # slate | comment | seasonal | manual
+    ref: Mapped[str] = mapped_column(String(64))  # slate id, comment id, ...
     title: Mapped[str] = mapped_column(Text)
-    url: Mapped[str] = mapped_column(Text)
-    summary: Mapped[str | None] = mapped_column(Text)
+    premise: Mapped[str] = mapped_column(Text)
+    meta: Mapped[dict[str, Any] | None] = mapped_column()
     fetched_at: Mapped[datetime] = _now()
 
 
@@ -81,11 +84,13 @@ class Idea(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     run_id: Mapped[int] = mapped_column(ForeignKey("runs.id", ondelete="CASCADE"), index=True)
+    slate_id: Mapped[str | None] = mapped_column(String(16), index=True)
     title: Mapped[str] = mapped_column(Text)
-    angle: Mapped[str] = mapped_column(Text)
-    fit_score: Mapped[float] = mapped_column(Float)
-    timeliness_score: Mapped[float] = mapped_column(Float)
-    value_score: Mapped[float] = mapped_column(Float)
+    premise: Mapped[str] = mapped_column(Text)
+    pillar: Mapped[str] = mapped_column(String(32))
+    lane: Mapped[str] = mapped_column(String(16))  # dark_urban | cozy_bedtime
+    card: Mapped[dict[str, Any]] = mapped_column()  # the full StoryCard
+    total_score: Mapped[float] = mapped_column(Float)
     embedding: Mapped[list[float] | None] = mapped_column(Vector(EMBEDDING_DIM))
     status: Mapped[str] = mapped_column(String(32), default="candidate")  # picked | backup | ...
     created_at: Mapped[datetime] = _now()
@@ -98,10 +103,10 @@ class Script(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     idea_id: Mapped[int] = mapped_column(ForeignKey("ideas.id", ondelete="CASCADE"), index=True)
     version: Mapped[int] = mapped_column(Integer, default=1)
-    hook: Mapped[str] = mapped_column(Text)
-    body: Mapped[str] = mapped_column(Text)
-    beats: Mapped[list[Any]] = mapped_column()
-    captions: Mapped[dict[str, Any]] = mapped_column()  # per platform
+    narration: Mapped[str] = mapped_column(Text)  # spoken text, for search and dedupe
+    script: Mapped[dict[str, Any]] = mapped_column()  # Script contract
+    storyboard: Mapped[dict[str, Any] | None] = mapped_column()  # Storyboard contract
+    package: Mapped[dict[str, Any] | None] = mapped_column()  # Package contract
     critic_report: Mapped[dict[str, Any] | None] = mapped_column()
     prompt_version: Mapped[str] = mapped_column(String(32))
     created_at: Mapped[datetime] = _now()
@@ -112,9 +117,8 @@ class Asset(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     script_id: Mapped[int] = mapped_column(ForeignKey("scripts.id", ondelete="CASCADE"), index=True)
-    kind: Mapped[str] = mapped_column(
-        String(32)
-    )  # voice | timestamps | clip | card | chart | music
+    # voice | timestamps | image | clip | music | sfx | thumbnail
+    kind: Mapped[str] = mapped_column(String(32))
     uri: Mapped[str] = mapped_column(Text)
     provider: Mapped[str] = mapped_column(String(64))
     license: Mapped[str] = mapped_column(Text)  # required: no asset without a recorded license
@@ -132,7 +136,7 @@ class Render(Base):
     duration_s: Mapped[float] = mapped_column(Float)
     qc_report: Mapped[dict[str, Any]] = mapped_column()
     status: Mapped[str] = mapped_column(String(32), default="qc_pending")
-    ai_generated: Mapped[bool] = mapped_column(default=False)  # drives platform disclosure flags
+    ai_generated: Mapped[bool] = mapped_column(default=True)  # drives platform disclosure flags
     created_at: Mapped[datetime] = _now()
 
 
@@ -188,3 +192,23 @@ class Experiment(Base):
     reward: Mapped[float | None] = mapped_column(Float)
     model_version: Mapped[str | None] = mapped_column(String(64))
     created_at: Mapped[datetime] = _now()
+
+
+class BibleEntry(Base):
+    """The persistent universe: recurring characters, places and props with locked descriptors and
+    approved reference images, so the Shopkeeper looks the same in episode 1 and episode 200."""
+
+    __tablename__ = "bible_entries"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    slug: Mapped[str] = mapped_column(String(64), unique=True)
+    kind: Mapped[str] = mapped_column(String(16))  # character | location | prop
+    name: Mapped[str] = mapped_column(Text)
+    descriptor: Mapped[str] = mapped_column(Text)
+    reference_uris: Mapped[list[Any]] = mapped_column(default=list, server_default="[]")
+    recurring: Mapped[bool] = mapped_column(default=False)
+    notes: Mapped[str | None] = mapped_column(Text)
+    created_at: Mapped[datetime] = _now()
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )

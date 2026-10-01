@@ -8,13 +8,14 @@ from sqlalchemy import create_engine, text
 
 from engine.config import Settings
 
-FIXTURES = Path(__file__).parent / "fixtures"
+ROOT = Path(__file__).parent.parent
+GOLDEN_EPISODE = ROOT / "stories" / "s000-the-man-who-sold-his-dreams" / "episode.json"
 
 
 @pytest.fixture
 def settings() -> Settings:
     # _env_file=None: tests never read a developer's real .env
-    return Settings(_env_file=None, niche="test niche", daily_spend_cap_usd=1.0)
+    return Settings(_env_file=None, daily_spend_cap_usd=1.0)
 
 
 @pytest.fixture
