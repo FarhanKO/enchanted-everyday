@@ -29,9 +29,7 @@ def _item(run_id: int) -> DiscoveryItem:
 
 
 def _idea(run_id: int, **kw) -> Idea:
-    fields = dict(
-        title="t", premise="p", pillar="strange_thing", lane="dark_urban", card={}, total_score=30.0
-    )
+    fields = dict(title="t", premise="p", universe="urban", card={}, total_score=30.0)
     return Idea(run_id=run_id, **(fields | kw))
 
 
@@ -194,11 +192,13 @@ def test_discovery_skips_used_slate_stories(db_engine, settings):
         earlier = Run(run_date=date(2026, 10, 11), status="complete")
         s.add(earlier)
         s.flush()
-        s.add(_idea(earlier.id, slate_id="s000", status="published"))
+        s.add(_idea(earlier.id, slate_id="s000", universe="emotional", status="published"))
 
     out = run_stage("discovery", discovery.run, DAY, engine=db_engine, settings=settings)
     assert "s000" not in out["candidates"]
-    assert out["preferred_lane"] == "cozy_bedtime"  # 1 of 1 recent picks was dark
+    assert (
+        out["preferred_universe"] == "urban"
+    )  # one emotional pick so far: urban is furthest behind
     with session_scope(db_engine) as s:
         refs = s.scalars(select(DiscoveryItem.ref)).all()
     assert sorted(refs) == sorted(out["candidates"])

@@ -6,6 +6,8 @@ The architecture is settled (see `adr/`). This file tracks the content decisions
 |---|---|---|---|
 | Niche | **Modern Fairy Tales for Sleepless Souls**: cinematic micro-fables, 70% dark urban / 30% cozy bedtime | 2026-10-01 | Brief: `brand/story_bible.md`, `brand/production_style.md` |
 | Language | **English** | 2026-10-01 | |
+| Story structure | **Three universes**: Urban Fairy Tales 40%, Emotional Fairy Tales 30%, Bedtime Fables 30% | 2026-10-01 | Replaces the brief's 5 pillars / 2 lanes; keeps its 70/30 split. Shares live in `engine/stages/discovery.py` |
+| Core creative rules | **Your seven rules** (+5 craft rules from the brief) | 2026-10-01 | Rules 4 and 6 enforced in code |
 | Voice | _open_ | by Oct 4 | Your recorded voice (default) or TTS. See below |
 | Visual style | **AI-illustrated painterly frames** (night and day poles), code-animated drift, at most 2 AI video clips per episode | 2026-10-01 | Follows from the niche |
 | Image model | _open_ | by Oct 18 | Must support reference-image conditioning for character consistency |
@@ -19,8 +21,8 @@ The original plan assumed a factual, news-driven niche. Fiction changes these pa
 
 | Plan item | Was | Now |
 |---|---|---|
-| Stage 1 | Trend scan (Google Trends, RSS, YouTube) | **Discovery**: the story slate (`brand/slate.toml`), balanced 70/30 by lane; audience comments join in Phase 4 |
-| Stage 3 | Script + fact-checking critic, a source URL on every claim | **Story chain**: story card -> script (6-beat formula) -> storyboard -> package, with a critic that checks the twelve story-bible rules |
+| Stage 1 | Trend scan (Google Trends, RSS, YouTube) | **Discovery**: the story slate (`brand/slate.toml`), balanced across the three universes; audience comments join in Phase 4 |
+| Stage 3 | Script + fact-checking critic, a source URL on every claim | **Story chain**: story card -> script (6-beat formula) -> storyboard -> package, with a critic that checks the seven core rules and five craft rules |
 | Length | 110-150 words, 30-60 s | 80-190 words at 120 wpm, **45-90 s** with scripted pauses |
 | Visuals | Pexels stock footage + code-drawn charts | **AI-generated painterly frames**, 6-14 per episode, plus a thumbnail |
 | Motion | Stock clips | Slow drift/parallax in code by default; at most 2 AI video clips |
@@ -57,4 +59,4 @@ on-time KPI then measures scheduled slots, not calendar days.
   recurring universe.
 - **No named styles:** prompts never name studios or artists. Validation rejects them (`BANNED_STYLE_TERMS`).
   The references are described by attributes instead.
-- **Children:** some stories feature children (bedtime lane). Keep them safe and dignified. No peril as a hook.
+- **Children:** some stories feature children (Bedtime Fables). Keep them safe and dignified. No peril as a hook.

@@ -1,159 +1,194 @@
-# The idea backlog. Discovery picks from here (respecting the 70/30 lane mix) until audience comments and
-# performance data start proposing premises. Add freely; ids are permanent once used.
+# The idea backlog. Discovery picks from here, balanced across the three universes, until audience
+# comments and performance data start proposing premises. Add freely; ids are permanent once used.
 #
-# lane:   dark_urban | cozy_bedtime
-# pillar: strange_thing | never_said | price_of_wish | before_sleep | nowhere_places
+# universe: urban | emotional | bedtime   (see brand/story_bible.md, "The three universes")
 
 [[story]]
 id = "s000"
 title = "The Man Who Sold His Dreams"
 premise = "A tired man sells his dreams at the Midnight Shop to pay his debts, until the shopkeeper asks for the oldest one."
-lane = "dark_urban"
-pillar = "price_of_wish"
+universe = "emotional"
 recurring = ["midnight_shop", "shopkeeper", "old_tree"]
 
 [[story]]
 id = "s001"
 title = "The Man Who Received a Letter From Himself"
 premise = "A letter dated twenty years in the future warns him not to make one ordinary choice."
-lane = "dark_urban"
-pillar = "strange_thing"
+universe = "urban"
 
 [[story]]
 id = "s002"
 title = "The Girl Who Bought One More Day"
 premise = "A shopkeeper grants one extra day with someone she loves, but asks what she is willing to forget."
-lane = "dark_urban"
-pillar = "price_of_wish"
+universe = "emotional"
 recurring = ["midnight_shop", "shopkeeper"]
 
 [[story]]
 id = "s003"
 title = "The Train That Only Appeared for the Lonely"
 premise = "Everyone aboard knows the protagonist by name, and each passenger is running from a different goodbye."
-lane = "dark_urban"
-pillar = "nowhere_places"
+universe = "urban"
 recurring = ["train_1207"]
 
 [[story]]
 id = "s004"
 title = "The Apartment Above His Did Not Exist"
 premise = "Footsteps arrive every night from an upstairs apartment that the building plans do not contain."
-lane = "dark_urban"
-pillar = "strange_thing"
+universe = "urban"
 
 [[story]]
 id = "s005"
 title = "The Woman Who Sold Her Memories"
 premise = "She becomes rich by selling memories, then forgets why she wanted the money."
-lane = "dark_urban"
-pillar = "price_of_wish"
+universe = "emotional"
 recurring = ["midnight_shop", "shopkeeper"]
 
 [[story]]
 id = "s006"
 title = "The Boy Who Could See People's Last Days"
 premise = "He knows when everyone will disappear, except the one person he cannot bear to lose."
-lane = "dark_urban"
-pillar = "never_said"
+universe = "emotional"
 
 [[story]]
 id = "s007"
 title = "The Stranger Who Knew His Childhood Nickname"
 premise = "A stranger says the name only his late mother used."
-lane = "dark_urban"
-pillar = "never_said"
+universe = "urban"
 
 [[story]]
 id = "s008"
-title = "The City Where Nobody Dreamed"
+title = "The City Where Nobody Was Allowed to Dream"
 premise = "One child still dreams, and the dreams begin showing what the city erased."
-lane = "dark_urban"
-pillar = "nowhere_places"
+universe = "emotional"
 
 [[story]]
 id = "s009"
 title = "The Last Customer at the Midnight Shop"
 premise = "He asks for second chances, but the shopkeeper refuses to sell them."
-lane = "dark_urban"
-pillar = "price_of_wish"
+universe = "emotional"
 recurring = ["midnight_shop", "shopkeeper"]
 
 [[story]]
 id = "s010"
 title = "Every Night, Someone Left Flowers Outside Her Door"
 premise = "She discovers the flowers are being left for the people who need someone to wait for them."
-lane = "dark_urban"
-pillar = "strange_thing"
+universe = "urban"
 
 [[story]]
 id = "s011"
 title = "The Little Star That Was Afraid to Shine"
 premise = "A small star hides behind the moon until a child on Earth needs a light home."
-lane = "cozy_bedtime"
-pillar = "before_sleep"
+universe = "bedtime"
 
 [[story]]
 id = "s012"
 title = "The Fox Who Waited for the Same Boy Every Summer"
 premise = "The boy grows older, but the fox keeps returning to the place where their friendship began."
-lane = "cozy_bedtime"
-pillar = "before_sleep"
+universe = "bedtime"
 
 [[story]]
 id = "s013"
 title = "The Tree That Remembered Everyone"
 premise = "People visit the tree to leave a secret; years later, it gives one back."
-lane = "cozy_bedtime"
-pillar = "never_said"
+universe = "bedtime"
 recurring = ["old_tree"]
 
 [[story]]
 id = "s014"
 title = "The Lighthouse That Was Afraid of the Dark"
 premise = "A lighthouse that guides everyone else must face the night when its own light goes out."
-lane = "cozy_bedtime"
-pillar = "before_sleep"
+universe = "bedtime"
 
 [[story]]
 id = "s015"
 title = "The Boy Who Collected Sunsets"
 premise = "He stores sunsets in jars, hoping to save one for the day his mother forgets the sea."
-lane = "cozy_bedtime"
-pillar = "before_sleep"
+universe = "bedtime"
 
 [[story]]
 id = "s016"
 title = "The Moon Who Could Not Sleep"
 premise = "The moon visits a sleepless child and learns that rest is not the same as disappearing."
-lane = "cozy_bedtime"
-pillar = "before_sleep"
+universe = "bedtime"
 
 [[story]]
 id = "s017"
 title = "The Cloud That Followed a Lonely Girl"
 premise = "A small cloud follows her until she notices the people who have been trying to find her."
-lane = "cozy_bedtime"
-pillar = "before_sleep"
+universe = "bedtime"
 
 [[story]]
 id = "s018"
 title = "The Garden That Appeared When Someone Was Sad"
 premise = "A hidden garden grows a different flower for every feeling its visitors cannot name."
-lane = "cozy_bedtime"
-pillar = "before_sleep"
+universe = "bedtime"
 
 [[story]]
 id = "s019"
 title = "The Old Man Who Planted Dreams"
 premise = "Each seed grows into a dream someone gave up on; one seed belongs to him."
-lane = "cozy_bedtime"
-pillar = "before_sleep"
+universe = "bedtime"
 
 [[story]]
 id = "s020"
 title = "The Girl Who Found a Door Inside a Tree"
 premise = "Behind the door is a summer day that has been waiting for her since childhood."
-lane = "cozy_bedtime"
-pillar = "nowhere_places"
+universe = "bedtime"
 recurring = ["old_tree"]
+
+[[story]]
+id = "s021"
+title = "The Girl Who Could Hear Everyone's Thoughts"
+premise = "She hears every thought in the city except one: the boy who sits beside her on the bus every morning, in perfect silence."
+universe = "urban"
+
+[[story]]
+id = "s022"
+title = "The Last Train That Takes You Somewhere You Regret"
+premise = "It stops only for people about to make the same mistake twice, and every window shows the first time."
+universe = "urban"
+recurring = ["train_1207"]
+
+[[story]]
+id = "s023"
+title = "The Man Who Found a Door in His Apartment That Wasn't There Yesterday"
+premise = "Behind it is his childhood kitchen, exactly as it was the year his father left, and the kettle is still warm."
+universe = "urban"
+
+[[story]]
+id = "s024"
+title = "The Tree That Waited 100 Years for a Friend"
+premise = "A tree on a hill waits a century for someone to sit beneath it; when a lonely girl finally does, it has saved a hundred years of stories for her."
+universe = "bedtime"
+recurring = ["old_tree"]
+
+[[story]]
+id = "s025"
+title = "The Boy Who Wanted to Catch the Wind"
+premise = "He chases the wind across fields and rooftops until, one evening, it stops and asks what he would do with it."
+universe = "bedtime"
+
+[[story]]
+id = "s026"
+title = "He Found a Clock That Could Add Ten Years to His Life"
+premise = "Each turn of the key gives him ten more years, and the clock never says whose years they were."
+universe = "emotional"
+recurring = ["midnight_shop"]
+
+[[story]]
+id = "s027"
+title = "Every Lie He Told Became a Bird"
+premise = "Small lies become sparrows that follow him to work; the big one becomes something that will not leave his window."
+universe = "emotional"
+
+[[story]]
+id = "s028"
+title = "The Girl Who Met Herself Ten Years in the Future"
+premise = "Her future self came back with one piece of advice, and refuses to say it out loud."
+universe = "emotional"
+
+[[story]]
+id = "s029"
+title = "A Stranger Offered Him $1 Million for One Memory"
+premise = "He can keep every other memory he owns; the stranger only wants the afternoon he first met his wife."
+universe = "emotional"

@@ -87,8 +87,7 @@ class Idea(Base):
     slate_id: Mapped[str | None] = mapped_column(String(16), index=True)
     title: Mapped[str] = mapped_column(Text)
     premise: Mapped[str] = mapped_column(Text)
-    pillar: Mapped[str] = mapped_column(String(32))
-    lane: Mapped[str] = mapped_column(String(16))  # dark_urban | cozy_bedtime
+    universe: Mapped[str] = mapped_column(String(16))  # urban | emotional | bedtime
     card: Mapped[dict[str, Any]] = mapped_column()  # the full StoryCard
     total_score: Mapped[float] = mapped_column(Float)
     embedding: Mapped[list[float] | None] = mapped_column(Vector(EMBEDDING_DIM))

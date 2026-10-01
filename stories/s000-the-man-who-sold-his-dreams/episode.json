@@ -3,15 +3,24 @@
   "slate_id": "s000",
   "card": {
     "title": "The Man Who Sold His Dreams",
-    "pillar": "price_of_wish",
-    "lane": "dark_urban",
+    "universe": "emotional",
     "premise": "A tired man sells his dreams at the Midnight Shop to pay what he owes, until the shopkeeper asks for the oldest one.",
     "human_emotion": "The quiet grief of trading who you are for what you owe, and the relief of discovering it mattered to someone.",
-    "magical_element": "A shop that buys dreams, which reveals what Theo still values when everything has a price.",
+    "magical_element": "A shop that buys dreams: selling them is what exhaustion feels like, trading away who you are one night at a time.",
     "visual_anchor": "Glass jars on endless shelves, each glowing with a tiny captured dream.",
-    "recurring": ["midnight_shop", "shopkeeper", "old_tree"],
+    "recurring": [
+      "midnight_shop",
+      "shopkeeper",
+      "old_tree"
+    ],
     "ending_image": "A letter tucked beneath the old tree: Thank you. Keep this one.",
-    "scores": {"hook": 8, "emotion": 8, "visual": 9, "brand_fit": 9}
+    "lingering_question": "What have I already sold to get through the month, and who was it really worth something to?",
+    "scores": {
+      "hook": 8,
+      "emotion": 8,
+      "visual": 9,
+      "brand_fit": 9
+    }
   },
   "script": {
     "title": "The Man Who Sold His Dreams",
@@ -20,48 +29,116 @@
       {
         "name": "hook",
         "lines": [
-          {"text": "Theo sold his first dream at seven minutes past midnight.", "delivery": "hushed, like a secret; let 'midnight' land softly", "pause_after_s": 1.2}
+          {
+            "text": "Theo sold his first dream at midnight.",
+            "delivery": "hushed, like a secret; let 'midnight' land softly",
+            "pause_after_s": 1.2
+          }
         ]
       },
       {
         "name": "mystery",
         "lines": [
-          {"text": "The shop only appeared between twelve and twelve-oh-seven.", "delivery": "matter-of-fact, as if everyone knows this", "pause_after_s": 0.4},
-          {"text": "No sign. Just a moon-shaped bell, and jars that glowed as if something inside was breathing.", "delivery": "slower on 'breathing', a touch of wonder", "pause_after_s": 0.8}
+          {
+            "text": "The shop only appeared between twelve and twelve-oh-seven.",
+            "delivery": "matter-of-fact, as if everyone knows this",
+            "pause_after_s": 0.4
+          },
+          {
+            "text": "No sign. Just a moon-shaped bell, and jars that glowed as if something inside was breathing.",
+            "delivery": "slower on 'breathing', a touch of wonder",
+            "pause_after_s": 0.8
+          }
         ]
       },
       {
         "name": "connection",
         "lines": [
-          {"text": "Theo was tired. Two jobs. Letters he was afraid to open.", "delivery": "flat and weary; short stops between fragments", "pause_after_s": 0.5},
-          {"text": "The shopkeeper paid well for dreams.", "delivery": "simple, neutral", "pause_after_s": 0.4},
-          {"text": "So he slept without them, and woke a little richer, and a little less himself.", "delivery": "gentle, sadder on 'a little less himself'", "pause_after_s": 1.0}
+          {
+            "text": "Theo was tired. Two jobs. Letters he was afraid to open.",
+            "delivery": "flat and weary; short stops between fragments",
+            "pause_after_s": 0.5
+          },
+          {
+            "text": "The shopkeeper paid well for dreams.",
+            "delivery": "simple, neutral",
+            "pause_after_s": 0.4
+          },
+          {
+            "text": "So he slept without them, and woke a little richer, and a little less himself.",
+            "delivery": "gentle, sadder on 'a little less himself'",
+            "pause_after_s": 1.0
+          }
         ]
       },
       {
         "name": "cost",
         "lines": [
-          {"text": "Then she asked for the last one.", "delivery": "quieter, slower", "pause_after_s": 0.5},
-          {"text": "The oldest jar: a boy, a giant tree, a sea so blue it hurt.", "delivery": "warmth creeping in; ache on 'it hurt'", "pause_after_s": 0.6},
-          {"text": "\"This one,\" she said, \"pays for everything.\"", "delivery": "the shopkeeper's line kindly, not villainous", "pause_after_s": 1.5}
+          {
+            "text": "Then she asked for the last one.",
+            "delivery": "quieter, slower",
+            "pause_after_s": 0.5
+          },
+          {
+            "text": "The oldest jar: a boy, a giant tree, a sea so blue it hurt.",
+            "delivery": "warmth creeping in; ache on 'it hurt'",
+            "pause_after_s": 0.6
+          },
+          {
+            "text": "\"This one,\" she said, \"pays for everything.\"",
+            "delivery": "the shopkeeper's line kindly, not villainous",
+            "pause_after_s": 1.5
+          }
         ]
       },
       {
         "name": "reveal",
         "lines": [
-          {"text": "Theo asked who buys them.", "delivery": "barely above a whisper", "pause_after_s": 0.4},
-          {"text": "She tilted a mirror toward him.", "delivery": "slow, deliberate", "pause_after_s": 0.6},
-          {"text": "Across the city, a girl who couldn't sleep was dreaming his dreams.", "delivery": "softening, the reveal unfolding", "pause_after_s": 0.5},
-          {"text": "And smiling.", "delivery": "tender; hold it", "pause_after_s": 1.2}
+          {
+            "text": "Theo asked who buys them.",
+            "delivery": "barely above a whisper",
+            "pause_after_s": 0.4
+          },
+          {
+            "text": "She tilted a mirror toward him.",
+            "delivery": "slow, deliberate",
+            "pause_after_s": 0.6
+          },
+          {
+            "text": "Across the city, a girl who couldn't sleep was dreaming his dreams.",
+            "delivery": "softening, the reveal unfolding",
+            "pause_after_s": 0.5
+          },
+          {
+            "text": "And smiling.",
+            "delivery": "tender; hold it",
+            "pause_after_s": 1.2
+          }
         ]
       },
       {
         "name": "landing",
         "lines": [
-          {"text": "Theo carried the jar home. He left the money behind.", "delivery": "a quiet decision, steady", "pause_after_s": 0.6},
-          {"text": "That night, he dreamed of the tree again.", "delivery": "lighter, almost relieved", "pause_after_s": 0.7},
-          {"text": "Beneath it, someone had left a letter.", "delivery": "curious, hushed", "pause_after_s": 0.7},
-          {"text": "It said: Thank you. Keep this one.", "delivery": "faint smile; the softest line of the episode", "pause_after_s": 1.5}
+          {
+            "text": "Theo carried the jar home. He left the money behind.",
+            "delivery": "a quiet decision, steady",
+            "pause_after_s": 0.6
+          },
+          {
+            "text": "That night, he dreamed of the tree again.",
+            "delivery": "lighter, almost relieved",
+            "pause_after_s": 0.7
+          },
+          {
+            "text": "Beneath it, someone had left a letter.",
+            "delivery": "curious, hushed",
+            "pause_after_s": 0.7
+          },
+          {
+            "text": "It said: Thank you. Keep this one.",
+            "delivery": "faint smile; the softest line of the episode",
+            "pause_after_s": 1.5
+          }
         ]
       }
     ]
@@ -140,149 +217,351 @@
     ],
     "shots": [
       {
-        "id": "S01", "beat": "hook", "start_s": 0.0, "duration_s": 6.2,
+        "id": "S01",
+        "beat": "hook",
+        "start_s": 0.0,
+        "duration_s": 4.7,
         "description": "The impossible transaction, first frame: a dream changes hands across a counter.",
-        "camera": "push_in", "pole": "night", "location": "midnight_shop", "characters": ["theo", "shopkeeper"],
+        "camera": "push_in",
+        "pole": "night",
+        "location": "midnight_shop",
+        "characters": [
+          "theo",
+          "shopkeeper"
+        ],
         "image_prompt": "Extreme close-up on the worn wooden counter: Theo's hand sliding a small glass jar toward the Shopkeeper's waiting hand, inside the jar a tiny swirl of glowing light like a captured dream, the round wall clock blurred behind them with its hands at 12:07",
         "motion": "ai_clip",
         "video_prompt": "the light inside the jar swirls slowly like smoke, dust motes drift through the amber glow, the hands barely move",
-        "overlays": ["dust_motes", "film_grain"],
-        "sfx": ["glass jar set down on wood", "clock tick that stops"]
+        "overlays": [
+          "dust_motes",
+          "film_grain"
+        ],
+        "sfx": [
+          "glass jar set down on wood",
+          "clock tick that stops"
+        ]
       },
       {
-        "id": "S02", "beat": "mystery", "start_s": 6.2, "duration_s": 5.8,
+        "id": "S02",
+        "beat": "mystery",
+        "start_s": 4.7,
+        "duration_s": 5.8,
         "description": "The shop that should not fit between two buildings.",
-        "camera": "push_in", "pole": "night", "location": "city_night", "characters": ["theo"],
+        "camera": "push_in",
+        "pole": "night",
+        "location": "city_night",
+        "characters": [
+          "theo"
+        ],
         "image_prompt": "Wide shot of a narrow rain-soaked alley, a tiny old shopfront glowing amber squeezed between two dark buildings where no gap should be, Theo small in the foreground seen from behind, looking up at it",
         "motion": "still_drift",
         "video_prompt": "rain falls steadily, puddles ripple, the shop window's warm light flickers gently",
-        "overlays": ["rain", "film_grain"],
-        "sfx": ["rain on pavement", "distant car on a wet road"]
+        "overlays": [
+          "rain",
+          "film_grain"
+        ],
+        "sfx": [
+          "rain on pavement",
+          "distant car on a wet road"
+        ]
       },
       {
-        "id": "S03", "beat": "mystery", "start_s": 12.0, "duration_s": 7.4,
+        "id": "S03",
+        "beat": "mystery",
+        "start_s": 10.5,
+        "duration_s": 7.4,
         "description": "Inside: endless shelves of glowing jars. The Shopkeeper, unhurried.",
-        "camera": "pan_right", "pole": "night", "location": "midnight_shop", "characters": ["shopkeeper"],
+        "camera": "pan_right",
+        "pole": "night",
+        "location": "midnight_shop",
+        "characters": [
+          "shopkeeper"
+        ],
         "image_prompt": "Towering shelves of small glass jars, each glowing with a different tiny scene, the brass moon-shaped bell above the door still swaying, the Shopkeeper behind the counter polishing a jar with a half-smile",
         "motion": "still_drift",
         "video_prompt": "jar lights pulse softly at different rhythms, the bell sways once and settles",
-        "overlays": ["dust_motes", "film_grain"],
-        "sfx": ["brass moon bell chime", "low hum of the glowing jars"]
+        "overlays": [
+          "dust_motes",
+          "film_grain"
+        ],
+        "sfx": [
+          "brass moon bell chime",
+          "low hum of the glowing jars"
+        ]
       },
       {
-        "id": "S04", "beat": "connection", "start_s": 19.4, "duration_s": 9.4,
+        "id": "S04",
+        "beat": "connection",
+        "start_s": 17.9,
+        "duration_s": 9.4,
         "description": "Why he sells: exhaustion and unopened letters.",
-        "camera": "push_in", "pole": "night", "location": "theo_room", "characters": ["theo"],
+        "camera": "push_in",
+        "pole": "night",
+        "location": "theo_room",
+        "characters": [
+          "theo"
+        ],
         "image_prompt": "Medium shot, Theo sitting at his desk late at night with his forehead resting in one hand, a stack of unopened envelopes in front of him, a cold cup of tea, rain on the window behind",
         "motion": "still_drift",
         "video_prompt": "rain trickles down the window, steam long gone from the tea, his shoulders rise and fall with one slow breath",
-        "overlays": ["rain_glass", "film_grain"],
-        "sfx": ["rain on the window", "envelopes shuffled"]
+        "overlays": [
+          "rain_glass",
+          "film_grain"
+        ],
+        "sfx": [
+          "rain on the window",
+          "envelopes shuffled"
+        ]
       },
       {
-        "id": "S05", "beat": "connection", "start_s": 28.8, "duration_s": 8.5,
+        "id": "S05",
+        "beat": "connection",
+        "start_s": 27.3,
+        "duration_s": 8.5,
         "description": "Dreamless sleep: the colour drains out of his world.",
-        "camera": "tilt_down", "pole": "night", "location": "theo_room", "characters": ["theo"],
+        "camera": "tilt_down",
+        "pole": "night",
+        "location": "theo_room",
+        "characters": [
+          "theo"
+        ],
         "image_prompt": "High angle, Theo asleep in his narrow bed with a blank, still face, the whole room drained to cool greys and blues, the desk lamp switched off, only faint streetlight through the rain-streaked window",
         "motion": "still_drift",
         "video_prompt": "faint streetlight shifts across the blanket, the room otherwise perfectly still",
-        "overlays": ["rain_glass", "film_grain"],
-        "sfx": ["near-silent room tone", "rain fading"]
+        "overlays": [
+          "rain_glass",
+          "film_grain"
+        ],
+        "sfx": [
+          "near-silent room tone",
+          "rain fading"
+        ]
       },
       {
-        "id": "S06", "beat": "cost", "start_s": 37.3, "duration_s": 11.1,
+        "id": "S06",
+        "beat": "cost",
+        "start_s": 35.8,
+        "duration_s": 11.1,
         "description": "The oldest jar, and the only face close-up: the moment he almost says yes.",
-        "camera": "push_in", "pole": "night", "location": "midnight_shop", "characters": ["theo", "shopkeeper"],
+        "camera": "push_in",
+        "pole": "night",
+        "location": "midnight_shop",
+        "characters": [
+          "theo",
+          "shopkeeper"
+        ],
         "image_prompt": "Close-up, Theo's face lit warm gold from below as the Shopkeeper holds up the oldest jar between them, inside it a tiny bright summer scene, Theo's eyes wide, wet and hesitant",
         "motion": "still_drift",
         "video_prompt": "the jar's glow brightens slowly, reflections tremble in Theo's eyes",
-        "overlays": ["dust_motes", "film_grain"],
-        "sfx": ["jar glow swelling into a soft hum"]
+        "overlays": [
+          "dust_motes",
+          "film_grain"
+        ],
+        "sfx": [
+          "jar glow swelling into a soft hum"
+        ]
       },
       {
-        "id": "S07", "beat": "cost", "start_s": 48.4, "duration_s": 5.0,
+        "id": "S07",
+        "beat": "cost",
+        "start_s": 46.9,
+        "duration_s": 5.0,
         "description": "Inside the jar: the brightest image in the episode, the day pole.",
-        "camera": "tilt_up", "pole": "day", "location": "dream_tree", "characters": ["young_theo"],
+        "camera": "tilt_up",
+        "pole": "day",
+        "location": "dream_tree",
+        "characters": [
+          "young_theo"
+        ],
         "image_prompt": "A small boy in an oversized mustard scarf standing beneath the enormous old tree on the cliff, looking out at the sea, wind in the grass",
         "motion": "ai_clip",
         "video_prompt": "clouds drift, waves roll in far below, leaves and grass sway in the wind, the boy's scarf flutters",
-        "overlays": ["light_leak"],
-        "sfx": ["sea waves", "wind through leaves", "distant gulls"]
+        "overlays": [
+          "light_leak"
+        ],
+        "sfx": [
+          "sea waves",
+          "wind through leaves",
+          "distant gulls"
+        ]
       },
       {
-        "id": "S08", "beat": "reveal", "start_s": 53.4, "duration_s": 6.5,
+        "id": "S08",
+        "beat": "reveal",
+        "start_s": 51.9,
+        "duration_s": 6.5,
         "description": "The mirror shows someone else's room instead of Theo.",
-        "camera": "push_in", "pole": "night", "location": "midnight_shop", "characters": [],
+        "camera": "push_in",
+        "pole": "night",
+        "location": "midnight_shop",
+        "characters": [],
         "image_prompt": "Close-up of a small round brass hand mirror on the counter tilted toward the viewer, instead of a reflection it shows a warm lamp-lit child's bedroom far away",
         "motion": "still_drift",
         "video_prompt": "a faint shimmer ripples across the mirror's surface",
-        "overlays": ["dust_motes", "film_grain"],
-        "sfx": ["glassy shimmer"]
+        "overlays": [
+          "dust_motes",
+          "film_grain"
+        ],
+        "sfx": [
+          "glassy shimmer"
+        ]
       },
       {
-        "id": "S09", "beat": "reveal", "start_s": 59.9, "duration_s": 8.7,
+        "id": "S09",
+        "beat": "reveal",
+        "start_s": 58.4,
+        "duration_s": 8.7,
         "description": "Where his dreams went: a sleepless girl, finally smiling.",
-        "camera": "parallax", "pole": "night", "location": "girl_bedroom", "characters": ["girl"],
+        "camera": "parallax",
+        "pole": "night",
+        "location": "girl_bedroom",
+        "characters": [
+          "girl"
+        ],
         "image_prompt": "Medium-wide, the girl asleep in her bed hugging the orange stuffed fox, smiling softly in her sleep, tiny golden motes of light drifting up from her pillow like little dreams",
         "motion": "still_drift",
         "video_prompt": "golden motes rise and drift slowly, string lights twinkle, her breathing is slow and calm",
-        "overlays": ["fireflies", "film_grain"],
-        "sfx": ["soft breathing", "lamp room tone"]
+        "overlays": [
+          "fireflies",
+          "film_grain"
+        ],
+        "sfx": [
+          "soft breathing",
+          "lamp room tone"
+        ]
       },
       {
-        "id": "S10", "beat": "landing", "start_s": 68.6, "duration_s": 10.3,
+        "id": "S10",
+        "beat": "landing",
+        "start_s": 67.1,
+        "duration_s": 10.3,
         "description": "The choice: he walks home with the jar, not the money.",
-        "camera": "pan_left", "pole": "night", "location": "city_night", "characters": ["theo"],
+        "camera": "pan_left",
+        "pole": "night",
+        "location": "city_night",
+        "characters": [
+          "theo"
+        ],
         "image_prompt": "Wide shot from behind, Theo walking alone down an empty rain-wet street holding the glowing jar against his chest, its warm light spilling onto the wet pavement, lit windows high above",
         "motion": "still_drift",
         "video_prompt": "light rain, reflections shimmer on the pavement, the jar's glow sways with his steps",
-        "overlays": ["rain", "film_grain"],
-        "sfx": ["footsteps on wet pavement", "light rain"]
+        "overlays": [
+          "rain",
+          "film_grain"
+        ],
+        "sfx": [
+          "footsteps on wet pavement",
+          "light rain"
+        ]
       },
       {
-        "id": "S11", "beat": "landing", "start_s": 78.9, "duration_s": 4.2,
+        "id": "S11",
+        "beat": "landing",
+        "start_s": 77.4,
+        "duration_s": 4.2,
         "description": "Back in the dream: the adult walks toward the tree he almost sold.",
-        "camera": "tilt_up", "pole": "day", "location": "dream_tree", "characters": ["theo"],
+        "camera": "tilt_up",
+        "pole": "day",
+        "location": "dream_tree",
+        "characters": [
+          "theo"
+        ],
         "image_prompt": "Very wide shot, Theo tiny against the landscape, walking up the grassy cliff toward the enormous old tree in bright sunlight",
         "motion": "still_drift",
         "video_prompt": "grass ripples in the wind, cloud shadows slide across the cliff",
-        "overlays": ["light_leak"],
-        "sfx": ["wind over grass", "waves below"]
+        "overlays": [
+          "light_leak"
+        ],
+        "sfx": [
+          "wind over grass",
+          "waves below"
+        ]
       },
       {
-        "id": "S12", "beat": "landing", "start_s": 83.1, "duration_s": 5.0,
+        "id": "S12",
+        "beat": "landing",
+        "start_s": 81.6,
+        "duration_s": 5.0,
         "description": "The final image: a letter left for him beneath the old tree.",
-        "camera": "push_in", "pole": "day", "location": "dream_tree", "characters": [],
+        "camera": "push_in",
+        "pole": "day",
+        "location": "dream_tree",
+        "characters": [],
         "image_prompt": "Close-up of the old tree's mossy roots in dappled sunlight, a folded cream-coloured letter tucked between them, held down by a small pressed wildflower",
         "motion": "still_drift",
         "video_prompt": "dappled light shifts across the letter as leaves move above",
-        "overlays": ["light_leak", "film_grain"],
-        "sfx": ["paper rustle", "brass moon bell chime (sonic logo)"]
+        "overlays": [
+          "light_leak",
+          "film_grain"
+        ],
+        "sfx": [
+          "paper rustle",
+          "brass moon bell chime (sonic logo)"
+        ]
       }
     ],
     "sound": {
       "music_palette": "Felt piano with a sparse two-note motif, about 64 BPM, very soft; distant low strings for the cost; celesta and glass tones for the reveal. Never louder than the voice.",
       "cues": [
-        {"at_s": 0.0, "action": "enter", "note": "Single felt-piano motif under the rain bed"},
-        {"at_s": 19.4, "action": "thin", "note": "Piano drops to single notes in Theo's room"},
-        {"at_s": 37.3, "action": "swell", "note": "Low strings rise gently with the oldest jar's glow (restrained)"},
-        {"at_s": 51.9, "action": "silence", "note": "All music out during the pause after 'pays for everything'; rain and room tone only"},
-        {"at_s": 56.3, "action": "enter", "note": "Celesta and glass tones join the piano as the mirror shows the girl"},
-        {"at_s": 68.6, "action": "resolve", "note": "Motif resolves in a warmer register; strings fall away"},
-        {"at_s": 86.0, "action": "out", "note": "Music fades; the brass moon bell chimes alone over the final frame"}
+        {
+          "at_s": 0.0,
+          "action": "enter",
+          "note": "Single felt-piano motif under the rain bed"
+        },
+        {
+          "at_s": 17.9,
+          "action": "thin",
+          "note": "Piano drops to single notes in Theo's room"
+        },
+        {
+          "at_s": 35.8,
+          "action": "swell",
+          "note": "Low strings rise gently with the oldest jar's glow (restrained)"
+        },
+        {
+          "at_s": 50.4,
+          "action": "silence",
+          "note": "All music out during the pause after 'pays for everything'; rain and room tone only"
+        },
+        {
+          "at_s": 54.8,
+          "action": "enter",
+          "note": "Celesta and glass tones join the piano as the mirror shows the girl"
+        },
+        {
+          "at_s": 67.1,
+          "action": "resolve",
+          "note": "Motif resolves in a warmer register; strings fall away"
+        },
+        {
+          "at_s": 84.5,
+          "action": "out",
+          "note": "Music fades; the brass moon bell chimes alone over the final frame"
+        }
       ],
-      "ambience": ["rain on glass", "distant wet-road traffic", "shop room tone with a faint clock", "wind and sea in the dream", "warm bedroom room tone"]
+      "ambience": [
+        "rain on glass",
+        "distant wet-road traffic",
+        "shop room tone with a faint clock",
+        "wind and sea in the dream",
+        "warm bedroom room tone"
+      ]
     }
   },
   "package": {
     "title": "The Man Who Sold His Dreams",
-    "alt_titles": ["He Sold Every Dream He Had. Except One.", "The Shop That Buys Dreams at Midnight"],
+    "alt_titles": [
+      "He Sold Every Dream He Had. Except One.",
+      "The Shop That Buys Dreams at Midnight"
+    ],
     "thumbnail": {
       "concept": "Theo's tired face lit gold from below by the glowing jar he holds; deep blue shop behind. One face, one emotion (hesitation), one warm/cool contrast.",
       "text": "HIS LAST DREAM",
       "pole": "night",
       "location": "midnight_shop",
-      "characters": ["theo"],
+      "characters": [
+        "theo"
+      ],
       "image_prompt": "Close-up, Theo holding a small glass jar at chest height, the jar glowing gold and lighting his face from below, his eyes wet and hesitant, shelves of faintly glowing jars blurred behind him, empty space at the top of the frame for title text"
     },
     "platforms": {
@@ -291,7 +570,14 @@
       "tiktok_caption": "He sold every dream he had. Except one. Would you have sold it? 🌙",
       "instagram_caption": "The Midnight Shop opens at 12:00 and closes at 12:07.\nTheo went there to sell his dreams.\n\nWould you have sold the last one?\n\nIllustrated with AI-assisted artwork.",
       "facebook_caption": "Theo sold his dreams to pay what he owed. Then the Midnight Shop asked for the last one. Would you have sold it?\n\nIllustrated with AI-assisted artwork.",
-      "hashtags": ["shortstory", "fairytale", "bedtimestory", "storytime", "fantasy", "animation"]
+      "hashtags": [
+        "shortstory",
+        "fairytale",
+        "bedtimestory",
+        "storytime",
+        "fantasy",
+        "animation"
+      ]
     },
     "comment_prompt": "Would you have sold the last one?",
     "long_form_path": "The Midnight Shop collection: stories of people who tried to buy or sell something impossible."

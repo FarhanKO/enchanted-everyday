@@ -9,7 +9,8 @@ Beautiful little stories about ordinary people, strange worlds, and very big fee
 Fantasy is the wrapper. Emotion is the product.
 
 - **Audience:** teens, young adults and adults who want a feeling, a question, or a small escape at 1:30 AM. Not children's content by default.
-- **Mix:** 70% dark, emotional urban tales; 30% cozy bedtime fantasy.
+- **Mix:** three universes: 40% Urban Fairy Tales, 30% Emotional Fairy Tales, 30% Bedtime Fables
+  (the brief's 70% darker / 30% cozy split).
 - **Length:** 45-90 seconds (short form). Long-form collections come later.
 - **Language:** English. Simple enough to follow half-asleep; the images carry the depth.
 
@@ -21,20 +22,33 @@ The supernatural is intimate: it appears in rooms, streets, trains, forests, let
 **Tone:** dreamlike, melancholic, warm, mysterious, occasionally hopeful. Dark stories can end softly; cozy stories can
 carry a little ache. Not horror. Not motivational. Not a lecture.
 
-## The twelve rules
+## Core rules
 
-1. Every story contains a human emotion before it contains a fantasy mechanic.
-2. Magic reveals, amplifies, or tests the character. It never exists only because it looks cool.
-3. The opening three seconds create a question, a contradiction, or an impossible image.
-4. Every episode has at least one memorable visual object or location.
-5. The mystery is answered enough to satisfy, never over-explained.
-6. The emotional ending is earned by the story, not pasted on as a moral.
-7. Use concrete details: a cup, a clock, a bench, a train ticket, a window, a flower.
-8. No generic names, generic castles, generic magic systems, or generic inspirational language.
+These seven decide whether a story is ours. The critic cites them by number.
+
+1. **Every story must contain a human emotion.** The emotion comes before any fantasy mechanic.
+2. **Magic must represent or amplify that emotion.** Selling dreams *is* exhaustion; a lie becoming a bird *is* guilt
+   you can't take back. Magic never exists only because it looks cool.
+3. **Never explain everything.** Answer the mystery enough to satisfy, then stop. Leave room for interpretation.
+4. **The first 3 seconds must create curiosity.** The first frame is an impossible or contradictory image, and the
+   first line (8 words at most) asks a question the viewer can't ignore.
+5. **Every story needs at least one memorable image:** a jar of light, a door that wasn't there, a letter under a tree.
+6. **No moral-of-the-story endings.**
+   - Not: "And that's why we should always appreciate our family."
+   - Instead: "That night, he finally answered the phone."
+7. **Leave the viewer with something to think about:** a choice, a gesture, an object, or a question they'll carry
+   to bed.
+
+## Craft rules
+
+8. Use concrete details: a cup, a clock, a bench, a train ticket, a window, a flower.
 9. Characters make choices. The world does not solve everything for them.
-10. Keep visual continuity: lighting, wardrobe, proportions, props and recurring symbols persist.
-11. No graphic violence, cynical shock, or manipulative tragedy as the attention engine.
-12. The last line leaves an image, a question, or a small act of courage behind.
+10. No generic names, generic castles, generic magic systems, or generic inspirational language.
+11. Keep visual continuity: lighting, wardrobe, proportions, props and recurring symbols persist.
+12. No graphic violence, cynical shock, or manipulative tragedy as the attention engine.
+
+Rules 4 and 6 are also checked in code (`engine/llm/schemas.py`): an over-long hook line or a moralising line fails
+validation before a human ever sees it.
 
 ## The episode formula
 
@@ -67,15 +81,32 @@ Signature flavour line (use sparingly, as an opener for series or long-form):
 > There are places in this world that do not appear on any map. Sometimes, they only open for people who are
 > carrying something they cannot say out loud.
 
-## Content pillars
+## The three universes
 
-| Pillar id | Name | Share | Promise |
-|---|---|---|---|
-| `strange_thing` | The Strange Thing That Happened | 30% | Ordinary person + impossible event |
-| `never_said` | Things We Never Said | 15% | Emotional stories built for comments, shares and recognition |
-| `price_of_wish` | The Price of a Wish | 15% | Magic grants desire but exposes a cost |
-| `before_sleep` | Little Stories Before Sleep | 30% | Slower, warmer, more peaceful fantasy |
-| `nowhere_places` | Places That Do Not Exist | 10% | High-concept worlds that make the channel collectible |
+Every story belongs to exactly one. Each is a repeatable format with its own promise, pace and product future.
+
+| Universe | Share | What it is | Hook asks | Pace and look | Grows into |
+|---|---|---|---|---|---|
+| `urban` **Urban Fairy Tales** | 40% | A strange event intrudes on one ordinary life in a modern city | *What is happening?* | Night pole, rain, windows, trains | The most scalable series format; recurring places |
+| `emotional` **Emotional Fairy Tales** | 30% | An impossible offer, rule or what-if with a personal cost | *What would you do?* | Either pole; strongest title hooks | Virality, comments, shares |
+| `bedtime` **Bedtime Fables** | 30% | Gentle, warm stories of nature, sky, animals and small wonders; no threat | *Oh, how sweet. What happens?* | Day pole or warm lamplight; slower narration | 10-30 minute YouTube compilations and sleep audio |
+
+**Telling urban from emotional:** if the hook is a *mystery* ("Every night, someone left flowers outside his door"),
+it's urban. If the hook is a *bargain or rule* ("A stranger offered him $1 million for one memory"), it's emotional.
+A story can be set in a city and still be emotional. The question the hook asks decides.
+
+**Bedtime still needs rule 4.** The curiosity is gentle ("The moon couldn't sleep"), never a jolt, so the shorts can
+later be stacked into calm compilations without re-editing.
+
+**Example titles**
+
+- Urban: The Girl Who Could Hear Everyone's Thoughts / The Last Train That Takes You Somewhere You Regret /
+  The Man Who Found a Door in His Apartment That Wasn't There Yesterday / Every Night, Someone Left Flowers Outside His Door
+- Emotional: He Found a Clock That Could Add Ten Years to His Life / Every Lie He Told Became a Bird /
+  The Girl Who Met Herself Ten Years in the Future / A Stranger Offered Him $1 Million for One Memory /
+  The City Where Nobody Was Allowed to Dream
+- Bedtime: The Little Star That Was Afraid to Shine / The Tree That Waited 100 Years for a Friend /
+  The Moon Who Couldn't Sleep / The Boy Who Wanted to Catch the Wind
 
 ## The recurring universe
 

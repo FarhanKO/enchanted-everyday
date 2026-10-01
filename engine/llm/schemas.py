@@ -27,7 +27,7 @@ from pydantic import (
 PACE_WPM = 120  # bedtime narration pace
 MIN_DURATION_S, MAX_DURATION_S = 45, 90
 MIN_WORDS, MAX_WORDS = 80, 190
-MAX_HOOK_WORDS = 12
+MAX_HOOK_WORDS = 8  # ~3-4 s spoken; the first frame carries the image from 0 s (rule 4)
 MAX_AI_CLIPS = 2
 DURATION_TOLERANCE_S = 10  # storyboard length vs. estimated narration length
 BEAT_ORDER = ("hook", "mystery", "connection", "cost", "reveal", "landing")
@@ -43,9 +43,18 @@ BANNED_STYLE_TERMS = (
     "artstation",
     "in the style of",
 )
+# Rule 6: endings that state a lesson instead of leaving an image
+MORAL_PATTERNS = (
+    r"\bthe (moral|lesson)\b",
+    r"\b(we|you) should (always|never)\b",
+    r"\bthat'?s why (we|you)\b",
+    r"\balways remember\b",
+    r"\bnever forget (that|to)\b",
+    r"\b(learned|learnt) (that|to)\b",
+    r"\bremember,? (kids|friends|everyone)\b",
+)
 
-Pillar = Literal["strange_thing", "never_said", "price_of_wish", "before_sleep", "nowhere_places"]
-Lane = Literal["dark_urban", "cozy_bedtime"]
+Universe = Literal["urban", "emotional", "bedtime"]
 Pole = Literal["night", "day"]
 BeatName = Literal["hook", "mystery", "connection", "cost", "reveal", "landing"]
 Camera = Literal[
@@ -84,21 +93,29 @@ class StoryScores(_Strict):
     hook: Score = Field(description="Would a stranger stop scrolling at the first line? 0-10")
     emotion: Score = Field(description="Is there a true, recognisable human feeling? 0-10")
     visual: Score = Field(description="Does it have a memorable image or object? 0-10")
-    brand_fit: Score = Field(description="Does it obey the story bible's twelve rules? 0-10")
+    brand_fit: Score = Field(description="Does it obey the story bible's rules? 0-10")
 
 
 class StoryCard(_Strict):
     title: str = Field(min_length=3, max_length=80)
-    pillar: Pillar
-    lane: Lane
+    universe: Universe = Field(
+        description="urban: a strange event intrudes on one ordinary city life (hook: what is "
+        "happening?). emotional: an impossible offer, rule or what-if with a personal cost "
+        "(hook: what would you do?). bedtime: gentle, warm, nature or sky, no threat"
+    )
     premise: str = Field(description="One sentence: ordinary person + impossible element + stakes")
-    human_emotion: str = Field(description="The feeling the story is really about")
-    magical_element: str = Field(description="The impossible thing, and what it reveals about them")
+    human_emotion: str = Field(description="The feeling the story is really about (rule 1)")
+    magical_element: str = Field(
+        description="The impossible thing, and how it embodies or amplifies that emotion (rule 2)"
+    )
     visual_anchor: str = Field(description="The one object or place viewers will remember")
     recurring: list[Slug] = Field(
         description="Recurring universe entities used, e.g. midnight_shop"
     )
-    ending_image: str = Field(description="The final image, choice or line")
+    ending_image: str = Field(description="The final image, choice or line, never a moral")
+    lingering_question: str = Field(
+        description="What the viewer is left thinking about afterwards (rule 7)"
+    )
     scores: StoryScores
 
     @property
@@ -151,9 +168,15 @@ class Script(_Strict):
         names = tuple(b.name for b in self.beats)
         if names != BEAT_ORDER:
             raise ValueError(f"beats must be {BEAT_ORDER}, got {names}")
-        hook_words = word_count(" ".join(line.text for line in self.beats[0].lines))
+        hook_words = word_count(self.beats[0].lines[0].text)
         if hook_words > MAX_HOOK_WORDS:
-            raise ValueError(f"hook is {hook_words} words; max {MAX_HOOK_WORDS}")
+            raise ValueError(
+                f"hook line is {hook_words} words; max {MAX_HOOK_WORDS} (3-second rule)"
+            )
+        for line in self.lines:
+            for pattern in MORAL_PATTERNS:
+                if re.search(pattern, line.text, re.IGNORECASE):
+                    raise ValueError(f"moral-of-the-story line (rule 6): {line.text!r}")
         if not MIN_WORDS <= self.word_count <= MAX_WORDS:
             raise ValueError(f"script is {self.word_count} words; need {MIN_WORDS}-{MAX_WORDS}")
         dur = self.estimated_duration_s
@@ -325,7 +348,7 @@ class Package(_Strict):
 
 class CriticIssue(_Strict):
     area: Literal["story", "script", "visual", "sound", "package", "policy"]
-    rule: int = Field(ge=0, le=12, description="Story bible rule number, or 0")
+    rule: int = Field(ge=0, le=12, description="Story bible rule: 1-7 core, 8-12 craft, 0 for none")
     problem: str
     fix: str
     severity: Literal["low", "high"]

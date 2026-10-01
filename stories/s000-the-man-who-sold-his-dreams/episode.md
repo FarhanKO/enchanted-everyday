@@ -1,13 +1,14 @@
 # The Man Who Sold His Dreams
 
-`ep0001` · pillar **price_of_wish** · lane **dark_urban** · 151 words · ~89s narration · 88s cut
+`ep0001` · universe **emotional** · 148 words · ~87s narration · 87s cut
 
 > A tired man sells his dreams at the Midnight Shop to pay what he owes, until the shopkeeper asks for the oldest one.
 
 - **Feeling:** The quiet grief of trading who you are for what you owe, and the relief of discovering it mattered to someone.
-- **Magic:** A shop that buys dreams, which reveals what Theo still values when everything has a price.
+- **Magic:** A shop that buys dreams: selling them is what exhaustion feels like, trading away who you are one night at a time.
 - **Visual anchor:** Glass jars on endless shelves, each glowing with a tiny captured dream.
 - **Ending image:** A letter tucked beneath the old tree: Thank you. Keep this one.
+- **Leaves them thinking:** What have I already sold to get through the month, and who was it really worth something to?
 - **Universe:** midnight_shop, shopkeeper, old_tree
 
 ## 1. Script
@@ -16,7 +17,7 @@ _Intimate third-person storyteller at 2 AM: low, warm, unhurried, close to the m
 
 **HOOK**
 
-> Theo sold his first dream at seven minutes past midnight. _[pause 1.2s]_  
+> Theo sold his first dream at midnight. _[pause 1.2s]_  
 
 **MYSTERY**
 
@@ -53,18 +54,18 @@ _Intimate third-person storyteller at 2 AM: low, warm, unhurried, close to the m
 
 | Shot | Time | Beat | Camera | Motion | What we see |
 |---|---|---|---|---|---|
-| S01 | 0:00.0-0:06.2 | hook | push_in | ai_clip | The impossible transaction, first frame: a dream changes hands across a counter. |
-| S02 | 0:06.2-0:12.0 | mystery | push_in | still_drift | The shop that should not fit between two buildings. |
-| S03 | 0:12.0-0:19.4 | mystery | pan_right | still_drift | Inside: endless shelves of glowing jars. The Shopkeeper, unhurried. |
-| S04 | 0:19.4-0:28.8 | connection | push_in | still_drift | Why he sells: exhaustion and unopened letters. |
-| S05 | 0:28.8-0:37.3 | connection | tilt_down | still_drift | Dreamless sleep: the colour drains out of his world. |
-| S06 | 0:37.3-0:48.4 | cost | push_in | still_drift | The oldest jar, and the only face close-up: the moment he almost says yes. |
-| S07 | 0:48.4-0:53.4 | cost | tilt_up | ai_clip | Inside the jar: the brightest image in the episode, the day pole. |
-| S08 | 0:53.4-0:59.9 | reveal | push_in | still_drift | The mirror shows someone else's room instead of Theo. |
-| S09 | 0:59.9-1:08.6 | reveal | parallax | still_drift | Where his dreams went: a sleepless girl, finally smiling. |
-| S10 | 1:08.6-1:18.9 | landing | pan_left | still_drift | The choice: he walks home with the jar, not the money. |
-| S11 | 1:18.9-1:23.1 | landing | tilt_up | still_drift | Back in the dream: the adult walks toward the tree he almost sold. |
-| S12 | 1:23.1-1:28.1 | landing | push_in | still_drift | The final image: a letter left for him beneath the old tree. |
+| S01 | 0:00.0-0:04.7 | hook | push_in | ai_clip | The impossible transaction, first frame: a dream changes hands across a counter. |
+| S02 | 0:04.7-0:10.5 | mystery | push_in | still_drift | The shop that should not fit between two buildings. |
+| S03 | 0:10.5-0:17.9 | mystery | pan_right | still_drift | Inside: endless shelves of glowing jars. The Shopkeeper, unhurried. |
+| S04 | 0:17.9-0:27.3 | connection | push_in | still_drift | Why he sells: exhaustion and unopened letters. |
+| S05 | 0:27.3-0:35.8 | connection | tilt_down | still_drift | Dreamless sleep: the colour drains out of his world. |
+| S06 | 0:35.8-0:46.9 | cost | push_in | still_drift | The oldest jar, and the only face close-up: the moment he almost says yes. |
+| S07 | 0:46.9-0:51.9 | cost | tilt_up | ai_clip | Inside the jar: the brightest image in the episode, the day pole. |
+| S08 | 0:51.9-0:58.4 | reveal | push_in | still_drift | The mirror shows someone else's room instead of Theo. |
+| S09 | 0:58.4-1:07.1 | reveal | parallax | still_drift | Where his dreams went: a sleepless girl, finally smiling. |
+| S10 | 1:07.1-1:17.4 | landing | pan_left | still_drift | The choice: he walks home with the jar, not the money. |
+| S11 | 1:17.4-1:21.6 | landing | tilt_up | still_drift | Back in the dream: the adult walks toward the tree he almost sold. |
+| S12 | 1:21.6-1:26.6 | landing | push_in | still_drift | The final image: a letter left for him beneath the old tree. |
 
 ## 3. Image prompts
 
@@ -195,7 +196,7 @@ Intimate third-person storyteller at 2 AM: low, warm, unhurried, close to the mi
 
 | Line | Delivery | Pause |
 |---|---|---|
-| Theo sold his first dream at seven minutes past midnight. | hushed, like a secret; let 'midnight' land softly | 1.2s |
+| Theo sold his first dream at midnight. | hushed, like a secret; let 'midnight' land softly | 1.2s |
 | The shop only appeared between twelve and twelve-oh-seven. | matter-of-fact, as if everyone knows this | 0.4s |
 | No sign. Just a moon-shaped bell, and jars that glowed as if something inside was breathing. | slower on 'breathing', a touch of wonder | 0.8s |
 | Theo was tired. Two jobs. Letters he was afraid to open. | flat and weary; short stops between fragments | 0.5s |
@@ -218,12 +219,12 @@ Intimate third-person storyteller at 2 AM: low, warm, unhurried, close to the mi
 **Music:** Felt piano with a sparse two-note motif, about 64 BPM, very soft; distant low strings for the cost; celesta and glass tones for the reveal. Never louder than the voice.
 
 - `0:00.0` **enter**: Single felt-piano motif under the rain bed
-- `0:19.4` **thin**: Piano drops to single notes in Theo's room
-- `0:37.3` **swell**: Low strings rise gently with the oldest jar's glow (restrained)
-- `0:51.9` **silence**: All music out during the pause after 'pays for everything'; rain and room tone only
-- `0:56.3` **enter**: Celesta and glass tones join the piano as the mirror shows the girl
-- `1:08.6` **resolve**: Motif resolves in a warmer register; strings fall away
-- `1:26.0` **out**: Music fades; the brass moon bell chimes alone over the final frame
+- `0:17.9` **thin**: Piano drops to single notes in Theo's room
+- `0:35.8` **swell**: Low strings rise gently with the oldest jar's glow (restrained)
+- `0:50.4` **silence**: All music out during the pause after 'pays for everything'; rain and room tone only
+- `0:54.8` **enter**: Celesta and glass tones join the piano as the mirror shows the girl
+- `1:07.1` **resolve**: Motif resolves in a warmer register; strings fall away
+- `1:24.5` **out**: Music fades; the brass moon bell chimes alone over the final frame
 
 **Ambience:** rain on glass, distant wet-road traffic, shop room tone with a faint clock, wind and sea in the dream, warm bedroom room tone
 
