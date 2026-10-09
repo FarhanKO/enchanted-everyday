@@ -2,21 +2,15 @@
 # (engine/prompting.py), so agents never paraphrase them. Change here = change everywhere.
 
 [style]
-night = """hand-painted cinematic illustration, gouache and soft digital paint texture, visible brush strokes, \
-subtle film grain, detailed lived-in environment, single warm practical light source glowing amber against deep \
-midnight-blue shadows, rose and cream highlights, floating dust motes catching the light, quiet melancholic \
-atmosphere, soft edges, painterly anime-inspired background art, vertical 9:16 composition"""
+# Blended look: characters in clean ink linework + soft watercolour (matches brand/references/),
+# environments in painterly gouache. Both poles share the character half word for word.
+night = """characters drawn with clean fine ink outlines and soft flat watercolour washes, gentle shading, large expressive dark eyes, soft rosy cheeks, set against a hand-painted gouache background with visible brush strokes, detailed lived-in environment, single warm practical light source glowing amber against deep midnight-blue shadows, rose and cream highlights, floating dust motes catching the light, subtle film grain, quiet melancholic atmosphere, soft edges, painterly anime-inspired background art, vertical 9:16 composition"""
 
-day = """hand-painted cinematic illustration, gouache and soft digital paint texture, visible brush strokes, \
-subtle film grain, vivid cobalt-blue sky with towering sunlit cumulus clouds, luminous greens, turquoise sea, \
-golden sunlight with dappled shadows, gnarled ancient trees with moss, sense of vast scale with a small human \
-figure, hopeful and serene, painterly anime-inspired background art, vertical 9:16 composition"""
+day = """characters drawn with clean fine ink outlines and soft flat watercolour washes, gentle shading, large expressive dark eyes, soft rosy cheeks, set against a hand-painted gouache background with visible brush strokes, vivid cobalt-blue sky with towering sunlit cumulus clouds, luminous greens, turquoise sea, golden sunlight with dappled shadows, gnarled ancient trees with moss, sense of vast scale with a small human figure, subtle film grain, hopeful and serene, painterly anime-inspired background art, vertical 9:16 composition"""
 
-negative = """photorealistic, 3D render, CGI, plastic skin, harsh neon, oversaturated, text, letters, watermark, \
-logo, signature, extra fingers, deformed hands, distorted face, horror, gore, blurry, low detail"""
+negative = """photorealistic, 3D render, CGI, plastic skin, harsh neon, oversaturated, text, letters, labels, speech bubbles, watermark, logo, signature, character sheet layout, extra fingers, deformed hands, distorted face, thick heavy outlines on the background, horror, gore, blurry, low detail"""
 
-video_suffix = """slow, gentle camera motion, stable composition, consistent character appearance, no morphing, \
-no flicker, painterly texture preserved"""
+video_suffix = """slow, gentle camera motion, stable composition, consistent character appearance, no morphing, no flicker, clean linework and painterly texture preserved"""
 
 [camera]
 # how each storyboard camera move is phrased for image-to-video models

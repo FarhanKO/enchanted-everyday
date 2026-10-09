@@ -147,7 +147,7 @@ def test_api_schema_does_not_mutate_between_calls():
 
 def test_hook_line_must_fit_three_seconds(golden):
     golden["script"]["beats"][0]["lines"][0]["text"] = (
-        "Theo sold his very first dream at seven minutes past midnight."
+        "Fann sold his very first dream at seven minutes past midnight."
     )
     with pytest.raises(ValidationError, match="3-second rule"):
         Script.model_validate(golden["script"])

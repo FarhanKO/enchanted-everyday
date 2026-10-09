@@ -30,7 +30,7 @@
         "name": "hook",
         "lines": [
           {
-            "text": "Theo sold his first dream at midnight.",
+            "text": "Fann sold his first dream at midnight.",
             "delivery": "hushed, like a secret; let 'midnight' land softly",
             "pause_after_s": 1.2
           }
@@ -55,7 +55,7 @@
         "name": "connection",
         "lines": [
           {
-            "text": "Theo was tired. Two jobs. Letters he was afraid to open.",
+            "text": "Fann was tired. Two jobs. Letters he was afraid to open.",
             "delivery": "flat and weary; short stops between fragments",
             "pause_after_s": 0.5
           },
@@ -95,7 +95,7 @@
         "name": "reveal",
         "lines": [
           {
-            "text": "Theo asked who buys them.",
+            "text": "Fann asked who buys them.",
             "delivery": "barely above a whisper",
             "pause_after_s": 0.4
           },
@@ -120,7 +120,7 @@
         "name": "landing",
         "lines": [
           {
-            "text": "Theo carried the jar home. He left the money behind.",
+            "text": "Fann carried the jar home. He left the money behind.",
             "delivery": "a quiet decision, steady",
             "pause_after_s": 0.6
           },
@@ -146,17 +146,17 @@
   "storyboard": {
     "characters": [
       {
-        "id": "theo",
-        "name": "Theo",
+        "id": "fann",
+        "name": "Fann",
         "role": "protagonist",
-        "descriptor": "Theo, a 34-year-old man, tall and thin with slightly hunched shoulders, short messy black hair, three-day stubble, tired dark-brown eyes with shadows beneath them, light-brown skin, wearing a worn charcoal wool coat over a grey hoodie and a long mustard-yellow knitted scarf",
-        "signature": "long mustard-yellow knitted scarf; charcoal coat",
-        "recurring": false
+        "descriptor": "Fann, a man in his early thirties, tall and slim, short thick black hair swept up and to the side with a loose strand falling over his forehead, light stubble along his jaw and chin with a faint moustache, warm dark-brown eyes under straight dark brows, light-brown skin, wearing a light-blue collared cotton shirt with the sleeves rolled to the forearm, dark grey trousers and a long mustard-yellow knitted scarf",
+        "signature": "long mustard-yellow knitted scarf; light-blue collared shirt",
+        "recurring": true
       },
       {
-        "id": "young_theo",
-        "name": "Young Theo",
-        "role": "Theo as a child, inside the oldest dream",
+        "id": "young_fann",
+        "name": "Young Fann",
+        "role": "Fann as a child, inside the oldest dream",
         "descriptor": "a 7-year-old boy with short messy black hair, light-brown skin and bright curious dark-brown eyes, wearing a white t-shirt, navy shorts and a mustard-yellow knitted scarf far too big for him",
         "signature": "the same mustard-yellow scarf, oversized",
         "recurring": false
@@ -172,7 +172,7 @@
       {
         "id": "girl",
         "name": "Mira",
-        "role": "the sleepless girl who receives Theo's dreams",
+        "role": "the sleepless girl who receives Fann's dreams",
         "descriptor": "a 9-year-old girl with a dark-brown bob and blunt bangs, fair skin with rosy cheeks, wearing oversized sage-green pajamas, hugging a worn orange stuffed fox",
         "signature": "sage-green pajamas; worn orange stuffed fox",
         "recurring": false
@@ -194,8 +194,8 @@
         "lighting": "warm window glow and wet reflections against midnight blue"
       },
       {
-        "id": "theo_room",
-        "name": "Theo's room",
+        "id": "fann_room",
+        "name": "Fann's room",
         "pole": "night",
         "descriptor": "a small rented room with a narrow bed and grey blankets, a cluttered desk under the window with unopened envelopes and a cold cup of tea, a desk lamp, a rain-streaked window showing distant city lights",
         "lighting": "one warm desk lamp against cold blue window light"
@@ -226,10 +226,10 @@
         "pole": "night",
         "location": "midnight_shop",
         "characters": [
-          "theo",
+          "fann",
           "shopkeeper"
         ],
-        "image_prompt": "Extreme close-up on the worn wooden counter: Theo's hand sliding a small glass jar toward the Shopkeeper's waiting hand, inside the jar a tiny swirl of glowing light like a captured dream, the round wall clock blurred behind them with its hands at 12:07",
+        "image_prompt": "Extreme close-up on the worn wooden counter: Fann's hand sliding a small glass jar toward the Shopkeeper's waiting hand, inside the jar a tiny swirl of glowing light like a captured dream, the round wall clock blurred behind them with its hands at 12:07",
         "motion": "ai_clip",
         "video_prompt": "the light inside the jar swirls slowly like smoke, dust motes drift through the amber glow, the hands barely move",
         "overlays": [
@@ -251,9 +251,9 @@
         "pole": "night",
         "location": "city_night",
         "characters": [
-          "theo"
+          "fann"
         ],
-        "image_prompt": "Wide shot of a narrow rain-soaked alley, a tiny old shopfront glowing amber squeezed between two dark buildings where no gap should be, Theo small in the foreground seen from behind, looking up at it",
+        "image_prompt": "Wide shot of a narrow rain-soaked alley, a tiny old shopfront glowing amber squeezed between two dark buildings where no gap should be, Fann small in the foreground seen from behind, looking up at it",
         "motion": "still_drift",
         "video_prompt": "rain falls steadily, puddles ripple, the shop window's warm light flickers gently",
         "overlays": [
@@ -297,11 +297,11 @@
         "description": "Why he sells: exhaustion and unopened letters.",
         "camera": "push_in",
         "pole": "night",
-        "location": "theo_room",
+        "location": "fann_room",
         "characters": [
-          "theo"
+          "fann"
         ],
-        "image_prompt": "Medium shot, Theo sitting at his desk late at night with his forehead resting in one hand, a stack of unopened envelopes in front of him, a cold cup of tea, rain on the window behind",
+        "image_prompt": "Medium shot, Fann sitting at his desk late at night with his forehead resting in one hand, a stack of unopened envelopes in front of him, a cold cup of tea, rain on the window behind",
         "motion": "still_drift",
         "video_prompt": "rain trickles down the window, steam long gone from the tea, his shoulders rise and fall with one slow breath",
         "overlays": [
@@ -321,11 +321,11 @@
         "description": "Dreamless sleep: the colour drains out of his world.",
         "camera": "tilt_down",
         "pole": "night",
-        "location": "theo_room",
+        "location": "fann_room",
         "characters": [
-          "theo"
+          "fann"
         ],
-        "image_prompt": "High angle, Theo asleep in his narrow bed with a blank, still face, the whole room drained to cool greys and blues, the desk lamp switched off, only faint streetlight through the rain-streaked window",
+        "image_prompt": "High angle, Fann asleep in his narrow bed with a blank, still face, the whole room drained to cool greys and blues, the desk lamp switched off, only faint streetlight through the rain-streaked window",
         "motion": "still_drift",
         "video_prompt": "faint streetlight shifts across the blanket, the room otherwise perfectly still",
         "overlays": [
@@ -347,12 +347,12 @@
         "pole": "night",
         "location": "midnight_shop",
         "characters": [
-          "theo",
+          "fann",
           "shopkeeper"
         ],
-        "image_prompt": "Close-up, Theo's face lit warm gold from below as the Shopkeeper holds up the oldest jar between them, inside it a tiny bright summer scene, Theo's eyes wide, wet and hesitant",
+        "image_prompt": "Close-up, Fann's face lit warm gold from below as the Shopkeeper holds up the oldest jar between them, inside it a tiny bright summer scene, Fann's eyes wide, wet and hesitant",
         "motion": "still_drift",
-        "video_prompt": "the jar's glow brightens slowly, reflections tremble in Theo's eyes",
+        "video_prompt": "the jar's glow brightens slowly, reflections tremble in Fann's eyes",
         "overlays": [
           "dust_motes",
           "film_grain"
@@ -371,7 +371,7 @@
         "pole": "day",
         "location": "dream_tree",
         "characters": [
-          "young_theo"
+          "young_fann"
         ],
         "image_prompt": "A small boy in an oversized mustard scarf standing beneath the enormous old tree on the cliff, looking out at the sea, wind in the grass",
         "motion": "ai_clip",
@@ -390,7 +390,7 @@
         "beat": "reveal",
         "start_s": 51.9,
         "duration_s": 6.5,
-        "description": "The mirror shows someone else's room instead of Theo.",
+        "description": "The mirror shows someone else's room instead of Fann.",
         "camera": "push_in",
         "pole": "night",
         "location": "midnight_shop",
@@ -440,9 +440,9 @@
         "pole": "night",
         "location": "city_night",
         "characters": [
-          "theo"
+          "fann"
         ],
-        "image_prompt": "Wide shot from behind, Theo walking alone down an empty rain-wet street holding the glowing jar against his chest, its warm light spilling onto the wet pavement, lit windows high above",
+        "image_prompt": "Wide shot from behind, Fann walking alone down an empty rain-wet street holding the glowing jar against his chest, its warm light spilling onto the wet pavement, lit windows high above",
         "motion": "still_drift",
         "video_prompt": "light rain, reflections shimmer on the pavement, the jar's glow sways with his steps",
         "overlays": [
@@ -464,9 +464,9 @@
         "pole": "day",
         "location": "dream_tree",
         "characters": [
-          "theo"
+          "fann"
         ],
-        "image_prompt": "Very wide shot, Theo tiny against the landscape, walking up the grassy cliff toward the enormous old tree in bright sunlight",
+        "image_prompt": "Very wide shot, Fann tiny against the landscape, walking up the grassy cliff toward the enormous old tree in bright sunlight",
         "motion": "still_drift",
         "video_prompt": "grass ripples in the wind, cloud shadows slide across the cliff",
         "overlays": [
@@ -511,7 +511,7 @@
         {
           "at_s": 17.9,
           "action": "thin",
-          "note": "Piano drops to single notes in Theo's room"
+          "note": "Piano drops to single notes in Fann's room"
         },
         {
           "at_s": 35.8,
@@ -555,21 +555,21 @@
       "The Shop That Buys Dreams at Midnight"
     ],
     "thumbnail": {
-      "concept": "Theo's tired face lit gold from below by the glowing jar he holds; deep blue shop behind. One face, one emotion (hesitation), one warm/cool contrast.",
+      "concept": "Fann's tired face lit gold from below by the glowing jar he holds; deep blue shop behind. One face, one emotion (hesitation), one warm/cool contrast.",
       "text": "HIS LAST DREAM",
       "pole": "night",
       "location": "midnight_shop",
       "characters": [
-        "theo"
+        "fann"
       ],
-      "image_prompt": "Close-up, Theo holding a small glass jar at chest height, the jar glowing gold and lighting his face from below, his eyes wet and hesitant, shelves of faintly glowing jars blurred behind him, empty space at the top of the frame for title text"
+      "image_prompt": "Close-up, Fann holding a small glass jar at chest height, the jar glowing gold and lighting his face from below, his eyes wet and hesitant, shelves of faintly glowing jars blurred behind him, empty space at the top of the frame for title text"
     },
     "platforms": {
       "youtube_title": "The Man Who Sold His Dreams",
-      "youtube_description": "Theo sold his dreams to pay what he owed. Then the Midnight Shop asked for the last one.\n\nA modern fairy tale for sleepless souls.\nWould you have sold it?\n\nStory and direction by Modern Fairy Tales for Sleepless Souls. Illustrated with AI-assisted artwork.",
+      "youtube_description": "Fann sold his dreams to pay what he owed. Then the Midnight Shop asked for the last one.\n\nA modern fairy tale for sleepless souls.\nWould you have sold it?\n\nStory and direction by Modern Fairy Tales for Sleepless Souls. Illustrated with AI-assisted artwork.",
       "tiktok_caption": "He sold every dream he had. Except one. Would you have sold it? 🌙",
-      "instagram_caption": "The Midnight Shop opens at 12:00 and closes at 12:07.\nTheo went there to sell his dreams.\n\nWould you have sold the last one?\n\nIllustrated with AI-assisted artwork.",
-      "facebook_caption": "Theo sold his dreams to pay what he owed. Then the Midnight Shop asked for the last one. Would you have sold it?\n\nIllustrated with AI-assisted artwork.",
+      "instagram_caption": "The Midnight Shop opens at 12:00 and closes at 12:07.\nFann went there to sell his dreams.\n\nWould you have sold the last one?\n\nIllustrated with AI-assisted artwork.",
+      "facebook_caption": "Fann sold his dreams to pay what he owed. Then the Midnight Shop asked for the last one. Would you have sold it?\n\nIllustrated with AI-assisted artwork.",
       "hashtags": [
         "shortstory",
         "fairytale",

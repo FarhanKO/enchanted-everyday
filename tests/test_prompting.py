@@ -13,11 +13,32 @@ def _episode() -> Episode:
 def test_locked_descriptors_are_inserted_verbatim():
     ep = _episode()
     board = ep.storyboard
-    theo = next(c for c in board.characters if c.id == "theo")
+    fann = next(c for c in board.characters if c.id == "fann")
     for shot in board.shots:
         prompt = prompting.image_prompt(shot, board).prompt
-        assert (theo.descriptor in prompt) == ("theo" in shot.characters)
+        assert (fann.descriptor in prompt) == ("fann" in shot.characters)
         assert prompting.style()["style"][shot.pole] in prompt
+
+
+def test_cast_descriptor_overrides_the_storyboard():
+    board = _episode().storyboard.model_copy(deep=True)
+    fann = next(c for c in board.characters if c.id == "fann")
+    fann.descriptor = (
+        "Fann, paraphrased by an agent: a man with a different coat and different hair"
+    )
+    shot = next(s for s in board.shots if "fann" in s.characters)
+    prompt = prompting.image_prompt(shot, board).prompt
+    assert prompting.cast()["fann"]["descriptor"] in prompt
+    assert "paraphrased" not in prompt
+
+
+def test_cast_references_exist_and_golden_episode_matches_cast():
+    for cid, entry in prompting.cast().items():
+        for ref in entry["references"]:
+            assert (prompting.BRAND_DIR / ref).is_file(), f"{cid}: missing {ref}"
+    for c in _episode().storyboard.characters:
+        if c.id in prompting.cast():
+            assert c.descriptor == prompting.cast()[c.id]["descriptor"]
 
 
 def test_night_and_day_poles_use_their_own_style():
@@ -40,4 +61,4 @@ def test_markdown_package_has_all_eleven_sections():
     md = to_markdown(_episode())
     for n in range(1, 12):
         assert f"## {n}. " in md
-    assert "Theo sold his first dream" in md
+    assert "Fann sold his first dream" in md
