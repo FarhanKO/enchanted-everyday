@@ -191,13 +191,16 @@ class Script(_Strict):
 
 
 class Character(_Strict):
-    id: Slug
+    id: Slug = Field(
+        description="Fixed cast (brand/cast.toml) keep their cast id: fann, tina, shopkeeper"
+    )
     name: str
     role: str
     descriptor: str = Field(
         min_length=60,
         description="Locked visual description inserted verbatim in every prompt showing them: "
-        "age, build, hair, face, wardrobe, colour anchor",
+        "age, build, hair, face, wardrobe, colour anchor. For the fixed cast, copy cast.toml; "
+        "for anyone else, make them clearly distinct from the leads",
     )
     signature: str = Field(description="Colour item + prop that identify them in silhouette")
     recurring: bool = Field(description="True if part of the shared universe (e.g. the Shopkeeper)")

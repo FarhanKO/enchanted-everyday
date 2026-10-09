@@ -35,6 +35,7 @@
       "additionalProperties": false,
       "properties": {
         "id": {
+          "description": "Fixed cast (brand/cast.toml) keep their cast id: fann, tina, shopkeeper",
           "pattern": "^[a-z0-9_]+$",
           "title": "Id",
           "type": "string"
@@ -48,7 +49,7 @@
           "type": "string"
         },
         "descriptor": {
-          "description": "Locked visual description inserted verbatim in every prompt showing them: age, build, hair, face, wardrobe, colour anchor",
+          "description": "Locked visual description inserted verbatim in every prompt showing them: age, build, hair, face, wardrobe, colour anchor. For the fixed cast, copy cast.toml; for anyone else, make them clearly distinct from the leads",
           "minLength": 60,
           "title": "Descriptor",
           "type": "string"

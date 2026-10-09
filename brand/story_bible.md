@@ -122,6 +122,25 @@ These persist across episodes. Reuse them often; never contradict their rules. T
 | The Impossible Post Office | Delivers letters that were never sent | Emotional reveals, strong hooks |
 | The Moonkeeper | Appears without full explanation across stories. Never explain them | Long-term mystery and fan speculation |
 
+### Cast
+
+**Fann and Tina are the leads.** One of them is the protagonist of every urban and emotional episode; alternate who
+leads, and the other may appear in passing. Bedtime fables can skip them or use one of them as the storyteller.
+How they relate to each other is not decided yet, so don't establish it on screen.
+
+| Character | Who they are |
+|---|---|
+| Fann | Early thirties, tired but kind. Sold his dreams at the Midnight Shop (s000). Mustard scarf |
+| Tina | Mid-twenties, rose-pink kurta and pale-blue dupatta. Story role not yet decided |
+| The Shopkeeper | Keeper of the Midnight Shop. Ageless, unhurried, never villainous |
+
+The fixed cast's locked descriptors and reference images live in [`cast.toml`](cast.toml). Use them by id
+(`fann`, `tina`, `shopkeeper`) and never re-describe them.
+
+**Everyone else is invented per episode** (a stranger on the train, a mother, a child, a rival) and drawn by the AI
+from a descriptor the storyboard writes once. Give them a specific name (rule 10) and a clear purpose, and keep it to
+1-3 per episode. If the audience asks for one again, promote them into `cast.toml` with reference images.
+
 ## Titles and comment prompts
 
 Title pattern: **simple premise + unanswered question**.

@@ -2,6 +2,8 @@
 
 Agents write only what is specific to a shot. Everything that must stay identical across frames
 (character descriptors, locations, the style block, the negative prompt) is appended here, verbatim.
+Characters in the fixed cast (brand/cast.toml) always get their cast descriptor, whatever the
+storyboard says, so a recurring face can't drift through an agent's paraphrase.
 """
 
 from __future__ import annotations
@@ -28,14 +30,26 @@ def style(brand_dir: Path = BRAND_DIR) -> dict:
         return tomllib.load(f)
 
 
+@lru_cache
+def cast(brand_dir: Path = BRAND_DIR) -> dict:
+    with open(brand_dir / "cast.toml", "rb") as f:
+        return tomllib.load(f)
+
+
+def descriptor(character_id: str, board: Storyboard) -> str:
+    locked = cast().get(character_id)
+    if locked:
+        return locked["descriptor"]
+    return next(c.descriptor for c in board.characters if c.id == character_id)
+
+
 def _scene(
     content: str, pole: str, location_id: str, character_ids: list[str], board: Storyboard
 ) -> ImagePrompt:
     s = style()
-    chars = {c.id: c for c in board.characters}
     loc = next(loc for loc in board.locations if loc.id == location_id)
     parts = [content.rstrip(". ")]
-    parts += [chars[cid].descriptor for cid in character_ids]
+    parts += [descriptor(cid, board) for cid in character_ids]
     parts += [f"Setting: {loc.descriptor}", f"Lighting: {loc.lighting}", s["style"][pole]]
     return ImagePrompt(prompt=". ".join(parts), negative=s["style"]["negative"])
 

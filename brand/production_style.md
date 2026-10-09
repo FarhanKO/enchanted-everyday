@@ -10,6 +10,17 @@ The two reference images are the two poles of one universe, not two styles.
 | **Night** | Girl asleep in a lamp-lit bedroom | Midnight blue, amber, rose, warm cream | One warm practical (lamp, window, jar) against deep blue shadow; floating dust motes | Intimacy, loneliness, memory, regret, private thought |
 | **Day** | Giant tree on a cliff above the sea | Cobalt sky, luminous greens, turquoise sea, gold sun | Hard bright sunlight, dappled shade, towering sunlit cumulus | Wonder, childhood, renewal, hope, being small in a beautiful world |
 
+### Rendering: characters vs. environments
+
+The look is a deliberate blend:
+
+- **Characters:** clean fine ink outlines, soft flat watercolour washes, gentle shading, large expressive dark eyes,
+  soft rosy cheeks. This matches the approved references in [`references/`](references/).
+- **Environments:** hand-painted gouache with visible brush strokes, and each pole's palette and light.
+
+Characters read crisp and graphic in front of painterly, atmospheric backgrounds. Outlines belong to people, never to
+the background.
+
 ### Style block
 
 The locked prompt fragments live in [`style.toml`](style.toml): one style block per pole, the negative prompt,
@@ -43,18 +54,30 @@ Every video prompt gets the `video_suffix` from `style.toml` appended in code.
 
 ## 3. Character consistency system
 
-Faces drifting between shots is the most common failure in AI-illustrated stories. Five layers handle it:
+Faces drifting between shots is the most common failure in AI-illustrated stories. Six layers handle it:
 
 1. **Locked descriptors.** Each character has one descriptor string (age, build, hair, face, wardrobe, colour anchor).
    Code inserts it verbatim into every prompt that shows them. Agents reference characters by id and never re-describe them.
-2. **Colour and silhouette anchors.** Every character gets one signature colour item and one prop (Theo's mustard scarf, the
-   Shopkeeper's plum cardigan and gold round spectacles). They're readable even when the face is small or turned away.
+   The fixed cast (Fann, Tina, the Shopkeeper) lives in [`cast.toml`](cast.toml): same face and same outfit in every
+   episode, and the cast descriptor overrides whatever a storyboard writes.
+2. **Colour and silhouette anchors.** Every character gets one signature colour item and one prop (Fann's mustard scarf,
+   Tina's rose-pink kurta and pale-blue dupatta, the Shopkeeper's plum cardigan and gold round spectacles). They're
+   readable even when the face is small or turned away.
 3. **Reference sheets.** Before a character's first episode, generate a turnaround sheet (front, three-quarter, side) and an
    expression sheet on a neutral background. Approve one canonical image, store its URI in `bible_entries.reference_uris`,
    and condition every later shot on it (reference-image or edit mode).
-4. **Shot design.** Prefer medium-wide shots, silhouettes, backs and hands when a close-up face isn't essential.
+4. **Supporting characters.** Characters outside the cast are drawn from their storyboard descriptor alone, with no
+   reference image yet. Make them easy to tell apart from the leads, because a model conditioned on Fann's or Tina's
+   reference tends to copy that face onto everyone in the frame:
+   - a clearly different age, build or hairstyle (e.g. grey hair, a bob, a beard, a child, an elder)
+   - their own colour anchor; never mustard-yellow, or rose-pink with pale blue, which belong to the leads
+   - when a lead and a stranger share a shot, place the stranger further back or partly turned away
+
+   Before the episode renders, generate one plain-background portrait of each supporting character and condition
+   their later shots on it, so they at least stay consistent within the episode.
+5. **Shot design.** Prefer medium-wide shots, silhouettes, backs and hands when a close-up face isn't essential.
    No more than 2 face close-ups per episode.
-5. **QC.** A vision check compares each frame with the character's reference image (hair, wardrobe, colour anchor, age).
+6. **QC.** A vision check compares each frame with the character's reference image (hair, wardrobe, colour anchor, age).
    Frames that fail are regenerated before render. Recurring entities (the Shopkeeper, the Old Tree, the Midnight Shop)
    are shared across all episodes.
 

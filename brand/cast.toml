@@ -1,0 +1,36 @@
+# The fixed recurring cast. Each character's descriptor is locked: code inserts it verbatim into every
+# image prompt that shows them (engine/prompting.py), overriding whatever the storyboard agent wrote,
+# so Fann looks the same in episode 1 and episode 200. Same face, same outfit, every episode.
+#
+# references: approved images under brand/references/<id>/ that every shot of the character is
+# conditioned on (reference-image or edit mode). Status per file lives in brand/references/README.md.
+
+[fann]
+name = "Fann"
+role = "recurring lead; the man who sold his dreams (s000)"
+descriptor = """Fann, a man in his early thirties, tall and slim, short thick black hair swept up and to the side \
+with a loose strand falling over his forehead, light stubble along his jaw and chin with a faint moustache, warm \
+dark-brown eyes under straight dark brows, light-brown skin, wearing a light-blue collared cotton shirt with the \
+sleeves rolled to the forearm, dark grey trousers and a long mustard-yellow knitted scarf"""
+signature = "long mustard-yellow knitted scarf; light-blue collared shirt"
+references = ["references/fann/portrait_v1.jpg", "references/fann/sheet_v1.jpg"]
+
+[tina]
+name = "Tina"
+role = "recurring lead; story role not yet decided"
+descriptor = """Tina, a woman in her mid-twenties, slim, wavy black hair parted in the middle and falling just past \
+her shoulders, large dark almond-shaped eyes with soft lashes, fair warm skin with rosy cheeks, a small beauty mark \
+just below the left corner of her lower lip, wearing a rose-pink knee-length kurta with three-quarter sleeves and \
+pale-blue piping, a long pale-blue striped dupatta draped over both shoulders, pale-blue fitted trousers and brown \
+flat shoes"""
+signature = "rose-pink kurta with pale-blue striped dupatta; beauty mark below her lip"
+references = ["references/tina/portrait_v1.jpg", "references/tina/sheet_v1.jpg"]
+
+[shopkeeper]
+name = "The Shopkeeper"
+role = "keeper of the Midnight Shop"
+descriptor = """the Shopkeeper, an ageless woman who could be sixty or a hundred, long silver hair in a loose low \
+braid, round gold wire spectacles, a calm half-smile, a deep plum knitted cardigan with small embroidered \
+moon-phase buttons, a tiny brass moon-shaped bell pinned at her collar"""
+signature = "plum cardigan, gold round spectacles, brass moon bell"
+references = []
