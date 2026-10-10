@@ -21,10 +21,10 @@ role = "recurring lead; a stranger in Fann's city whose path keeps crossing his"
 descriptor = """Tina, a woman in her mid-twenties, slim, wavy black hair parted in the middle and falling just past \
 her shoulders, large dark almond-shaped eyes with soft lashes, fair warm skin with rosy cheeks, a small beauty mark \
 just below the left corner of her lower lip, wearing a rose-pink knee-length kurta with three-quarter sleeves and \
-pale-blue piping, a long pale-blue striped dupatta draped over both shoulders, pale-blue fitted trousers and brown \
-flat shoes"""
+pale-blue piping, a long pale-blue striped dupatta draped over both shoulders, rose-pink straight-cut trousers \
+and rose-pink flat sandals"""
 signature = "rose-pink kurta with pale-blue striped dupatta; beauty mark below her lip"
-references = ["references/tina/portrait_v1.jpg", "references/tina/sheet_v1.jpg"]
+references = ["references/tina/portrait_v2.jpg", "references/tina/sheet_v2.jpg"]
 
 [shopkeeper]
 name = "The Shopkeeper"
