@@ -7,8 +7,10 @@ Approved images that every shot of a cast member is conditioned on (see `../cast
 |---|---|---|
 | `fann/portrait_v1.jpg` | draft | Master face. Not yet wearing the locked mustard scarf |
 | `fann/sheet_v1.jpg` | draft, don't condition on it | Has text labels (can leak into frames). Head-only, no full body. ¾ view and "angry" panel drift from the master face |
-| `tina/portrait_v1.jpg` | draft | Master face. Has a speech bubble, crop or regenerate without it |
-| `tina/sheet_v1.jpg` | draft | Good full-body turnaround and expressions. Missing a back view |
+| `tina/portrait_v1.jpg` | superseded by v2 | Has a speech bubble |
+| `tina/sheet_v1.jpg` | superseded by v2 | Missing a back view; outfit and face predate portrait_v2 |
+| `tina/portrait_v2.jpg` | approved, master face | Also the channel profile picture. Night background with white circle corners, so lean on the sheet for outfit |
+| `tina/sheet_v2.jpg` | approved | Front, ¾, side and back plus four expressions. The beauty mark drifts to her right cheek in some expression heads; portrait_v2 (below her left lip corner) is correct |
 
 ## Before a reference is approved
 
