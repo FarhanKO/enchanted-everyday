@@ -1,8 +1,8 @@
 """Stage 1: gather premise candidates for today's story.
 
-Sources now: the slate (brand/slate.toml), filtered to stories not yet used and balanced across
-the three universes (urban, emotional, bedtime). Audience comments and seasonal moods join in
-Phase 4. The idea stage expands these into scored story cards.
+Sources now: the slate (brand/slate.toml), filtered to stories not yet used or turned down by the
+owner, and balanced across the three universes (urban, emotional, bedtime). Audience comments and
+seasonal moods join in Phase 4. The idea stage expands these into scored story cards.
 """
 
 from __future__ import annotations
@@ -17,6 +17,7 @@ from sqlalchemy.dialects.postgresql import insert
 
 from engine.db.models import DiscoveryItem, Idea
 from engine.stages.base import StageContext
+from engine.stages.idea import OWNER_REJECTED
 
 log = logging.getLogger(__name__)
 
@@ -75,6 +76,11 @@ def run(ctx: StageContext) -> dict:
         .order_by(Idea.created_at)
     ).all()
     used = {slate_id for slate_id, _ in picked if slate_id}
+    used |= set(
+        ctx.session.scalars(
+            select(Idea.slate_id).where(Idea.status == OWNER_REJECTED, Idea.slate_id.is_not(None))
+        )
+    )
     ranked = rank_universes([universe for _, universe in picked])
     candidates = choose(slate, used, ranked)
 

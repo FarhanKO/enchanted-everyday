@@ -1,12 +1,14 @@
 """Operator alerts to Telegram, plus the dead-man's-switch ping.
 
 The worker sends plain Bot API messages; the interactive approval flow lives in bot/.
-Alerting must never crash the thing it is reporting on, so every call here swallows its errors.
+Alerting must never crash the thing it is reporting on, so alert() swallows its errors;
+send_message() and send_document() raise, for callers that must know delivery worked.
 """
 
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 import httpx
 
@@ -14,22 +16,58 @@ from engine.config import Settings, get_settings
 
 log = logging.getLogger(__name__)
 
+TEXT_LIMIT = 4096  # Telegram's limits
+CAPTION_LIMIT = 1024
+
+
+class TelegramError(RuntimeError):
+    pass
+
+
+class TelegramNotConfigured(TelegramError):
+    pass
+
+
+def _post(method: str, s: Settings, **kwargs: Any) -> None:
+    if not (s.telegram_bot_token and s.telegram_owner_id):
+        raise TelegramNotConfigured("TELEGRAM_BOT_TOKEN and TELEGRAM_OWNER_ID are not set")
+    url = f"https://api.telegram.org/bot{s.telegram_bot_token.get_secret_value()}/{method}"
+    try:
+        resp = httpx.post(url, timeout=30, **kwargs)
+    except httpx.HTTPError as e:
+        # httpx puts the URL, and so the bot token, in its messages; never let it reach logs
+        raise TelegramError(f"{method} failed: {type(e).__name__}") from None
+    if resp.is_error:
+        raise TelegramError(f"{method} failed: HTTP {resp.status_code} {resp.text[:300]}")
+
+
+def send_message(text: str, settings: Settings | None = None) -> None:
+    """Send plain text to the owner. Raises on failure; use alert() where failure must not."""
+    s = settings or get_settings()
+    _post("sendMessage", s, json={"chat_id": s.telegram_owner_id, "text": text[:TEXT_LIMIT]})
+
+
+def send_document(
+    filename: str, content: bytes, caption: str = "", settings: Settings | None = None
+) -> None:
+    s = settings or get_settings()
+    _post(
+        "sendDocument",
+        s,
+        data={"chat_id": s.telegram_owner_id, "caption": caption[:CAPTION_LIMIT]},
+        files={"document": (filename, content)},
+    )
+
 
 def alert(text: str, settings: Settings | None = None) -> bool:
-    s = settings or get_settings()
-    if not (s.telegram_bot_token and s.telegram_owner_id):
-        log.warning("alert not sent: Telegram not configured", extra={"alert": text})
-        return False
     try:
-        httpx.post(
-            f"https://api.telegram.org/bot{s.telegram_bot_token.get_secret_value()}/sendMessage",
-            json={"chat_id": s.telegram_owner_id, "text": text[:4000]},
-            timeout=15,
-        ).raise_for_status()
+        send_message(text, settings)
         return True
+    except TelegramNotConfigured:
+        log.warning("alert not sent: Telegram not configured", extra={"alert": text})
     except Exception:
         log.exception("alert failed", extra={"alert": text})
-        return False
+    return False
 
 
 def ping_healthcheck(suffix: str = "", settings: Settings | None = None) -> None:

@@ -1,5 +1,24 @@
 {
   "$defs": {
+    "CandidateCard": {
+      "additionalProperties": false,
+      "properties": {
+        "ref": {
+          "description": "The candidate's ref, or 'new' for an original premise",
+          "title": "Ref",
+          "type": "string"
+        },
+        "card": {
+          "$ref": "#/$defs/StoryCard"
+        }
+      },
+      "required": [
+        "ref",
+        "card"
+      ],
+      "title": "CandidateCard",
+      "type": "object"
+    },
     "StoryCard": {
       "additionalProperties": false,
       "properties": {
@@ -17,6 +36,25 @@
             "bedtime"
           ],
           "title": "Universe",
+          "type": "string"
+        },
+        "story_type": {
+          "description": "fable: a short story whose message lives in its final image or choice, never stated. daily: a small magical moment in Fann's or Tina's ordinary day, fairytale aesthetics, no big cost or twist",
+          "enum": [
+            "fable",
+            "daily"
+          ],
+          "title": "Story Type",
+          "type": "string"
+        },
+        "mode": {
+          "description": "Who speaks. narrated: the story is an event as a whole; only the narrator. dialogue: a small moment of characters interacting; only the characters. mixed: the narrator carries the story and characters speak their key lines",
+          "enum": [
+            "narrated",
+            "dialogue",
+            "mixed"
+          ],
+          "title": "Mode",
           "type": "string"
         },
         "premise": {
@@ -58,6 +96,16 @@
           "title": "Lingering Question",
           "type": "string"
         },
+        "connection": {
+          "description": "How this episode touches the shared world: a callback to an earlier episode, a trace of the other lead, or a step in Fann's lost-dreams thread. The episode must still make complete sense without it",
+          "title": "Connection",
+          "type": "string"
+        },
+        "advances_dreams_thread": {
+          "description": "True if this episode moves Fann's lost-dreams storyline forward",
+          "title": "Advances Dreams Thread",
+          "type": "boolean"
+        },
         "scores": {
           "$ref": "#/$defs/StoryScores"
         }
@@ -65,6 +113,8 @@
       "required": [
         "title",
         "universe",
+        "story_type",
+        "mode",
         "premise",
         "human_emotion",
         "magical_element",
@@ -72,6 +122,8 @@
         "recurring",
         "ending_image",
         "lingering_question",
+        "connection",
+        "advances_dreams_thread",
         "scores"
       ],
       "title": "StoryCard",
@@ -123,7 +175,7 @@
   "properties": {
     "cards": {
       "items": {
-        "$ref": "#/$defs/StoryCard"
+        "$ref": "#/$defs/CandidateCard"
       },
       "minItems": 1,
       "title": "Cards",

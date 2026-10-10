@@ -88,6 +88,9 @@ Faces drifting between shots is the most common failure in AI-illustrated storie
 - **Pauses:** after the impossible statement (hook), before the reveal, and before the final line. Pauses are scripted
   (`pause_after_s`) and rendered as real silence.
 - **Point of view:** third person, with an occasional close first-person line.
+- **Who speaks:** each episode is narrated, mixed or dialogue (story bible, "Story types and who speaks"). Every line
+  names its speaker, and each speaker has a fixed voice in [`voices.toml`](voices.toml): the narrator is always the
+  same voice, and so are Fann, Tina and the Shopkeeper.
 - **Delivery notes per line:** used by a human narrator, or mapped to TTS style controls.
 - **Recording (own voice):** a quiet room with soft furnishings, phone or mic 15-20 cm away, slightly off-axis, 2 takes per line,
   no music while recording. The pipeline handles noise reduction and loudness.
@@ -101,8 +104,13 @@ Faces drifting between shots is the most common failure in AI-illustrated storie
 | Ambience | Rain, room tone, wind, birds, trains, street ambience, kettle steam | Loops that overpower the voice or repeat obviously |
 | Silence | A real beat before a reveal or the final line | Filling every second |
 
-**Sonic logo:** a single soft brass bell chime (the Midnight Shop's moon bell). It plays under the final frame of every
-episode, as an audio signature.
+**Signature ending:** the final frame holds about 3 seconds; a single soft brass bell chime (the Shopkeeper's moon
+bell) plays, and the narrator says "Goodnight, sleepless soul." barely above a whisper. Every episode, every mode.
+Code adds both after the script's landing ([`sound.toml`](sound.toml), `[signature]`).
+
+**Character sounds:** each recurring character has a sound heard where they first appear and a short musical motif
+laid under that moment: Fann hums three falling notes (low felt piano); Tina's dupatta rustles (a music box answers
+with four rising notes); the Shopkeeper's moon bell rings. Details in [`sound.toml`](sound.toml).
 
 Music cues are scripted per episode (`enter`, `swell`, `thin`, `silence`, `resolve`, `out`). All music and SFX must be
 licensed for commercial use, with the license stored on the asset row.

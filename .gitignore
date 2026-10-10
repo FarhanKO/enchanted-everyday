@@ -19,3 +19,6 @@ work/
 *.mp4
 *.wav
 *.mp3
+
+# voice auditions (scripts/voice_samples.py)
+voice_samples/

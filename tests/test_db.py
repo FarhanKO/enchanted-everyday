@@ -98,9 +98,10 @@ def test_spend_cap_blocks_llm_calls(db_engine, settings):
     with pytest.raises(BudgetExceeded):
         run_stage("script", stage, DAY, engine=db_engine, settings=settings, llm=FakeLLM())
 
-    # cost of the calls that ran is kept even though the stage failed
+    # the cap is checked before each call against a $0.25 estimate: $0 and $0.60 pass, so two
+    # calls run and the third is blocked. Their cost is kept even though the stage failed.
     with session_scope(db_engine) as s:
-        assert s.scalars(select(Run)).one().llm_cost_usd == Decimal("0.60")
+        assert s.scalars(select(Run)).one().llm_cost_usd == Decimal("1.20")
 
 
 def test_record_llm_cost_accumulates(db_engine, settings):

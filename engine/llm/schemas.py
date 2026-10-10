@@ -29,6 +29,8 @@ MIN_DURATION_S, MAX_DURATION_S = 45, 90
 MIN_WORDS, MAX_WORDS = 80, 190
 MAX_HOOK_WORDS = 8  # ~3-4 s spoken; the first frame carries the image from 0 s (rule 4)
 MAX_AI_CLIPS = 2
+MAX_SPEAKERS = 3  # characters with spoken lines in one episode, besides the narrator
+MIN_SHOTS, MAX_SHOTS = 5, 14
 DURATION_TOLERANCE_S = 10  # storyboard length vs. estimated narration length
 BEAT_ORDER = ("hook", "mystery", "connection", "cost", "reveal", "landing")
 BANNED_STYLE_TERMS = (
@@ -55,6 +57,22 @@ MORAL_PATTERNS = (
 )
 
 Universe = Literal["urban", "emotional", "bedtime"]
+StoryType = Literal["fable", "daily"]
+Mode = Literal["narrated", "dialogue", "mixed"]
+# who says a line: the narrator, a fixed cast id, or a voice role for anyone else (voices.toml)
+Speaker = Literal[
+    "narrator",
+    "fann",
+    "tina",
+    "shopkeeper",
+    "child_girl",
+    "child_boy",
+    "old_man",
+    "woman",
+    "young_man",
+    "stranger",
+    "spirit",
+]
 Pole = Literal["night", "day"]
 BeatName = Literal["hook", "mystery", "connection", "cost", "reveal", "landing"]
 Camera = Literal[
@@ -103,6 +121,16 @@ class StoryCard(_Strict):
         "happening?). emotional: an impossible offer, rule or what-if with a personal cost "
         "(hook: what would you do?). bedtime: gentle, warm, nature or sky, no threat"
     )
+    story_type: StoryType = Field(
+        description="fable: a short story whose message lives in its final image or choice, never "
+        "stated. daily: a small magical moment in Fann's or Tina's ordinary day, fairytale "
+        "aesthetics, no big cost or twist"
+    )
+    mode: Mode = Field(
+        description="Who speaks. narrated: the story is an event as a whole; only the narrator. "
+        "dialogue: a small moment of characters interacting; only the characters. mixed: the "
+        "narrator carries the story and characters speak their key lines"
+    )
     premise: str = Field(description="One sentence: ordinary person + impossible element + stakes")
     human_emotion: str = Field(description="The feeling the story is really about (rule 1)")
     magical_element: str = Field(
@@ -116,6 +144,14 @@ class StoryCard(_Strict):
     lingering_question: str = Field(
         description="What the viewer is left thinking about afterwards (rule 7)"
     )
+    connection: str = Field(
+        description="How this episode touches the shared world: a callback to an earlier "
+        "episode, a trace of the other lead, or a step in Fann's lost-dreams thread. The episode "
+        "must still make complete sense without it"
+    )
+    advances_dreams_thread: bool = Field(
+        description="True if this episode moves Fann's lost-dreams storyline forward"
+    )
     scores: StoryScores
 
     @property
@@ -124,15 +160,23 @@ class StoryCard(_Strict):
         return s.hook + s.emotion + s.visual + s.brand_fit
 
 
+class CandidateCard(_Strict):
+    ref: str = Field(description="The candidate's ref, or 'new' for an original premise")
+    card: StoryCard
+
+
 class StoryCards(_Strict):
-    cards: list[StoryCard] = Field(min_length=1)
+    cards: list[CandidateCard] = Field(min_length=1)
 
 
 # ============================================================ 2. script (script writer)
 
 
 class Line(_Strict):
-    text: str = Field(min_length=1, description="Exactly what the narrator says")
+    speaker: Speaker = Field(
+        description="Who says it: narrator, a fixed cast id, or a voice role for anyone else"
+    )
+    text: str = Field(min_length=1, description="Exactly what is said")
     delivery: str = Field(description="How to say it: e.g. 'hushed, slower, slight smile'")
     pause_after_s: float = Field(ge=0, le=3, description="Silence after the line, in seconds")
 
@@ -185,6 +229,30 @@ class Script(_Strict):
                 f"estimated {dur:.0f}s at {PACE_WPM} wpm; need {MIN_DURATION_S}-{MAX_DURATION_S}s"
             )
         return self
+
+
+def speaker_label(speaker: str) -> str:
+    """'tina' -> 'TINA', 'child_girl' -> 'CHILD GIRL'."""
+    return speaker.replace("_", " ").upper()
+
+
+def check_speakers(mode: str, script: Script) -> None:
+    """The card's mode decides who may speak. Raises ValueError with what to fix."""
+    speakers = [line.speaker for line in script.lines]
+    narrator = speakers.count("narrator")
+    characters = set(speakers) - {"narrator"}
+    if mode == "narrated" and characters:
+        raise ValueError(
+            f"mode is narrated, so only the narrator speaks; found {sorted(characters)}"
+        )
+    if mode == "dialogue" and narrator:
+        raise ValueError(f"mode is dialogue, so the narrator has no lines; found {narrator}")
+    if mode == "mixed" and not (narrator and characters):
+        raise ValueError("mode is mixed: both the narrator and at least one character speak")
+    if len(characters) > MAX_SPEAKERS:
+        raise ValueError(
+            f"{len(characters)} characters speak ({sorted(characters)}); max {MAX_SPEAKERS}"
+        )
 
 
 # ============================================================ 3. storyboard (visual director)
@@ -261,7 +329,7 @@ class Sound(_Strict):
 class Storyboard(_Strict):
     characters: list[Character]
     locations: list[Location] = Field(min_length=1)
-    shots: list[Shot] = Field(min_length=5, max_length=14)
+    shots: list[Shot] = Field(min_length=MIN_SHOTS, max_length=MAX_SHOTS)
     sound: Sound
 
     @property
@@ -337,6 +405,19 @@ class PlatformCopy(_Strict):
         return [t if t.startswith("#") else f"#{t}" for t in (t.strip() for t in tags) if t]
 
 
+class CanonNote(_Strict):
+    """What this episode adds to the story so far, read by every later episode's writers."""
+
+    summary: str = Field(description="Two or three sentences: what happened, to whom")
+    changes: list[str] = Field(
+        description="What is now true in the world: objects someone now has, places visited, "
+        "who has glimpsed whom. Facts later episodes must not contradict"
+    )
+    open_threads: list[str] = Field(
+        description="Questions left open that a later episode could pick up"
+    )
+
+
 class Package(_Strict):
     title: str = Field(max_length=60, description="Simple premise + unanswered question")
     alt_titles: list[str] = Field(min_length=2, max_length=3, description="For A/B tests")
@@ -344,6 +425,7 @@ class Package(_Strict):
     platforms: PlatformCopy
     comment_prompt: str = Field(description="One gentle question that extends the story")
     long_form_path: str = Field(description="Which long-form collection this story belongs in")
+    canon: CanonNote
 
 
 # ============================================================ critic
@@ -385,6 +467,7 @@ class Episode(_Strict):
         if unknown := set(thumb.characters) - {c.id for c in self.storyboard.characters}:
             raise ValueError(f"thumbnail uses unknown characters {sorted(unknown)}")
 
+        check_speakers(self.card.mode, self.script)
         gap = abs(self.storyboard.duration_s - self.script.estimated_duration_s)
         if gap > DURATION_TOLERANCE_S:
             raise ValueError(

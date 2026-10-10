@@ -17,7 +17,7 @@ references = ["references/fann/portrait_v1.jpg", "references/fann/sheet_v1.jpg"]
 
 [tina]
 name = "Tina"
-role = "recurring lead; story role not yet decided"
+role = "recurring lead; a stranger in Fann's city whose path keeps crossing his"
 descriptor = """Tina, a woman in her mid-twenties, slim, wavy black hair parted in the middle and falling just past \
 her shoulders, large dark almond-shaped eyes with soft lashes, fair warm skin with rosy cheeks, a small beauty mark \
 just below the left corner of her lower lip, wearing a rose-pink knee-length kurta with three-quarter sleeves and \

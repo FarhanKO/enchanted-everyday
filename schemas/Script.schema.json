@@ -34,8 +34,26 @@
     "Line": {
       "additionalProperties": false,
       "properties": {
+        "speaker": {
+          "description": "Who says it: narrator, a fixed cast id, or a voice role for anyone else",
+          "enum": [
+            "narrator",
+            "fann",
+            "tina",
+            "shopkeeper",
+            "child_girl",
+            "child_boy",
+            "old_man",
+            "woman",
+            "young_man",
+            "stranger",
+            "spirit"
+          ],
+          "title": "Speaker",
+          "type": "string"
+        },
         "text": {
-          "description": "Exactly what the narrator says",
+          "description": "Exactly what is said",
           "minLength": 1,
           "title": "Text",
           "type": "string"
@@ -54,6 +72,7 @@
         }
       },
       "required": [
+        "speaker",
         "text",
         "delivery",
         "pause_after_s"

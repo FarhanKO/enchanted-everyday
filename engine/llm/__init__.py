@@ -5,6 +5,7 @@ from engine.llm.client import (
     LLMProvider,
     LLMRefusal,
     LLMResult,
+    OpenRouterProvider,
     parse_as,
     wrap_untrusted,
 )
@@ -16,6 +17,7 @@ __all__ = [
     "LLMProvider",
     "LLMRefusal",
     "LLMResult",
+    "OpenRouterProvider",
     "parse_as",
     "wrap_untrusted",
 ]

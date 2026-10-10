@@ -10,7 +10,9 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core \
     && rm -rf /var/lib/apt/lists/*
 
-RUN useradd --create-home --uid 10001 app
+# /home/app/work exists in the image so the worker's named volume starts out owned by app
+RUN useradd --create-home --uid 10001 app \
+    && install -d -o app -g app /home/app/work
 WORKDIR /app
 
 # deps layer first, so code changes don't reinstall everything

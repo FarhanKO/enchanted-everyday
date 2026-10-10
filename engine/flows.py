@@ -1,4 +1,9 @@
-"""Prefect flows. `daily_run` calls each stage in order; each stage is retried on its own."""
+"""Prefect flows; each stage is retried on its own.
+
+daily_run   (scheduled) discovery to the reviewed script in Telegram; after a /redo
+            (engine/redo.py) it writes, reviews and sends the next backup story
+produce     (on the owner's request) storyboard and package for a day's script
+"""
 
 from __future__ import annotations
 
@@ -10,19 +15,23 @@ from prefect import flow, task
 from engine.config import Settings, get_settings
 from engine.db.models import Run
 from engine.db.session import get_engine, session_scope
-from engine.llm import AnthropicProvider, LLMProvider
+from engine.llm import AnthropicProvider, LLMProvider, OpenRouterProvider
 from engine.notify import alert, ping_healthcheck
-from engine.stages import PIPELINE, run_stage
+from engine.stages import DAILY, PRODUCTION, STAGES, run_stage
 from engine.stages.base import get_or_create_run
 
 log = logging.getLogger(__name__)
 
 
 def build_llm(settings: Settings) -> LLMProvider | None:
-    if not settings.anthropic_api_key:
+    if settings.openrouter_api_key:
+        provider, key = OpenRouterProvider, settings.openrouter_api_key
+    elif settings.anthropic_api_key:
+        provider, key = AnthropicProvider, settings.anthropic_api_key
+    else:
         return None
-    return AnthropicProvider(
-        api_key=settings.anthropic_api_key.get_secret_value(),
+    return provider(
+        api_key=key.get_secret_value(),
         model=settings.llm_model,
         effort=settings.llm_effort,
     )
@@ -37,7 +46,7 @@ def stage_task(name: str, run_date: date) -> dict:
     settings = get_settings()
     return run_stage(
         name,
-        PIPELINE[name],
+        STAGES[name],
         run_date,
         engine=get_engine(),
         settings=settings,
@@ -61,7 +70,7 @@ def daily_run(run_date: str | None = None) -> dict:
 
     results: dict[str, dict] = {}
     try:
-        for name in PIPELINE:
+        for name in DAILY:
             results[name] = stage_task(name, day)
     except Exception as e:
         _finish(day, "failed", repr(e)[:2000])
@@ -75,9 +84,30 @@ def daily_run(run_date: str | None = None) -> dict:
     return results
 
 
+@flow(name="produce")
+def produce(run_date: str | None = None) -> dict:
+    settings = get_settings()
+    day = date.fromisoformat(run_date) if run_date else today(settings)
+    results: dict[str, dict] = {}
+    try:
+        for name in PRODUCTION:
+            results[name] = stage_task(name, day)
+    except Exception as e:
+        alert(f"Production for {day} failed at stage '{name}': {e!r}"[:1000])
+        raise
+    log.info("production complete", extra={"run_date": str(day), "results": results})
+    return results
+
+
 def run_status(run_date: date) -> dict | None:
     with session_scope() as s:
         run = s.query(Run).filter(Run.run_date == run_date).one_or_none()
         if run is None:
             return None
-        return {"status": run.status, "stages": run.stages, "llm_cost_usd": str(run.llm_cost_usd)}
+        pick = (run.stages or {}).get("idea", {}).get("output") or {}
+        return {
+            "status": run.status,
+            "stages": run.stages,
+            "llm_cost_usd": str(run.llm_cost_usd),
+            "redos": len(pick.get("redos", [])),
+        }
