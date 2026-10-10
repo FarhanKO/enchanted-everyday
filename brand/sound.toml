@@ -1,0 +1,28 @@
+# The sonic identity: the signature ending every episode closes on, and the sound each recurring
+# character is recognised by. Code adds the ending (agents never write it); the visual director puts a
+# character's `presence` sound in the sfx of the shot where they first appear, and the render stage
+# (Phase 2) lays their motif under that moment.
+
+[signature]
+# The last image holds, the Shopkeeper's moon bell chimes, and the narrator says this line, softly,
+# in every episode, whichever mode it is in. It is never part of the script itself.
+line = "Goodnight, sleepless soul."
+voice = "narrator"
+delivery = "barely above a whisper, warm, unhurried"
+bell = "shopkeeper_bell"
+hold_s = 3.0  # how long the final frame holds under the bell and the line
+
+[characters.shopkeeper]
+presence = "shopkeeper_bell"  # the tiny brass moon bell at her collar
+presence_note = "one soft, high brass chime; the same bell closes every episode, so she seems to watch over every story without ever saying so"
+motif = "the bell itself, alone, with a short reverb tail"
+
+[characters.fann]
+presence = "fann_hum"
+presence_note = "Fann hums the same three falling notes under his breath when he is alone or tired, an old tune from the dream of the tree and the sea"
+motif = "low felt piano, the same three falling notes, slow"
+
+[characters.tina]
+presence = "tina_dupatta"
+presence_note = "the soft rustle of her dupatta settling, close to the microphone"
+motif = "a small music box playing a rising four-note phrase, the answer to Fann's three falling notes"

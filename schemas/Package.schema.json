@@ -1,5 +1,39 @@
 {
   "$defs": {
+    "CanonNote": {
+      "additionalProperties": false,
+      "description": "What this episode adds to the story so far, read by every later episode's writers.",
+      "properties": {
+        "summary": {
+          "description": "Two or three sentences: what happened, to whom",
+          "title": "Summary",
+          "type": "string"
+        },
+        "changes": {
+          "description": "What is now true in the world: objects someone now has, places visited, who has glimpsed whom. Facts later episodes must not contradict",
+          "items": {
+            "type": "string"
+          },
+          "title": "Changes",
+          "type": "array"
+        },
+        "open_threads": {
+          "description": "Questions left open that a later episode could pick up",
+          "items": {
+            "type": "string"
+          },
+          "title": "Open Threads",
+          "type": "array"
+        }
+      },
+      "required": [
+        "summary",
+        "changes",
+        "open_threads"
+      ],
+      "title": "CanonNote",
+      "type": "object"
+    },
     "PlatformCopy": {
       "additionalProperties": false,
       "properties": {
@@ -133,6 +167,9 @@
       "description": "Which long-form collection this story belongs in",
       "title": "Long Form Path",
       "type": "string"
+    },
+    "canon": {
+      "$ref": "#/$defs/CanonNote"
     }
   },
   "required": [
@@ -141,7 +178,8 @@
     "thumbnail",
     "platforms",
     "comment_prompt",
-    "long_form_path"
+    "long_form_path",
+    "canon"
   ],
   "title": "Package",
   "type": "object"

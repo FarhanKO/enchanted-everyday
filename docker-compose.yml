@@ -59,6 +59,10 @@ services:
   worker:
     <<: *app
     command: ["engine", "serve"]
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      PREFECT_API_URL: http://prefect-server:4200/api
+      EMBEDDING_CACHE_DIR: /home/app/work/models
     volumes:
       - work:/home/app/work
     depends_on:

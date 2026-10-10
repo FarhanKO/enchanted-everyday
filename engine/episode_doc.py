@@ -6,7 +6,7 @@ Agents produce JSON; people review this. The same text feeds the Telegram approv
 from __future__ import annotations
 
 from engine import prompting
-from engine.llm.schemas import PACE_WPM, Episode
+from engine.llm.schemas import PACE_WPM, Episode, speaker_label
 
 
 def _t(seconds: float) -> str:
@@ -21,7 +21,7 @@ def to_markdown(ep: Episode) -> str:
 
     w(f"# {pkg.title}\n")
     w(
-        f"`{ep.id}` · universe **{card.universe}** · "
+        f"`{ep.id}` · universe **{card.universe}** · **{card.story_type}** · **{card.mode}** · "
         f"{script.word_count} words · ~{script.estimated_duration_s:.0f}s narration · "
         f"{board.duration_s:.0f}s cut\n"
     )
@@ -31,6 +31,8 @@ def to_markdown(ep: Episode) -> str:
     w(f"- **Visual anchor:** {card.visual_anchor}")
     w(f"- **Ending image:** {card.ending_image}")
     w(f"- **Leaves them thinking:** {card.lingering_question}")
+    thread = " _(moves the lost-dreams thread)_" if card.advances_dreams_thread else ""
+    w(f"- **Connects:** {card.connection}{thread}")
     w(f"- **Universe:** {', '.join(card.recurring) or 'none'}\n")
 
     w("## 1. Script\n")
@@ -39,7 +41,8 @@ def to_markdown(ep: Episode) -> str:
         w(f"**{beat.name.upper()}**\n")
         for line in beat.lines:
             pause = f" _[pause {line.pause_after_s:g}s]_" if line.pause_after_s >= 0.5 else ""
-            w(f"> {line.text}{pause}  ")
+            who = "" if line.speaker == "narrator" else f"**{speaker_label(line.speaker)}:** "
+            w(f"> {who}{line.text}{pause}  ")
         w("")
 
     w("## 2. Storyboard\n")
@@ -77,10 +80,10 @@ def to_markdown(ep: Episode) -> str:
 
     w("## 6. Narration\n")
     w(f"{script.narration_direction} Target pace {PACE_WPM} wpm.\n")
-    w("| Line | Delivery | Pause |")
-    w("|---|---|---|")
+    w("| Speaker | Line | Delivery | Pause |")
+    w("|---|---|---|---|")
     for line in script.lines:
-        w(f"| {line.text} | {line.delivery} | {line.pause_after_s:g}s |")
+        w(f"| {line.speaker} | {line.text} | {line.delivery} | {line.pause_after_s:g}s |")
     w("")
 
     w("## 7. Music and sound\n")
@@ -121,7 +124,15 @@ def to_markdown(ep: Episode) -> str:
     w(f"- **Long-form path:** {pkg.long_form_path}")
     w("- **AI disclosure:** on for every platform (AI-assisted artwork)\n")
 
-    w("## 11. Schema\n")
+    w("## 11. Story so far\n")
+    w(f"{pkg.canon.summary}\n")
+    for change in pkg.canon.changes:
+        w(f"- **Now true:** {change}")
+    for open_thread in pkg.canon.open_threads:
+        w(f"- **Still open:** {open_thread}")
+    w("")
+
+    w("## 12. Schema\n")
     w("This package is an `Episode` (`engine/llm/schemas.py`). JSON Schema files: `schemas/`.\n")
     used = {cid for s in board.shots for cid in s.characters}
     if unused := set(chars) - used:

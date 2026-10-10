@@ -4,6 +4,8 @@
   "card": {
     "title": "The Man Who Sold His Dreams",
     "universe": "emotional",
+    "story_type": "fable",
+    "mode": "narrated",
     "premise": "A tired man sells his dreams at the Midnight Shop to pay what he owes, until the shopkeeper asks for the oldest one.",
     "human_emotion": "The quiet grief of trading who you are for what you owe, and the relief of discovering it mattered to someone.",
     "magical_element": "A shop that buys dreams: selling them is what exhaustion feels like, trading away who you are one night at a time.",
@@ -15,6 +17,8 @@
     ],
     "ending_image": "A letter tucked beneath the old tree: Thank you. Keep this one.",
     "lingering_question": "What have I already sold to get through the month, and who was it really worth something to?",
+    "connection": "The pilot: it opens Fann's lost-dreams thread. His sold dreams are out in the city, and one of them is being dreamed by a girl who can't sleep.",
+    "advances_dreams_thread": true,
     "scores": {
       "hook": 8,
       "emotion": 8,
@@ -30,6 +34,7 @@
         "name": "hook",
         "lines": [
           {
+            "speaker": "narrator",
             "text": "Fann sold his first dream at midnight.",
             "delivery": "hushed, like a secret; let 'midnight' land softly",
             "pause_after_s": 1.2
@@ -40,11 +45,13 @@
         "name": "mystery",
         "lines": [
           {
+            "speaker": "narrator",
             "text": "The shop only appeared between twelve and twelve-oh-seven.",
             "delivery": "matter-of-fact, as if everyone knows this",
             "pause_after_s": 0.4
           },
           {
+            "speaker": "narrator",
             "text": "No sign. Just a moon-shaped bell, and jars that glowed as if something inside was breathing.",
             "delivery": "slower on 'breathing', a touch of wonder",
             "pause_after_s": 0.8
@@ -55,16 +62,19 @@
         "name": "connection",
         "lines": [
           {
+            "speaker": "narrator",
             "text": "Fann was tired. Two jobs. Letters he was afraid to open.",
             "delivery": "flat and weary; short stops between fragments",
             "pause_after_s": 0.5
           },
           {
+            "speaker": "narrator",
             "text": "The shopkeeper paid well for dreams.",
             "delivery": "simple, neutral",
             "pause_after_s": 0.4
           },
           {
+            "speaker": "narrator",
             "text": "So he slept without them, and woke a little richer, and a little less himself.",
             "delivery": "gentle, sadder on 'a little less himself'",
             "pause_after_s": 1.0
@@ -75,16 +85,19 @@
         "name": "cost",
         "lines": [
           {
+            "speaker": "narrator",
             "text": "Then she asked for the last one.",
             "delivery": "quieter, slower",
             "pause_after_s": 0.5
           },
           {
+            "speaker": "narrator",
             "text": "The oldest jar: a boy, a giant tree, a sea so blue it hurt.",
             "delivery": "warmth creeping in; ache on 'it hurt'",
             "pause_after_s": 0.6
           },
           {
+            "speaker": "narrator",
             "text": "\"This one,\" she said, \"pays for everything.\"",
             "delivery": "the shopkeeper's line kindly, not villainous",
             "pause_after_s": 1.5
@@ -95,21 +108,25 @@
         "name": "reveal",
         "lines": [
           {
+            "speaker": "narrator",
             "text": "Fann asked who buys them.",
             "delivery": "barely above a whisper",
             "pause_after_s": 0.4
           },
           {
+            "speaker": "narrator",
             "text": "She tilted a mirror toward him.",
             "delivery": "slow, deliberate",
             "pause_after_s": 0.6
           },
           {
+            "speaker": "narrator",
             "text": "Across the city, a girl who couldn't sleep was dreaming his dreams.",
             "delivery": "softening, the reveal unfolding",
             "pause_after_s": 0.5
           },
           {
+            "speaker": "narrator",
             "text": "And smiling.",
             "delivery": "tender; hold it",
             "pause_after_s": 1.2
@@ -120,21 +137,25 @@
         "name": "landing",
         "lines": [
           {
+            "speaker": "narrator",
             "text": "Fann carried the jar home. He left the money behind.",
             "delivery": "a quiet decision, steady",
             "pause_after_s": 0.6
           },
           {
+            "speaker": "narrator",
             "text": "That night, he dreamed of the tree again.",
             "delivery": "lighter, almost relieved",
             "pause_after_s": 0.7
           },
           {
+            "speaker": "narrator",
             "text": "Beneath it, someone had left a letter.",
             "delivery": "curious, hushed",
             "pause_after_s": 0.7
           },
           {
+            "speaker": "narrator",
             "text": "It said: Thank you. Keep this one.",
             "delivery": "faint smile; the softest line of the episode",
             "pause_after_s": 1.5
@@ -580,6 +601,20 @@
       ]
     },
     "comment_prompt": "Would you have sold the last one?",
-    "long_form_path": "The Midnight Shop collection: stories of people who tried to buy or sell something impossible."
+    "long_form_path": "The Midnight Shop collection: stories of people who tried to buy or sell something impossible.",
+    "canon": {
+      "summary": "Fann, worn out by two jobs and unopened letters, sold his dreams one night at a time at the Midnight Shop. When the Shopkeeper asked for his oldest dream, the boy, the giant tree and the blue sea, he took the jar home instead.",
+      "changes": [
+        "Fann has sold most of his dreams to the Shopkeeper; he kept only the oldest one, the tree and the sea",
+        "Fann's sold dreams are being dreamed by others across the city, including a girl who couldn't sleep",
+        "Someone left Fann a letter beneath the Old Tree: 'Thank you. Keep this one.'",
+        "Fann knows the Midnight Shop and its moon-shaped bell"
+      ],
+      "open_threads": [
+        "Who is the girl dreaming Fann's dreams, and who left the letter?",
+        "Can Fann ever get his other dreams back, and what would it cost?",
+        "Who buys dreams from the Shopkeeper, and why?"
+      ]
+    }
   }
 }

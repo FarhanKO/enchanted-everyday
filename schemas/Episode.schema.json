@@ -31,6 +31,40 @@
       "title": "Beat",
       "type": "object"
     },
+    "CanonNote": {
+      "additionalProperties": false,
+      "description": "What this episode adds to the story so far, read by every later episode's writers.",
+      "properties": {
+        "summary": {
+          "description": "Two or three sentences: what happened, to whom",
+          "title": "Summary",
+          "type": "string"
+        },
+        "changes": {
+          "description": "What is now true in the world: objects someone now has, places visited, who has glimpsed whom. Facts later episodes must not contradict",
+          "items": {
+            "type": "string"
+          },
+          "title": "Changes",
+          "type": "array"
+        },
+        "open_threads": {
+          "description": "Questions left open that a later episode could pick up",
+          "items": {
+            "type": "string"
+          },
+          "title": "Open Threads",
+          "type": "array"
+        }
+      },
+      "required": [
+        "summary",
+        "changes",
+        "open_threads"
+      ],
+      "title": "CanonNote",
+      "type": "object"
+    },
     "Character": {
       "additionalProperties": false,
       "properties": {
@@ -79,8 +113,26 @@
     "Line": {
       "additionalProperties": false,
       "properties": {
+        "speaker": {
+          "description": "Who says it: narrator, a fixed cast id, or a voice role for anyone else",
+          "enum": [
+            "narrator",
+            "fann",
+            "tina",
+            "shopkeeper",
+            "child_girl",
+            "child_boy",
+            "old_man",
+            "woman",
+            "young_man",
+            "stranger",
+            "spirit"
+          ],
+          "title": "Speaker",
+          "type": "string"
+        },
         "text": {
-          "description": "Exactly what the narrator says",
+          "description": "Exactly what is said",
           "minLength": 1,
           "title": "Text",
           "type": "string"
@@ -99,6 +151,7 @@
         }
       },
       "required": [
+        "speaker",
         "text",
         "delivery",
         "pause_after_s"
@@ -214,6 +267,9 @@
           "description": "Which long-form collection this story belongs in",
           "title": "Long Form Path",
           "type": "string"
+        },
+        "canon": {
+          "$ref": "#/$defs/CanonNote"
         }
       },
       "required": [
@@ -222,7 +278,8 @@
         "thumbnail",
         "platforms",
         "comment_prompt",
-        "long_form_path"
+        "long_form_path",
+        "canon"
       ],
       "title": "Package",
       "type": "object"
@@ -486,6 +543,25 @@
           "title": "Universe",
           "type": "string"
         },
+        "story_type": {
+          "description": "fable: a short story whose message lives in its final image or choice, never stated. daily: a small magical moment in Fann's or Tina's ordinary day, fairytale aesthetics, no big cost or twist",
+          "enum": [
+            "fable",
+            "daily"
+          ],
+          "title": "Story Type",
+          "type": "string"
+        },
+        "mode": {
+          "description": "Who speaks. narrated: the story is an event as a whole; only the narrator. dialogue: a small moment of characters interacting; only the characters. mixed: the narrator carries the story and characters speak their key lines",
+          "enum": [
+            "narrated",
+            "dialogue",
+            "mixed"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
         "premise": {
           "description": "One sentence: ordinary person + impossible element + stakes",
           "title": "Premise",
@@ -525,6 +601,16 @@
           "title": "Lingering Question",
           "type": "string"
         },
+        "connection": {
+          "description": "How this episode touches the shared world: a callback to an earlier episode, a trace of the other lead, or a step in Fann's lost-dreams thread. The episode must still make complete sense without it",
+          "title": "Connection",
+          "type": "string"
+        },
+        "advances_dreams_thread": {
+          "description": "True if this episode moves Fann's lost-dreams storyline forward",
+          "title": "Advances Dreams Thread",
+          "type": "boolean"
+        },
         "scores": {
           "$ref": "#/$defs/StoryScores"
         }
@@ -532,6 +618,8 @@
       "required": [
         "title",
         "universe",
+        "story_type",
+        "mode",
         "premise",
         "human_emotion",
         "magical_element",
@@ -539,6 +627,8 @@
         "recurring",
         "ending_image",
         "lingering_question",
+        "connection",
+        "advances_dreams_thread",
         "scores"
       ],
       "title": "StoryCard",

@@ -42,13 +42,19 @@ class StageContext:
     outputs: dict[str, Any] = field(default_factory=dict)  # outputs of finished earlier stages
     llm: LLMProvider | None = None
 
-    def llm_json(self, *, system: str, user: str, schema: dict, model: type[M]) -> M:
+    def llm_json(
+        self, *, system: str, user: str, schema: dict, model: type[M], role: str | None = None
+    ) -> M:
+        """One call as the agent `role`, on that role's model and effort (Settings.llm_for)."""
         if self.llm is None:
             raise RuntimeError("no LLM provider configured for this stage")
         ensure_budget(
             self.session, self.run_id, self.settings.daily_spend_cap_usd, LLM_CALL_ESTIMATE_USD
         )
-        result = self.llm.complete_json(system=system, user=user, schema=schema)
+        llm_model, effort = self.settings.llm_for(role)
+        result = self.llm.complete_json(
+            system=system, user=user, schema=schema, model=llm_model, effort=effort
+        )
         record_llm_cost(self.engine, self.run_id, result.cost_usd)
         return parse_as(result, model)
 

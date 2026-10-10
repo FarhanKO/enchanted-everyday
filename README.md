@@ -5,14 +5,18 @@ people, strange places and very big feelings, published to YouTube Shorts, Insta
 The LLM writes inside fixed stages and never takes actions. Nothing posts without a human tap.
 
 ```
-discovery -> story card -> script -> storyboard -> package -> critic
-          -> images + voice + sound -> render + QC -> approve (Telegram) -> publish -> analytics
+daily:      discovery -> story card -> script -> critic -> script to Telegram
+/redo:      next backup story -> script -> critic -> script to Telegram   (with your note, if any)
+on request: storyboard -> package -> package to Telegram          (/produce; Phase 2: your voice note)
+            -> images + voice + sound -> render + QC -> approve (Telegram) -> publish -> analytics
 ```
 
-**Status:** Phase 0 is complete, and Phase 1 has started. The brand kit ([brand/](brand/)), episode contracts
-([engine/llm/schemas.py](engine/llm/schemas.py)) and the first hand-built episode
-([stories/s000-the-man-who-sold-his-dreams](stories/s000-the-man-who-sold-his-dreams/episode.md)) are done.
-See [the roadmap](#roadmap) and [docs/decisions.md](docs/decisions.md).
+**Status:** Phases 0 and 1 are built. Each daily run picks a premise, writes the script, has the critic review it
+and sends it to Telegram. Send `/produce` to the bot and it writes the storyboard and publishing package and sends
+the full production document. Send `/redo` (optionally `/redo less sad`) to turn the story down and get the
+next backup written instead. A script you'd reject never costs a storyboard. Phase 1's exit check (you'd approve 5
+of 7 daily scripts) needs a week of real runs. Next is Phase 2: voice, images, render and the approval
+buttons. See [the roadmap](#roadmap) and [docs/decisions.md](docs/decisions.md).
 
 ## Architecture
 
@@ -37,6 +41,10 @@ Design rules:
   only, at most 2 AI clips, and no named artists or studios ([engine/llm/schemas.py](engine/llm/schemas.py)).
 - **Locked prompt fragments.** Agents write only the shot-specific text. Code appends character descriptors, locations
   and the style block verbatim, so every frame shares identical identity and style text ([engine/prompting.py](engine/prompting.py)).
+- **Contracts are repaired, not trusted.** An answer that breaks its contract goes back to the agent with the
+  errors, up to 3 tries. The critic's notes drive one script revision; a rejected story falls back to a backup
+  idea ([engine/studio.py](engine/studio.py)). Each agent can run on its own model and effort (`LLM_MODELS`,
+  `LLM_EFFORTS`); by default all use Opus 5.5, with the script writer and critic at high effort.
 - **A hard daily spend cap.** Every LLM call is costed and committed before the next one is allowed ([engine/budget.py](engine/budget.py)).
 
 ## Quick start (local)
@@ -47,13 +55,22 @@ Requires Docker.
 cp .env.example .env        # fill in what you have; DRY_RUN=true by default
 docker compose up -d --build
 docker compose run --rm worker engine check
-docker compose run --rm worker engine run   # one daily run now
+docker compose run --rm worker engine run       # one daily run now
+docker compose run --rm worker engine produce   # storyboard + package for today's script
+docker compose run --rm worker engine redo --note "less sad"   # turn today's story down
 ```
 
 Validate an episode and render its review document:
 
 ```bash
 python -m engine episode stories/s000-the-man-who-sold-his-dreams/episode.json
+```
+
+Check a prompt change against the golden set (every approved `stories/*/episode.json`). This calls the real
+model, so it costs money:
+
+```bash
+python -m engine eval --max-usd 3
 ```
 
 Without Docker (unit tests only):
@@ -73,16 +90,21 @@ engine/
   config.py          settings from env (.env.example lists them all)
   flows.py           Prefect daily flow
   db/                models + Alembic migrations (11 tables)
-  llm/               Claude client, episode contracts, pricing
+  llm/               Claude client, episode contracts, pricing, role prompts (llm/prompts/)
+  studio.py          the story agents, contract repair and critic-driven script revision
+  embeddings.py      local MiniLM embeddings for the duplicate-story check
+  evals.py           golden-set eval (`engine eval`)
   prompting.py       final image/video prompt assembly
   episode_doc.py     Episode JSON -> review document
-  stages/            discovery (built); idea, script, storyboard, package, assets, render, approve, publish
+  stages/            daily: discovery, idea, script + critic (story.py), deliver_script;
+                     production: storyboard + package (story.py), deliver_package; then assets, render...
   publishers/        idempotent publish guard; one module per platform in Phase 3
   storage.py         Cloudflare R2
   budget.py          daily spend cap
+  redo.py            /redo: swap the day's story for the next backup
   notify.py          Telegram alerts + dead-man's-switch ping
-bot/                 Telegram bot
-evals/               golden scripts + rubric (Phase 1)
+bot/                 Telegram bot (/status, /produce, /redo)
+evals/               eval results per prompt version
 templates/           fonts, caption styles, stings (Phase 2)
 docs/                ADRs, runbook, platform setup, privacy policy
 scripts/             VPS provisioning and deploy
