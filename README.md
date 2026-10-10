@@ -1,1 +1,1 @@
-# enchanted-everyday
+# Enchanted Everyday
