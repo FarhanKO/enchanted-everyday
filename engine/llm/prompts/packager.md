@@ -17,11 +17,10 @@ bible below; thumbnail and disclosure rules are in the production style.
 Written for someone awake at 1:30 AM: calm, no hype, no capitals for emphasis. Tease; never give away the ending.
 
 - `youtube_title`: the title, or a close variant (100 characters at most).
-- `youtube_description`: a two-line teaser, the comment question, then this disclosure line on its own:
-  "Story and direction by Modern Fairy Tales for Sleepless Souls. Illustrated with AI-assisted artwork."
-- `tiktok_caption` and `instagram_caption`: one or two short lines plus the comment question. Instagram also ends with
-  "Illustrated with AI-assisted artwork."
+- `youtube_description`: a two-line teaser, then the comment question.
+- `tiktok_caption` and `instagram_caption`: one or two short lines plus the comment question.
 - `facebook_caption`: one or two short lines.
+- No AI disclosure line in any description or caption; each platform's AI label covers it.
 - `hashtags`: 3-8. Start with #shortstory, then niche tags such as #fairytale, #bedtimestory, #magicalrealism,
   #animatedstory. No generic reach tags like #fyp or #viral.
 

@@ -5,6 +5,7 @@ The architecture is settled (see `adr/`). This file tracks the content decisions
 | Decision | Choice | Decided | Notes |
 |---|---|---|---|
 | Niche | **Modern Fairy Tales for Sleepless Souls**: cinematic micro-fables, 70% dark urban / 30% cozy bedtime | 2026-10-01 | Brief: `brand/story_bible.md`, `brand/production_style.md` |
+| Channel name | **The Enchanted Everyday** (YouTube @TheEnchantedEveryday); "Modern fairy tales for sleepless souls" is the tagline | 2026-10-10 | Setup kit: `docs/youtube-channel.md` |
 | Language | **English** | 2026-10-01 | |
 | Story structure | **Three universes**: Urban Fairy Tales 40%, Emotional Fairy Tales 30%, Bedtime Fables 30% | 2026-10-01 | Replaces the brief's 5 pillars / 2 lanes; keeps its 70/30 split. Shares live in `engine/stages/discovery.py` |
 | Core creative rules | **Your seven rules** (+5 craft rules from the brief) | 2026-10-01 | Rules 4 and 6 enforced in code |
@@ -34,7 +35,7 @@ The original plan assumed a factual, news-driven niche. Fiction changes these pa
 | Visuals | Pexels stock footage + code-drawn charts | **AI-generated painterly frames**, 6-14 per episode, plus a thumbnail |
 | Motion | Stock clips | Slow drift/parallax in code by default; at most 2 AI video clips |
 | Captions | Word-by-word | **Phrase-level**, calm (the brand forbids frantic captions) |
-| AI disclosure | Only when realistic AI is used | **Every post**: the artwork is AI-assisted |
+| AI disclosure | Only when realistic AI is used | **Every post**, through each platform's AI label and the channel About text; no disclosure line in any description or caption (2026-10-11) |
 | Data | 10 tables | 11: adds `bible_entries` for recurring characters and places with locked descriptors and reference images |
 
 ## Phase 1 build choices (2026-10-09)

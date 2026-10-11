@@ -4,9 +4,9 @@ title: Privacy Policy
 
 # Privacy Policy
 
-_Last updated: [DATE]_
+_Last updated: 11 October 2026_
 
-This policy covers **[APP NAME]**, a private tool operated by **[YOUR NAME]** ([CONTACT EMAIL]).
+This policy covers **Enchanted Everyday Uploader**, a private tool operated by the owner of **The Enchanted Everyday** (theenchantedeveryday@gmail.com).
 It publishes videos to accounts that the operator owns on YouTube, Instagram, Facebook and TikTok.
 
 ## What the app accesses
@@ -25,9 +25,9 @@ connected-apps settings.
 
 ## Deletion
 
-To delete all stored data, contact [CONTACT EMAIL]. Revoking the app's access on a platform stops all
+To delete all stored data, contact theenchantedeveryday@gmail.com. Revoking the app's access on a platform stops all
 further access immediately.
 
 ## Contact
 
-[CONTACT EMAIL]
+theenchantedeveryday@gmail.com

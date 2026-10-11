@@ -137,5 +137,5 @@ The brand is calm, so captions are phrase-level, never bouncing word-by-word.
 ## 8. Disclosure
 
 The artwork is AI-assisted, so every post discloses it: YouTube's altered or synthetic content setting where it applies,
-Instagram's and TikTok's AI labels, and a line in each description:
-> Story and direction by [channel]. Illustrated with AI-assisted artwork.
+and Instagram's, TikTok's and Facebook's AI labels. Descriptions and captions carry no disclosure line (decided
+2026-10-11); the platform labels and the channel's About text cover it.
