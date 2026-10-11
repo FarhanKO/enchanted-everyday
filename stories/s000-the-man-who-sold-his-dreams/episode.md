@@ -269,8 +269,6 @@ Fann sold his dreams to pay what he owed. Then the Midnight Shop asked for the l
 A modern fairy tale for sleepless souls.
 Would you have sold it?
 
-Story and direction by Modern Fairy Tales for Sleepless Souls. Illustrated with AI-assisted artwork.
-
 #shortstory #fairytale #bedtimestory #storytime #fantasy #animation
 ```
 
@@ -288,8 +286,6 @@ Fann went there to sell his dreams.
 
 Would you have sold the last one?
 
-Illustrated with AI-assisted artwork.
-
 #shortstory #fairytale #bedtimestory #storytime #fantasy #animation
 ```
 
@@ -297,8 +293,6 @@ Illustrated with AI-assisted artwork.
 
 ```text
 Fann sold his dreams to pay what he owed. Then the Midnight Shop asked for the last one. Would you have sold it?
-
-Illustrated with AI-assisted artwork.
 ```
 
 - **Pinned comment:** Would you have sold the last one?

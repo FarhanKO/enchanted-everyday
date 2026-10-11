@@ -404,6 +404,20 @@ class PlatformCopy(_Strict):
     def _tags(cls, tags: list[str]) -> list[str]:
         return [t if t.startswith("#") else f"#{t}" for t in (t.strip() for t in tags) if t]
 
+    @field_validator(
+        "youtube_description", "tiktok_caption", "instagram_caption", "facebook_caption"
+    )
+    @classmethod
+    def _no_disclosure_line(cls, v: str) -> str:
+        # Post copy relies on each platform's AI label; no disclosure line anywhere.
+        v = re.sub(
+            r"[ \t]*(Story and direction by [^.\n]*\.|Illustrated with AI-assisted artwork\.?)",
+            "",
+            v,
+            flags=re.IGNORECASE,
+        )
+        return re.sub(r"\n{3,}", "\n\n", v).strip()
+
 
 class CanonNote(_Strict):
     """What this episode adds to the story so far, read by every later episode's writers."""

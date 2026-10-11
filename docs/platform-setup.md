@@ -14,10 +14,15 @@ has no published turnaround. Tick items off here as they land.
 
 ## Instagram and Facebook
 
-- [ ] Switch Instagram to a professional account; create a Facebook Page and link the two
-- [ ] Create one Meta app with Instagram and Page publishing. Standard Access covers your own accounts without App Review
-- [ ] Publish `docs/privacy-policy.md` on GitHub Pages; put its URL in the app settings; switch the app to **Live**
-  (Development-mode posts are visible only to app roles)
+- [x] Switch Instagram to a professional account; create a Facebook Page and link the two
+  (@enchantedeveryday.tales, Page "The Enchanted Everyday")
+- [x] Create one Meta app with Instagram and Page publishing. Standard Access covers your own accounts without App Review
+  ("Enchanted Everyday Uploader"; `scripts/meta_tokens.py` fills the three `META_*` values in `.env`)
+- [x] Publish `docs/privacy-policy.md` on GitHub Pages; put its URL in the app settings; switch the app to **Live**
+  (Development-mode posts are visible only to app roles).
+  Live at <https://farhanko.github.io/enchanted-everyday/privacy.html>
+- [ ] Re-run `scripts/meta_tokens.py` before **2027-01-08**: the Page token never expires, but Meta's 90-day
+  data-access window does unless the token is refreshed
 - [ ] Post a test Reel and confirm it from an account with **no** app role
 - [ ] Serve videos from a public R2 URL; set `is_ai_generated` when it applies
 - [ ] Stay under 30 API-published Reels per Page per 24 hours
