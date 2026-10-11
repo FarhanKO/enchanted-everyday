@@ -5,8 +5,8 @@
     "title": "The Man Who Sold His Dreams",
     "universe": "emotional",
     "story_type": "fable",
-    "mode": "narrated",
-    "premise": "A tired man sells his dreams at the Midnight Shop to pay what he owes, until the shopkeeper asks for the oldest one.",
+    "mode": "mixed",
+    "premise": "A tired man finds the shop that buys dreams and sells it his, one night at a time, until the shopkeeper asks for the oldest one.",
     "human_emotion": "The quiet grief of trading who you are for what you owe, and the relief of discovering it mattered to someone.",
     "magical_element": "A shop that buys dreams: selling them is what exhaustion feels like, trading away who you are one night at a time.",
     "visual_anchor": "Glass jars on endless shelves, each glowing with a tiny captured dream.",
@@ -24,20 +24,27 @@
       "emotion": 8,
       "visual": 9,
       "brand_fit": 9
-    }
+    },
+    "dreams_step": ""
   },
   "script": {
     "title": "The Man Who Sold His Dreams",
-    "narration_direction": "Intimate third-person storyteller at 2 AM: low, warm, unhurried, close to the mic. Let every pause breathe. No acting; the images do the work. A faint smile only on the final line.",
+    "narration_direction": "A legend told to one listener at 2 AM: low, warm, unhurried, close to the mic. Let every pause breathe, and give each loss its own silence. The Shopkeeper is kind and in no hurry; Fann is tired and quiet, his voice barely above the room. A faint smile only on the last line.",
     "beats": [
       {
         "name": "hook",
         "lines": [
           {
             "speaker": "narrator",
-            "text": "Fann sold his first dream at midnight.",
-            "delivery": "hushed, like a secret; let 'midnight' land softly",
-            "pause_after_s": 1.2
+            "text": "They say a shop buys dreams at midnight.",
+            "delivery": "low and intimate, a secret told to one person",
+            "pause_after_s": 0.8
+          },
+          {
+            "speaker": "narrator",
+            "text": "Nobody believes it.",
+            "delivery": "matter-of-fact, the faintest smile",
+            "pause_after_s": 0.8
           }
         ]
       },
@@ -46,14 +53,14 @@
         "lines": [
           {
             "speaker": "narrator",
-            "text": "The shop only appeared between twelve and twelve-oh-seven.",
-            "delivery": "matter-of-fact, as if everyone knows this",
-            "pause_after_s": 0.4
+            "text": "Fann had two jobs, and letters he couldn't open.",
+            "delivery": "tired, plain",
+            "pause_after_s": 0.5
           },
           {
             "speaker": "narrator",
-            "text": "No sign. Just a moon-shaped bell, and jars that glowed as if something inside was breathing.",
-            "delivery": "slower on 'breathing', a touch of wonder",
+            "text": "One midnight, a window glowed where there had always been a wall.",
+            "delivery": "slower, wonder creeping in",
             "pause_after_s": 0.8
           }
         ]
@@ -63,21 +70,21 @@
         "lines": [
           {
             "speaker": "narrator",
-            "text": "Fann was tired. Two jobs. Letters he was afraid to open.",
-            "delivery": "flat and weary; short stops between fragments",
+            "text": "Inside, jars, each holding a dream.",
+            "delivery": "hushed",
             "pause_after_s": 0.5
           },
           {
-            "speaker": "narrator",
-            "text": "The shopkeeper paid well for dreams.",
-            "delivery": "simple, neutral",
+            "speaker": "shopkeeper",
+            "text": "I buy dreams, dear.",
+            "delivery": "unhurried, warm, a little amused",
             "pause_after_s": 0.4
           },
           {
-            "speaker": "narrator",
-            "text": "So he slept without them, and woke a little richer, and a little less himself.",
-            "delivery": "gentle, sadder on 'a little less himself'",
-            "pause_after_s": 1.0
+            "speaker": "fann",
+            "text": "How much... for one?",
+            "delivery": "hesitant, low, tired",
+            "pause_after_s": 0.8
           }
         ]
       },
@@ -86,21 +93,27 @@
         "lines": [
           {
             "speaker": "narrator",
-            "text": "Then she asked for the last one.",
-            "delivery": "quieter, slower",
-            "pause_after_s": 0.5
-          },
-          {
-            "speaker": "narrator",
-            "text": "The oldest jar: a boy, a giant tree, a sea so blue it hurt.",
-            "delivery": "warmth creeping in; ache on 'it hurt'",
+            "text": "He sold one every night.",
+            "delivery": "plain, quiet",
             "pause_after_s": 0.6
           },
           {
             "speaker": "narrator",
-            "text": "\"This one,\" she said, \"pays for everything.\"",
-            "delivery": "the shopkeeper's line kindly, not villainous",
-            "pause_after_s": 1.5
+            "text": "First, his nights went grey.",
+            "delivery": "softly",
+            "pause_after_s": 0.6
+          },
+          {
+            "speaker": "narrator",
+            "text": "Then his mornings.",
+            "delivery": "softly",
+            "pause_after_s": 0.6
+          },
+          {
+            "speaker": "narrator",
+            "text": "Then the tune he always hummed was gone.",
+            "delivery": "hushed, a little afraid",
+            "pause_after_s": 0.9
           }
         ]
       },
@@ -109,27 +122,33 @@
         "lines": [
           {
             "speaker": "narrator",
-            "text": "Fann asked who buys them.",
-            "delivery": "barely above a whisper",
+            "text": "Then the shopkeeper asked for the oldest: a boy, a giant tree, a sea so blue it hurt.",
+            "delivery": "slower, tender",
+            "pause_after_s": 0.5
+          },
+          {
+            "speaker": "shopkeeper",
+            "text": "This one pays for everything.",
+            "delivery": "gentle, certain, slow",
+            "pause_after_s": 0.9
+          },
+          {
+            "speaker": "fann",
+            "text": "Where do they go?",
+            "delivery": "barely above a whisper, afraid",
             "pause_after_s": 0.4
           },
           {
             "speaker": "narrator",
-            "text": "She tilted a mirror toward him.",
-            "delivery": "slow, deliberate",
-            "pause_after_s": 0.6
-          },
-          {
-            "speaker": "narrator",
-            "text": "Across the city, a girl who couldn't sleep was dreaming his dreams.",
-            "delivery": "softening, the reveal unfolding",
-            "pause_after_s": 0.5
+            "text": "She tilted a mirror. Across the city, a girl who couldn't sleep was dreaming them.",
+            "delivery": "hushed",
+            "pause_after_s": 0.4
           },
           {
             "speaker": "narrator",
             "text": "And smiling.",
-            "delivery": "tender; hold it",
-            "pause_after_s": 1.2
+            "delivery": "warm, softer",
+            "pause_after_s": 0.9
           }
         ]
       },
@@ -138,27 +157,21 @@
         "lines": [
           {
             "speaker": "narrator",
-            "text": "Fann carried the jar home. He left the money behind.",
-            "delivery": "a quiet decision, steady",
+            "text": "He left the money, and walked home with the last jar, humming.",
+            "delivery": "warm, unhurried",
             "pause_after_s": 0.6
           },
           {
             "speaker": "narrator",
-            "text": "That night, he dreamed of the tree again.",
-            "delivery": "lighter, almost relieved",
-            "pause_after_s": 0.7
-          },
-          {
-            "speaker": "narrator",
-            "text": "Beneath it, someone had left a letter.",
-            "delivery": "curious, hushed",
-            "pause_after_s": 0.7
+            "text": "That night, he dreamed of the tree. Beneath it, a letter.",
+            "delivery": "slow",
+            "pause_after_s": 0.6
           },
           {
             "speaker": "narrator",
             "text": "It said: Thank you. Keep this one.",
-            "delivery": "faint smile; the softest line of the episode",
-            "pause_after_s": 1.5
+            "delivery": "barely above a whisper, a faint smile",
+            "pause_after_s": 0.9
           }
         ]
       }
@@ -189,14 +202,6 @@
         "descriptor": "the Shopkeeper, an ageless woman who could be sixty or a hundred, long silver hair in a loose low braid, round gold wire spectacles, a calm half-smile, a deep plum knitted cardigan with small embroidered moon-phase buttons, a tiny brass moon-shaped bell pinned at her collar",
         "signature": "plum cardigan, gold round spectacles, brass moon bell",
         "recurring": true
-      },
-      {
-        "id": "girl",
-        "name": "Mira",
-        "role": "the sleepless girl who receives Fann's dreams",
-        "descriptor": "a 9-year-old girl with a dark-brown bob and blunt bangs, fair skin with rosy cheeks, wearing oversized sage-green pajamas, hugging a worn orange stuffed fox",
-        "signature": "sage-green pajamas; worn orange stuffed fox",
-        "recurring": false
       }
     ],
     "locations": [
@@ -229,11 +234,11 @@
         "lighting": "bright midday sun, dappled shade under the canopy, towering sunlit cumulus clouds"
       },
       {
-        "id": "girl_bedroom",
-        "name": "Mira's bedroom",
+        "id": "far_room",
+        "name": "A room across the city",
         "pole": "night",
-        "descriptor": "a cozy, cluttered child's bedroom with a wooden bed, teal blanket and coral pillow, walls covered in drawings and framed pictures, string lights, a bedside lamp, plants in the corner",
-        "lighting": "warm lamp glow in rose and amber, soft darkness at the edges"
+        "descriptor": "a small tidy rented room across the city at night, a narrow bed under a window with distant city lights, a bedside lamp turned low, potted plants on the sill, a pale-blue scarf draped over the bedpost",
+        "lighting": "low warm lamp glow in rose and amber, soft darkness at the edges"
       }
     ],
     "shots": [
@@ -241,33 +246,56 @@
         "id": "S01",
         "beat": "hook",
         "start_s": 0.0,
-        "duration_s": 4.7,
-        "description": "The impossible transaction, first frame: a dream changes hands across a counter.",
+        "duration_s": 7.1,
+        "description": "The legend in one image: a dream for sale, alone on a counter at midnight. The cover frame.",
         "camera": "push_in",
         "pole": "night",
         "location": "midnight_shop",
-        "characters": [
-          "fann",
-          "shopkeeper"
-        ],
-        "image_prompt": "Extreme close-up on the worn wooden counter: Fann's hand sliding a small glass jar toward the Shopkeeper's waiting hand, inside the jar a tiny swirl of glowing light like a captured dream, the round wall clock blurred behind them with its hands at 12:07",
+        "characters": [],
+        "image_prompt": "Close-up of a single small glass jar standing alone on a worn wooden counter in the dark, inside it a tiny glowing summer scene of a giant tree on a grassy cliff above a bright blue sea, a small blank paper tag tied to its neck with string, the round wall clock blurred behind it with both hands at twelve, the jar's glow the only warm light",
         "motion": "ai_clip",
-        "video_prompt": "the light inside the jar swirls slowly like smoke, dust motes drift through the amber glow, the hands barely move",
+        "video_prompt": "the tiny sea inside the jar moves, the tree's leaves stir, dust motes drift through the amber glow",
         "overlays": [
           "dust_motes",
           "film_grain"
         ],
         "sfx": [
-          "glass jar set down on wood",
-          "clock tick that stops"
-        ]
+          "clock ticking",
+          "faint hum of the glowing jar"
+        ],
+        "music": "mystery"
       },
       {
         "id": "S02",
         "beat": "mystery",
-        "start_s": 4.7,
-        "duration_s": 5.8,
-        "description": "The shop that should not fit between two buildings.",
+        "start_s": 7.1,
+        "duration_s": 5.0,
+        "description": "Who he is: two jobs, letters he can't open. We hear his tune for the first time.",
+        "camera": "push_in",
+        "pole": "night",
+        "location": "fann_room",
+        "characters": [
+          "fann"
+        ],
+        "image_prompt": "Medium shot, Fann sitting at his desk late at night with his forehead resting in one hand, a stack of unopened envelopes in front of him, a cold cup of tea, rain on the window behind",
+        "motion": "still_drift",
+        "video_prompt": "rain trickles down the window, steam long gone from the tea, his shoulders rise and fall with one slow breath",
+        "overlays": [
+          "rain_glass",
+          "film_grain"
+        ],
+        "sfx": [
+          "rain on the window",
+          "fann_hum"
+        ],
+        "music": "mystery"
+      },
+      {
+        "id": "S03",
+        "beat": "mystery",
+        "start_s": 12.1,
+        "duration_s": 6.8,
+        "description": "One midnight on the walk home: a glowing shop where a wall has always been.",
         "camera": "push_in",
         "pole": "night",
         "location": "city_night",
@@ -284,14 +312,15 @@
         "sfx": [
           "rain on pavement",
           "distant car on a wet road"
-        ]
+        ],
+        "music": "mystery"
       },
       {
-        "id": "S03",
-        "beat": "mystery",
-        "start_s": 10.5,
-        "duration_s": 7.4,
-        "description": "Inside: endless shelves of glowing jars. The Shopkeeper, unhurried.",
+        "id": "S04",
+        "beat": "connection",
+        "start_s": 18.9,
+        "duration_s": 5.9,
+        "description": "Inside: endless shelves of glowing jars, and the Shopkeeper, unhurried. Her moon bell rings as he steps in.",
         "camera": "pan_right",
         "pole": "night",
         "location": "midnight_shop",
@@ -306,40 +335,67 @@
           "film_grain"
         ],
         "sfx": [
-          "brass moon bell chime",
+          "shopkeeper_bell",
           "low hum of the glowing jars"
-        ]
-      },
-      {
-        "id": "S04",
-        "beat": "connection",
-        "start_s": 17.9,
-        "duration_s": 9.4,
-        "description": "Why he sells: exhaustion and unopened letters.",
-        "camera": "push_in",
-        "pole": "night",
-        "location": "fann_room",
-        "characters": [
-          "fann"
         ],
-        "image_prompt": "Medium shot, Fann sitting at his desk late at night with his forehead resting in one hand, a stack of unopened envelopes in front of him, a cold cup of tea, rain on the window behind",
-        "motion": "still_drift",
-        "video_prompt": "rain trickles down the window, steam long gone from the tea, his shoulders rise and fall with one slow breath",
-        "overlays": [
-          "rain_glass",
-          "film_grain"
-        ],
-        "sfx": [
-          "rain on the window",
-          "envelopes shuffled"
-        ]
+        "music": "mystery"
       },
       {
         "id": "S05",
         "beat": "connection",
-        "start_s": 27.3,
-        "duration_s": 8.5,
-        "description": "Dreamless sleep: the colour drains out of his world.",
+        "start_s": 24.8,
+        "duration_s": 2.8,
+        "description": "He needs the money: how much for one?",
+        "camera": "push_in",
+        "pole": "night",
+        "location": "midnight_shop",
+        "characters": [
+          "fann"
+        ],
+        "image_prompt": "Medium shot across the counter, Fann standing at the worn wooden counter, one hand resting on the wood beside a small glowing jar, looking down at it, tired and hesitant, shelves of glowing jars rising into shadow behind him",
+        "motion": "still_drift",
+        "video_prompt": "the jar's light pulses softly, dust motes drift, his shoulders rise with one slow breath",
+        "overlays": [
+          "dust_motes",
+          "film_grain"
+        ],
+        "sfx": [
+          "low hum of the glowing jars"
+        ],
+        "music": "mystery"
+      },
+      {
+        "id": "S06",
+        "beat": "cost",
+        "start_s": 27.6,
+        "duration_s": 3.1,
+        "description": "The sale, every night: a dream changes hands across the counter.",
+        "camera": "push_in",
+        "pole": "night",
+        "location": "midnight_shop",
+        "characters": [
+          "fann",
+          "shopkeeper"
+        ],
+        "image_prompt": "Extreme close-up on the worn wooden counter: Fann's hand sliding a small glass jar toward the Shopkeeper's waiting hand, inside the jar a tiny swirl of glowing light like a captured dream, the round wall clock blurred behind them with its hands at 12:07",
+        "motion": "still_drift",
+        "video_prompt": "the light inside the jar swirls slowly like smoke, dust motes drift through the amber glow, the hands barely move",
+        "overlays": [
+          "dust_motes",
+          "film_grain"
+        ],
+        "sfx": [
+          "glass jar set down on wood",
+          "clock tick that stops"
+        ],
+        "music": "tension"
+      },
+      {
+        "id": "S07",
+        "beat": "cost",
+        "start_s": 30.7,
+        "duration_s": 3.1,
+        "description": "The first loss: dreamless nights, the colour draining out of his sleep.",
         "camera": "tilt_down",
         "pole": "night",
         "location": "fann_room",
@@ -356,38 +412,64 @@
         "sfx": [
           "near-silent room tone",
           "rain fading"
-        ]
+        ],
+        "music": "tension"
       },
       {
-        "id": "S06",
+        "id": "S08",
         "beat": "cost",
-        "start_s": 35.8,
-        "duration_s": 11.1,
-        "description": "The oldest jar, and the only face close-up: the moment he almost says yes.",
-        "camera": "push_in",
+        "start_s": 33.8,
+        "duration_s": 2.1,
+        "description": "The second loss: his mornings, grey.",
+        "camera": "static",
         "pole": "night",
-        "location": "midnight_shop",
+        "location": "fann_room",
         "characters": [
-          "fann",
-          "shopkeeper"
+          "fann"
         ],
-        "image_prompt": "Close-up, Fann's face lit warm gold from below as the Shopkeeper holds up the oldest jar between them, inside it a tiny bright summer scene, Fann's eyes wide, wet and hesitant",
+        "image_prompt": "Fann sitting on the edge of his narrow bed at dawn, elbows on his knees, staring at the floor, the whole room washed out to pale greys, cold flat light through the window, the desk lamp switched off",
         "motion": "still_drift",
-        "video_prompt": "the jar's glow brightens slowly, reflections tremble in Fann's eyes",
+        "video_prompt": "pale light shifts slowly across the floor, dust hangs in the still air",
         "overlays": [
-          "dust_motes",
           "film_grain"
         ],
         "sfx": [
-          "jar glow swelling into a soft hum"
-        ]
+          "near-silent room tone",
+          "a distant early bus"
+        ],
+        "music": "tension"
       },
       {
-        "id": "S07",
+        "id": "S09",
         "beat": "cost",
-        "start_s": 46.9,
-        "duration_s": 5.0,
-        "description": "Inside the jar: the brightest image in the episode, the day pole.",
+        "start_s": 35.9,
+        "duration_s": 4.9,
+        "description": "The third loss: he reaches for his tune, and it isn't there.",
+        "camera": "push_in",
+        "pole": "night",
+        "location": "fann_room",
+        "characters": [
+          "fann"
+        ],
+        "image_prompt": "Medium shot, Fann standing alone at the rain-streaked window at night, one hand pressed flat to his chest, lips slightly parted as if about to hum, his reflection faint in the dark glass, the room behind him dim",
+        "motion": "still_drift",
+        "video_prompt": "rain runs down the glass, his reflection wavers, he barely moves",
+        "overlays": [
+          "rain_glass",
+          "film_grain"
+        ],
+        "sfx": [
+          "rain on the window",
+          "a breath, then silence"
+        ],
+        "music": "tension"
+      },
+      {
+        "id": "S10",
+        "beat": "reveal",
+        "start_s": 40.8,
+        "duration_s": 9.5,
+        "description": "The oldest dream, the brightest image in the episode: a boy, a giant tree, a sea so blue it hurt.",
         "camera": "tilt_up",
         "pole": "day",
         "location": "dream_tree",
@@ -404,59 +486,85 @@
           "sea waves",
           "wind through leaves",
           "distant gulls"
-        ]
+        ],
+        "music": "sorrow"
       },
       {
-        "id": "S08",
+        "id": "S11",
         "beat": "reveal",
-        "start_s": 51.9,
-        "duration_s": 6.5,
-        "description": "The mirror shows someone else's room instead of Fann.",
+        "start_s": 50.3,
+        "duration_s": 5.8,
+        "description": "This one pays for everything. Fann, afraid: where do they go?",
+        "camera": "push_in",
+        "pole": "night",
+        "location": "midnight_shop",
+        "characters": [
+          "fann",
+          "shopkeeper"
+        ],
+        "image_prompt": "Close-up, Fann's face lit warm gold from below as the Shopkeeper holds up the oldest jar between them, inside it a tiny bright summer scene, Fann's eyes wide, wet and hesitant",
+        "motion": "still_drift",
+        "video_prompt": "the jar's glow brightens slowly, reflections tremble in Fann's eyes",
+        "overlays": [
+          "dust_motes",
+          "film_grain"
+        ],
+        "sfx": [
+          "jar glow swelling into a soft hum"
+        ],
+        "music": "sorrow"
+      },
+      {
+        "id": "S12",
+        "beat": "reveal",
+        "start_s": 56.1,
+        "duration_s": 3.6,
+        "description": "The mirror shows where his dreams went: a room far across the city.",
         "camera": "push_in",
         "pole": "night",
         "location": "midnight_shop",
         "characters": [],
-        "image_prompt": "Close-up of a small round brass hand mirror on the counter tilted toward the viewer, instead of a reflection it shows a warm lamp-lit child's bedroom far away",
+        "image_prompt": "Close-up of a small round brass hand mirror standing alone on the worn wooden counter, tilted toward the viewer, no people anywhere in the frame; in its glass, instead of a reflection, a dark lamp-lit bedroom far across the city with someone asleep in a narrow bed",
         "motion": "still_drift",
-        "video_prompt": "a faint shimmer ripples across the mirror's surface",
+        "video_prompt": "a faint shimmer ripples across the mirror's surface, the far lamp flickers once",
         "overlays": [
           "dust_motes",
           "film_grain"
         ],
         "sfx": [
           "glassy shimmer"
-        ]
+        ],
+        "music": "sorrow"
       },
       {
-        "id": "S09",
+        "id": "S13",
         "beat": "reveal",
-        "start_s": 58.4,
-        "duration_s": 8.7,
-        "description": "Where his dreams went: a sleepless girl, finally smiling.",
+        "start_s": 59.7,
+        "duration_s": 6.2,
+        "description": "Someone who couldn't sleep, dreaming his dreams, smiling. Her face is never shown; regulars may notice the pale-blue scarf.",
         "camera": "parallax",
         "pole": "night",
-        "location": "girl_bedroom",
-        "characters": [
-          "girl"
-        ],
-        "image_prompt": "Medium-wide, the girl asleep in her bed hugging the orange stuffed fox, smiling softly in her sleep, tiny golden motes of light drifting up from her pillow like little dreams",
+        "location": "far_room",
+        "characters": [],
+        "image_prompt": "Medium-wide from the foot of the bed, a young woman asleep in a narrow bed with her back to the viewer, curled toward the window, her face completely hidden, only long dark hair spread on the pillow and one hand open on the blanket, tiny golden motes of light drifting up from her pillow like little dreams, peaceful",
         "motion": "still_drift",
-        "video_prompt": "golden motes rise and drift slowly, string lights twinkle, her breathing is slow and calm",
+        "video_prompt": "golden motes rise and drift slowly, the lamp glows steadily, her breathing is slow and calm",
         "overlays": [
           "fireflies",
           "film_grain"
         ],
         "sfx": [
           "soft breathing",
-          "lamp room tone"
-        ]
+          "warm room tone"
+        ],
+        "music": "warm"
       },
       {
-        "id": "S10",
+        "id": "S14",
         "beat": "landing",
-        "start_s": 67.1,
-        "duration_s": 10.3,
-        "description": "The choice: he walks home with the jar, not the money.",
+        "start_s": 65.9,
+        "duration_s": 6.6,
+        "description": "His choice: he leaves the money and walks home with the last jar, humming his tune again.",
         "camera": "pan_left",
         "pole": "night",
         "location": "city_night",
@@ -472,15 +580,17 @@
         ],
         "sfx": [
           "footsteps on wet pavement",
-          "light rain"
-        ]
+          "light rain",
+          "fann_hum"
+        ],
+        "music": "warm"
       },
       {
-        "id": "S11",
+        "id": "S15",
         "beat": "landing",
-        "start_s": 77.4,
-        "duration_s": 4.2,
-        "description": "Back in the dream: the adult walks toward the tree he almost sold.",
+        "start_s": 72.5,
+        "duration_s": 6.1,
+        "description": "That night he dreams of the tree again.",
         "camera": "tilt_up",
         "pole": "day",
         "location": "dream_tree",
@@ -496,13 +606,14 @@
         "sfx": [
           "wind over grass",
           "waves below"
-        ]
+        ],
+        "music": "warm"
       },
       {
-        "id": "S12",
+        "id": "S16",
         "beat": "landing",
-        "start_s": 81.6,
-        "duration_s": 5.0,
+        "start_s": 78.6,
+        "duration_s": 4.4,
         "description": "The final image: a letter left for him beneath the old tree.",
         "camera": "push_in",
         "pole": "day",
@@ -517,45 +628,36 @@
         ],
         "sfx": [
           "paper rustle",
-          "brass moon bell chime (sonic logo)"
-        ]
+          "wind over grass"
+        ],
+        "music": "warm"
       }
     ],
     "sound": {
-      "music_palette": "Felt piano with a sparse two-note motif, about 64 BPM, very soft; distant low strings for the cost; celesta and glass tones for the reveal. Never louder than the voice.",
+      "music_palette": "Licensed piano-and-strings beds chosen by mood: languid mystery under the legend and the shop, a dark, lullaby-like underscore as the losses pile up, bittersweet strings for the oldest dream, warm piano from her smile to the letter. Always under the voice.",
       "cues": [
         {
           "at_s": 0.0,
           "action": "enter",
-          "note": "Single felt-piano motif under the rain bed"
+          "note": "Mystery piano under the legend and the rain"
         },
         {
-          "at_s": 17.9,
+          "at_s": 7.1,
           "action": "thin",
-          "note": "Piano drops to single notes in Fann's room"
+          "note": "Down to single notes in Fann's room"
         },
         {
-          "at_s": 35.8,
-          "action": "swell",
-          "note": "Low strings rise gently with the oldest jar's glow (restrained)"
-        },
-        {
-          "at_s": 50.4,
+          "at_s": 39.8,
           "action": "silence",
-          "note": "All music out during the pause after 'pays for everything'; rain and room tone only"
+          "note": "The tune is gone: no music at all for a breath, rain and room tone only"
         },
         {
-          "at_s": 54.8,
-          "action": "enter",
-          "note": "Celesta and glass tones join the piano as the mirror shows the girl"
+          "at_s": 59.7,
+          "action": "swell",
+          "note": "Warmth rises gently as she smiles"
         },
         {
-          "at_s": 67.1,
-          "action": "resolve",
-          "note": "Motif resolves in a warmer register; strings fall away"
-        },
-        {
-          "at_s": 84.5,
+          "at_s": 82.0,
           "action": "out",
           "note": "Music fades; the brass moon bell chimes alone over the final frame"
         }
@@ -565,7 +667,7 @@
         "distant wet-road traffic",
         "shop room tone with a faint clock",
         "wind and sea in the dream",
-        "warm bedroom room tone"
+        "warm room tone in the far room"
       ]
     }
   },
@@ -603,18 +705,20 @@
     "comment_prompt": "Would you have sold the last one?",
     "long_form_path": "The Midnight Shop collection: stories of people who tried to buy or sell something impossible.",
     "canon": {
-      "summary": "Fann, worn out by two jobs and unopened letters, sold his dreams one night at a time at the Midnight Shop. When the Shopkeeper asked for his oldest dream, the boy, the giant tree and the blue sea, he took the jar home instead.",
+      "summary": "Fann, worn out by two jobs and letters he couldn't open, found the Midnight Shop one midnight where a wall had always been, and sold the Shopkeeper his dreams one night at a time. He lost his dreaming nights, the colour of his mornings and the tune he always hummed. When she asked for his oldest dream, a mirror showed him a girl across the city dreaming his sold dreams and smiling; he left the money, kept the last one and walked home humming.",
       "changes": [
-        "Fann has sold most of his dreams to the Shopkeeper; he kept only the oldest one, the tree and the sea",
-        "Fann's sold dreams are being dreamed by others across the city, including a girl who couldn't sleep",
-        "Someone left Fann a letter beneath the Old Tree: 'Thank you. Keep this one.'",
+        "Fann has sold most of his dreams to the Shopkeeper; he kept only the oldest one: a boy, a giant tree, a sea so blue it hurt",
+        "Selling them cost him his dreaming nights, the colour of his mornings and, for a while, his three-note tune; with the last jar he hums it again",
+        "Fann's sold dreams are being dreamed by others across the city, including a girl who couldn't sleep; her face was never shown and she was never named",
+        "Someone left Fann a letter beneath the Old Tree in his dream: Thank you. Keep this one.",
         "Fann knows the Midnight Shop and its moon-shaped bell"
       ],
       "open_threads": [
         "Who is the girl dreaming Fann's dreams, and who left the letter?",
         "Can Fann ever get his other dreams back, and what would it cost?",
         "Who buys dreams from the Shopkeeper, and why?"
-      ]
+      ],
+      "closes": []
     }
   }
 }

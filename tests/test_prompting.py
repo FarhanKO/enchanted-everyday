@@ -61,4 +61,4 @@ def test_markdown_package_has_all_eleven_sections():
     md = to_markdown(_episode())
     for n in range(1, 12):
         assert f"## {n}. " in md
-    assert "Fann sold his first dream" in md
+    assert "They say a shop buys dreams at midnight." in md

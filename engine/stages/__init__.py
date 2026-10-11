@@ -4,13 +4,14 @@ The daily run writes and reviews the story; production only starts once the owne
 so a script they'd reject never costs a storyboard. Every stage of a day shares that day's run row,
 so production stages read the story stages' outputs.
 
-Built so far (Phase 1). Coming next, by phase:
-  Phase 2: assets, render, approve (production; the owner's voice note starts it)
+Production (/produce) writes the storyboard and package, sends the package, then voices,
+draws and renders the video and sends it for approval (Approve / Skip in the bot; /reshoot to
+redraw a frame). Coming next, by phase:
   Phase 3: publish
   Phase 4: analytics (separate scheduled flow)
 """
 
-from engine.stages import deliver, discovery, idea, story
+from engine.stages import deliver, discovery, idea, media, story
 from engine.stages.base import StageContext, StageFn, run_stage
 
 STAGES: dict[str, StageFn] = {
@@ -22,9 +23,23 @@ STAGES: dict[str, StageFn] = {
     "storyboard": story.storyboard,
     "package": story.package,
     "deliver_package": deliver.deliver_package,
+    "voice": media.voice,
+    "images": media.images,
+    "render": media.render,
+    "deliver_render": media.deliver_render,
 }
 
 DAILY = ("discovery", "idea", "script", "critic", "deliver_script")
-PRODUCTION = ("storyboard", "package", "deliver_package")
+PRODUCTION = (
+    "storyboard",
+    "package",
+    "deliver_package",
+    "voice",
+    "images",
+    "render",
+    "deliver_render",
+)
+# what a /reshoot redoes: the frames (only the asked-for ones are bought again), render, delivery
+RESHOOT = ("images", "render", "deliver_render")
 
-__all__ = ["DAILY", "PRODUCTION", "STAGES", "StageContext", "StageFn", "run_stage"]
+__all__ = ["DAILY", "PRODUCTION", "RESHOOT", "STAGES", "StageContext", "StageFn", "run_stage"]

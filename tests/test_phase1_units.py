@@ -20,6 +20,7 @@ from engine.llm.schemas import (
     Speaker,
     StoryCard,
     check_speakers,
+    check_voicing,
 )
 from engine.notify import TEXT_LIMIT, TelegramError
 from engine.stages.deliver import script_message
@@ -73,7 +74,7 @@ def test_script_message_is_ready_to_record():
     assert text.startswith("Today's story, Mon 12 Oct")
     for line in ep.script.lines:
         assert f"{line.text}  ({line.delivery})" in text  # every line, with its delivery note
-    assert "[pause 1.5s]" in text
+    assert "[pause 0.9s]" in text
     assert "Critic: revise (1 high, 1 low)" in text
     assert "- script: script problem" in text
     assert "story problem" not in text  # low issues are listed only when there are no high ones
@@ -183,6 +184,8 @@ def test_voice_cast_uses_only_built_in_voices():
 def _script_with(*speakers: str) -> Script:
     data = golden()["script"]
     lines = [line for beat in data["beats"] for line in beat["lines"]]
+    for line in lines:
+        line["speaker"] = "narrator"
     for line, who in zip(lines, speakers, strict=False):
         line["speaker"] = who
     return Script.model_validate(data)
@@ -193,7 +196,7 @@ def _script_with(*speakers: str) -> Script:
     [
         ("narrated", (), None),
         ("narrated", ("narrator", "tina"), "only the narrator"),
-        ("dialogue", ("fann", "shopkeeper") * 9, None),
+        ("dialogue", ("fann", "shopkeeper") * 12, None),
         ("dialogue", ("fann",), "narrator has no lines"),
         ("mixed", ("narrator", "tina"), None),
         ("mixed", (), "both the narrator and at least one character"),
@@ -207,6 +210,20 @@ def test_the_mode_decides_who_speaks(mode, speakers, error):
     else:
         with pytest.raises(ValueError, match=error):
             check_speakers(mode, script)
+
+
+def test_characters_are_heard_in_their_own_voices():
+    mixed = Script.model_validate(golden()["script"])
+    check_voicing("mixed", mixed)  # the pilot: Fann and the Shopkeeper speak their lines
+
+    quoting = golden()["script"]
+    quoting["beats"][3]["lines"][0]["text"] = '"Name your price," she said.'
+    with pytest.raises(ValueError, match="quotes a character"):
+        check_voicing("mixed", Script.model_validate(quoting))
+    check_voicing("narrated", _script_with())  # reported speech is fine when nobody speaks
+
+    with pytest.raises(ValueError, match="at least 2"):
+        check_voicing("mixed", _script_with("narrator", "fann"))
 
 
 def test_voice_cast_covers_every_speaker():
@@ -235,4 +252,4 @@ def test_script_message_names_character_speakers():
     assert f"TINA: {script.lines[0].text}" in text
     assert f"CHILD GIRL: {script.lines[1].text}" in text
     assert f"\n{script.lines[2].text}  (" in text  # the narrator needs no label
-    assert "emotional · fable · narrated" in text
+    assert "emotional · fable · mixed" in text

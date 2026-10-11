@@ -13,7 +13,7 @@ with a loose strand falling over his forehead, light stubble along his jaw and c
 dark-brown eyes under straight dark brows, light-brown skin, wearing a light-blue collared cotton shirt with the \
 sleeves rolled to the forearm, dark grey trousers and a long mustard-yellow knitted scarf"""
 signature = "long mustard-yellow knitted scarf; light-blue collared shirt"
-references = ["references/fann/portrait_v1.jpg", "references/fann/sheet_v1.jpg"]
+references = ["references/fann/portrait_v1.jpg"]  # sheet_v1 has text labels: not conditioned on (references/README.md)
 
 [tina]
 name = "Tina"

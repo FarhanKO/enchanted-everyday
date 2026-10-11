@@ -13,6 +13,7 @@ import logging
 from datetime import date
 
 from sqlalchemy import func, select
+from sqlalchemy.orm import Session
 
 from engine.db.models import Idea
 from engine.db.models import Script as ScriptRow
@@ -76,8 +77,12 @@ def script_message(
 
 
 def load_episode(ctx: StageContext, script_id: int) -> Episode:
-    row = ctx.session.get_one(ScriptRow, script_id)
-    idea = ctx.session.get_one(Idea, row.idea_id)
+    return episode_from_db(ctx.session, script_id)
+
+
+def episode_from_db(session: Session, script_id: int) -> Episode:
+    row = session.get_one(ScriptRow, script_id)
+    idea = session.get_one(Idea, row.idea_id)
     return Episode(
         id=f"ep{idea.id:04d}",
         slate_id=idea.slate_id,

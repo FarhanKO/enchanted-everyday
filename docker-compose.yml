@@ -62,6 +62,7 @@ services:
     environment:
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       PREFECT_API_URL: http://prefect-server:4200/api
+      WORK_DIR: /home/app/work
       EMBEDDING_CACHE_DIR: /home/app/work/models
     volumes:
       - work:/home/app/work
@@ -72,6 +73,15 @@ services:
   bot:
     <<: *app
     command: ["python", "-m", "bot.main"]
+    # /produce and /reshoot run production in the bot: it voices, draws and renders, so it
+    # shares the worker's work volume (media, the paid-for cache, the renders it sends)
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      PREFECT_API_URL: http://prefect-server:4200/api
+      WORK_DIR: /home/app/work
+      EMBEDDING_CACHE_DIR: /home/app/work/models
+    volumes:
+      - work:/home/app/work
     depends_on:
       migrate: { condition: service_completed_successfully }
 

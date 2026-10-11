@@ -24,6 +24,14 @@
           },
           "title": "Open Threads",
           "type": "array"
+        },
+        "closes": {
+          "description": "Ids of earlier open threads (e.g. T12.1) this episode answers. A thread it only touches stays open",
+          "items": {
+            "type": "string"
+          },
+          "title": "Closes",
+          "type": "array"
         }
       },
       "required": [

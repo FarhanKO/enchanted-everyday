@@ -85,7 +85,7 @@ def test_the_daily_run_ends_with_a_reviewed_script(db_engine, settings, sent, em
         assert run_row.llm_cost_usd > 0
 
 
-def test_production_builds_on_the_reviewed_script(db_engine, settings, sent, embedder):
+def test_production_builds_on_the_reviewed_script(db_engine, settings, sent, embedder, fake_media):
     llm = FakeLLM()
     daily = run(DAILY, db_engine, settings, llm)
     out = run(PRODUCTION, db_engine, settings, llm)
@@ -251,7 +251,7 @@ def test_a_turned_down_story_is_never_offered_again(db_engine, settings, sent, e
 # ---------------------------------------------------------------- connected episodes
 
 
-def test_the_next_episode_reads_the_story_so_far(db_engine, settings, sent, embedder):
+def test_the_next_episode_reads_the_story_so_far(db_engine, settings, sent, embedder, fake_media):
     llm = FakeLLM()
     run(DAILY, db_engine, settings, llm)
     run(PRODUCTION, db_engine, settings, llm)  # produced, so its canon note is now the story so far
@@ -269,3 +269,13 @@ def test_the_next_episode_reads_the_story_so_far(db_engine, settings, sent, embe
         assert "<story_so_far>" in prompt and summary[:40] in prompt, role
     assert "Last 1 picks: modes narrated 1, mixed 0, dialogue 0" in prompts["story architect"]
     assert "lost-dreams thread last moved 0 pick(s) ago" in prompts["story architect"]
+
+    # day one told the season plan's first step; the thread rests on day two
+    first_architect = llm.prompts[llm.roles.index("story architect")]
+    assert 'Next step: D1 "Three falling notes"' in first_architect
+    assert 'Told so far: D1 "Three falling notes"' in prompts["story architect"]
+    assert "The thread moved in the latest pick" in prompts["story architect"]
+    # the pilot's open questions are listed with ids every later episode can close
+    question = golden()["package"]["canon"]["open_threads"][0]
+    for role, prompt in prompts.items():
+        assert "<open_threads>" in prompt and question in prompt, role

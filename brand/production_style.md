@@ -84,7 +84,9 @@ Faces drifting between shots is the most common failure in AI-illustrated storie
 ## 4. Narration
 
 - **Voice:** intimate, calm, low energy, emotionally present. A secret told at 2 AM, not an announcement.
-- **Pace:** 115-125 words per minute, slower than conversation.
+- **Pace:** 115-125 words per minute, slower than conversation. The voice stage measures every line and slows any
+  that run fast, pitch kept (`voices.toml`: `pace_wpm`, `slow`), and adds a breath at each sentence break, so the
+  pace on screen is the pace written here, not the speech model's own.
 - **Pauses:** after the impossible statement (hook), before the reveal, and before the final line. Pauses are scripted
   (`pause_after_s`) and rendered as real silence.
 - **Point of view:** third person, with an occasional close first-person line.
@@ -112,8 +114,26 @@ Code adds both after the script's landing ([`sound.toml`](sound.toml), `[signatu
 laid under that moment: Fann hums three falling notes (low felt piano); Tina's dupatta rustles (a music box answers
 with four rising notes); the Shopkeeper's moon bell rings. Details in [`sound.toml`](sound.toml).
 
+**Music follows the story.** Every shot carries a music mood, and each run of shots with one mood plays its own
+licensed track from [`templates/music`](../templates/music/README.md), crossfading where the story turns:
+
+| Mood | Where | Sounds like |
+|---|---|---|
+| `calm` | Setting the scene, quiet nights | Soft piano lullabies |
+| `mystery` | The strange thing appears | Languid, enigmatic piano and strings |
+| `wonder` | Magic, discovery, sunlit dreams | Warm, nostalgic orchestra, harp, celesta |
+| `tension` | Consequences piling up | Dark underscore, low strings, a sombre lullaby |
+| `sorrow` | Loss, longing | Solo cello, sparse piano |
+| `warm` | The ending, hope | Bittersweet piano and strings |
+| `playful` | Light bedtime moments | Harp, cello, simple piano |
+| `none` | Where music would be too much | Silence: voice and ambience |
+
+Two to four moods an episode. No two episodes in a row share a track: the render passes over tracks heard in the last
+few episodes, so the same music never plays under every video. An episode can go without music altogether when
+that suits it better.
+
 Music cues are scripted per episode (`enter`, `swell`, `thin`, `silence`, `resolve`, `out`). All music and SFX must be
-licensed for commercial use, with the license stored on the asset row.
+licensed for commercial use, with the license stored with the track, and every post credits the tracks it used.
 
 ## 6. Subtitles
 

@@ -5,7 +5,9 @@ check     report missing settings and test the database connection
 run       run the daily flow once (optionally for --date YYYY-MM-DD)
 produce   write the storyboard and package for a day's script (optionally --date)
 redo      turn down a day's story and write the next backup (optionally --date, --note)
-serve     start the scheduled deployment (what the worker container runs)
+serve     start the scheduled deployments (what the worker container runs)
+tokens    check the Meta and YouTube logins; send fix-it steps to Telegram (--quiet: print only)
+render    voice, draw and render an episode.json to video, no database (spends up to --max-usd)
 episode   validate an episode.json and write its human-readable episode.md
 schemas   export the agent contracts as JSON Schema files to schemas/
 eval      rewrite and review every golden episode's script; compare with the last eval (costs money)
@@ -28,12 +30,13 @@ REQUIRED = {
         "telegram_bot_token",
         "telegram_owner_id",
     ],
-    "phase 2 (video)": [
+    "phase 2 (video)": ["openrouter_api_key"],  # images and voice go through OpenRouter
+    "phase 3 (publishing)": [
         "r2_account_id",
         "r2_access_key_id",
         "r2_secret_access_key",
+        "r2_public_base_url",
     ],
-    "phase 3 (publishing)": ["r2_public_base_url"],
     "monitoring": ["healthcheck_ping_url"],
 }
 
@@ -101,15 +104,89 @@ def redo(run_date: str | None, note: str | None) -> int:
 
 
 def serve() -> None:
+    from prefect import serve as serve_all
     from prefect.schedules import Cron
 
-    from engine.flows import daily_run
+    from engine.flows import daily_run, token_check
 
     settings = get_settings()
-    daily_run.serve(
-        name="daily",
-        schedules=[Cron(settings.daily_run_cron, timezone=settings.timezone)],
+    serve_all(
+        daily_run.to_deployment(
+            name="daily",
+            schedules=[Cron(settings.daily_run_cron, timezone=settings.timezone)],
+        ),
+        token_check.to_deployment(
+            name="tokens",
+            schedules=[Cron(settings.login_check_cron, timezone=settings.timezone)],
+        ),
     )
+
+
+def tokens(quiet: bool) -> int:
+    from engine.notify import alert
+    from engine.tokens import check_tokens
+
+    messages = check_tokens()
+    if not messages:
+        print("ok  Meta and YouTube logins are healthy (or not configured)")
+        return 0
+    for message in messages:
+        print(f"-- {message}\n")
+        if not quiet:
+            alert(message)
+    return 1
+
+
+def _recent_music(out_dir: Path) -> list[str]:
+    """Without a database: the tracks in the other local renders, newest first."""
+    import json
+
+    others = [
+        p for p in out_dir.parent.glob("*/music.json") if p.parent.resolve() != out_dir.resolve()
+    ]
+    heard: list[str] = []
+    for p in sorted(others, key=lambda p: p.stat().st_mtime, reverse=True):
+        heard += [m["file"] for m in json.loads(p.read_text(encoding="utf-8")) if m.get("file")]
+    return heard
+
+
+def render_file(path: str, out: str | None, max_usd: float, only: str | None) -> int:
+    import json
+    from decimal import Decimal
+
+    from engine.llm.schemas import Episode
+    from engine.media.episode import makers, produce_episode
+    from engine.media.paid import CapLedger
+
+    settings = get_settings()
+    src = Path(path)
+    ep = Episode.model_validate(json.loads(src.read_text(encoding="utf-8")))
+    ledger = CapLedger(Decimal(str(max_usd)))
+    m = makers(settings, ledger)
+    out_dir = Path(out) if out else Path(settings.work_dir) / "renders" / src.parent.name
+    try:
+        if only:  # one frame, to check the look before paying for the rest
+            shot = next(s for s in ep.storyboard.shots if s.id == only)
+            board = ep.storyboard.model_copy(update={"shots": [shot]})
+            frames = m.frames.make(board)
+            print(f"ok  {only}: {frames.shots[only]}")
+            return 0
+        voice, frames, result = produce_episode(
+            ep, out_dir, settings, m, recent_music=_recent_music(out_dir)
+        )
+        (out_dir / "music.json").write_text(json.dumps(result.qc["music"], indent=2), "utf-8")
+    finally:
+        (out_dir / "ledger.json").parent.mkdir(parents=True, exist_ok=True)
+        (out_dir / "ledger.json").write_text(json.dumps(ledger.entries, indent=2), "utf-8")
+        print(f"spent ${ledger.spent_usd:.3f} of ${max_usd:.2f}")
+    qc = result.qc
+    mark = "ok " if qc["passed"] else "-- "
+    print(f"{mark} {result.path} ({qc['duration_s']}s, {qc['size_mb']} MB)")
+    for line in qc["issues"] + qc["notes"]:
+        print(f"    {line}")
+    for m in qc["music"]:
+        print(f"    music {m['from_s']:.0f}-{m['to_s']:.0f}s {m['mood']}: {m['title']}")
+    return 0 if qc["passed"] else 1
 
 
 def episode(path: str) -> int:
@@ -190,6 +267,13 @@ def main(argv: list[str] | None = None) -> int:
     redo_p.add_argument("--date", help="run date YYYY-MM-DD (default: today in TIMEZONE)")
     redo_p.add_argument("--note", help="what to do differently, for the writer and critic")
     sub.add_parser("serve")
+    tok_p = sub.add_parser("tokens")
+    tok_p.add_argument("--quiet", action="store_true", help="print only; send nothing")
+    ren_p = sub.add_parser("render")
+    ren_p.add_argument("path", help="path to an episode.json")
+    ren_p.add_argument("--out", help="output folder (default: WORK_DIR/renders/<episode folder>)")
+    ren_p.add_argument("--max-usd", type=float, default=1.0, help="stop spending past this")
+    ren_p.add_argument("--only", help="draw just this shot (e.g. S01) to check the look")
     ep_p = sub.add_parser("episode")
     ep_p.add_argument("path", help="path to an episode.json")
     sub.add_parser("schemas")
@@ -210,6 +294,10 @@ def main(argv: list[str] | None = None) -> int:
         return redo(args.date, args.note)
     elif args.cmd == "serve":
         serve()
+    elif args.cmd == "tokens":
+        return tokens(args.quiet)
+    elif args.cmd == "render":
+        return render_file(args.path, args.out, args.max_usd, args.only)
     elif args.cmd == "episode":
         return episode(args.path)
     elif args.cmd == "schemas":

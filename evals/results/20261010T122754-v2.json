@@ -1,0 +1,18 @@
+{
+  "prompt_version": "v2",
+  "ran_at": "2026-10-10T12:27:54+00:00",
+  "pass_rate": 1.0,
+  "cases": [
+    {
+      "episode": "ep0001",
+      "valid": true,
+      "verdict": "pass",
+      "high_issues": 0,
+      "low_issues": 2,
+      "words": 134,
+      "seconds": 77.7,
+      "repairs": 0,
+      "error": null
+    }
+  ]
+}

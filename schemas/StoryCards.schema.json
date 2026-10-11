@@ -106,6 +106,12 @@
           "title": "Advances Dreams Thread",
           "type": "boolean"
         },
+        "dreams_step": {
+          "default": "",
+          "description": "When advances_dreams_thread is true: the id of the step this episode tells, from dreams_thread (e.g. D3). Empty otherwise",
+          "title": "Dreams Step",
+          "type": "string"
+        },
         "scores": {
           "$ref": "#/$defs/StoryScores"
         }

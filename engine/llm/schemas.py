@@ -24,13 +24,16 @@ from pydantic import (
 )
 
 # --- brand constants (see brand/story_bible.md and brand/production_style.md)
-PACE_WPM = 120  # bedtime narration pace
-MIN_DURATION_S, MAX_DURATION_S = 45, 90
-MIN_WORDS, MAX_WORDS = 80, 190
+PACE_WPM = 120  # bedtime narration pace; the voice stage slows each line to it (voices.toml)
+# the script's own length; the voice's breaths and the signature ending add ~6 s, so the video stays
+# within 90 s (Facebook's Reels API takes 3-90 s)
+MIN_DURATION_S, MAX_DURATION_S = 45, 84
+MIN_WORDS, MAX_WORDS = 80, 170
 MAX_HOOK_WORDS = 8  # ~3-4 s spoken; the first frame carries the image from 0 s (rule 4)
 MAX_AI_CLIPS = 2
 MAX_SPEAKERS = 3  # characters with spoken lines in one episode, besides the narrator
-MIN_SHOTS, MAX_SHOTS = 5, 14
+MIN_MIXED_CHARACTER_LINES = 2  # a mixed episode lets the characters really be heard
+MIN_SHOTS, MAX_SHOTS = 5, 16  # a picture for every event (2026-10-12)
 DURATION_TOLERANCE_S = 10  # storyboard length vs. estimated narration length
 BEAT_ORDER = ("hook", "mystery", "connection", "cost", "reveal", "landing")
 BANNED_STYLE_TERMS = (
@@ -83,6 +86,9 @@ Overlay = Literal[
     "rain_glass", "rain", "fireflies", "dust_motes", "steam", "film_grain", "light_leak"
 ]
 CueAction = Literal["enter", "swell", "thin", "silence", "resolve", "out"]
+# the music under a shot; the render picks a licensed track per run of shots with one mood
+# (templates/music/library.toml) and never the same one twice in a row across episodes
+MusicMood = Literal["none", "calm", "wonder", "mystery", "tension", "sorrow", "warm", "playful"]
 
 Slug = Annotated[str, StringConstraints(pattern=r"^[a-z0-9_]+$")]
 Score = Annotated[float, Field(ge=0, le=10)]
@@ -151,6 +157,11 @@ class StoryCard(_Strict):
     )
     advances_dreams_thread: bool = Field(
         description="True if this episode moves Fann's lost-dreams storyline forward"
+    )
+    dreams_step: str = Field(
+        default="",  # cards written before the season plan have none
+        description="When advances_dreams_thread is true: the id of the step this episode tells, "
+        "from dreams_thread (e.g. D3). Empty otherwise",
     )
     scores: StoryScores
 
@@ -255,6 +266,30 @@ def check_speakers(mode: str, script: Script) -> None:
         )
 
 
+# a narrator line quoting someone: "This one," she said
+_QUOTE = re.compile(r"[\"“”][^\"“”]{2,}[\"“”]")
+
+
+def check_voicing(mode: str, script: Script) -> None:
+    """Characters are heard in their own voices: the narrator never quotes them, and a mixed
+    episode gives them enough lines to be heard. Checked on new scripts only, so older episodes
+    still load. Raises ValueError with what to fix."""
+    if mode != "narrated":
+        for line in script.lines:
+            if line.speaker == "narrator" and _QUOTE.search(line.text):
+                raise ValueError(
+                    f"the narrator quotes a character in {line.text!r}: give the quoted words "
+                    "their own line, spoken by that character, and keep the narration around it"
+                )
+    if mode == "mixed":
+        said = sum(line.speaker != "narrator" for line in script.lines)
+        if said < MIN_MIXED_CHARACTER_LINES:
+            raise ValueError(
+                f"mode is mixed but characters speak {said} line(s); give them at least "
+                f"{MIN_MIXED_CHARACTER_LINES}, at the moments that matter most"
+            )
+
+
 # ============================================================ 3. storyboard (visual director)
 
 
@@ -303,6 +338,13 @@ class Shot(_Strict):
     )
     overlays: list[Overlay]
     sfx: list[str]
+    music: MusicMood = Field(
+        default="calm",  # storyboards written before music moods have none
+        description="The music under this shot: calm (setting the scene, quiet nights), wonder "
+        "(discovery, magic, sunlit dreams), mystery (the strange thing appears), tension "
+        "(consequences piling up), sorrow (loss, longing), warm (the ending, hope), playful "
+        "(light bedtime moments), or none (silence: the voice and ambience carry it)",
+    )
 
     @property
     def end_s(self) -> float:
@@ -430,6 +472,11 @@ class CanonNote(_Strict):
     open_threads: list[str] = Field(
         description="Questions left open that a later episode could pick up"
     )
+    closes: list[str] = Field(
+        default_factory=list,  # notes written before the open-threads list have none
+        description="Ids of earlier open threads (e.g. T12.1) this episode answers. A thread it "
+        "only touches stays open",
+    )
 
 
 class Package(_Strict):
@@ -447,7 +494,7 @@ class Package(_Strict):
 
 class CriticIssue(_Strict):
     area: Literal["story", "script", "visual", "sound", "package", "policy"]
-    rule: int = Field(ge=0, le=12, description="Story bible rule: 1-7 core, 8-12 craft, 0 for none")
+    rule: int = Field(ge=0, le=14, description="Story bible rule: 1-7 core, 8-14 craft, 0 for none")
     problem: str
     fix: str
     severity: Literal["low", "high"]

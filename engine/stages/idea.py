@@ -14,7 +14,8 @@ from pathlib import Path
 
 from sqlalchemy import select
 
-from engine.canon import recent_mix, story_so_far
+from engine.canon import load as load_canon
+from engine.canon import recent_mix
 from engine.db.models import DiscoveryItem, Idea
 from engine.embeddings import get_embedder
 from engine.llm.schemas import StoryCard
@@ -111,13 +112,14 @@ def run(ctx: StageContext) -> dict:
         .limit(RECENT_TITLES)
     ).all()
 
-    studio = Studio(ctx.llm_json, Path(ctx.settings.brand_dir))
+    brand_dir = Path(ctx.settings.brand_dir)
+    studio = Studio(ctx.llm_json, brand_dir)
     cards = studio.cards(
         candidates,
         new=max(0, MIN_CARDS - len(candidates)),
         universe=universe,
         recent_titles=recent,
-        canon=story_so_far(ctx.session),
+        canon=load_canon(ctx.session, brand_dir),
         mix=recent_mix(ctx.session),
     )
 

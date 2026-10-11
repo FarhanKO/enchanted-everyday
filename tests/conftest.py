@@ -39,3 +39,51 @@ def db_engine():
 
     yield engine
     engine.dispose()
+
+
+@pytest.fixture
+def fake_media(monkeypatch, tmp_path, settings):
+    """Production's media stages with free, offline stand-ins: fake voice and frames, a render
+    that only writes placeholder files, and Telegram videos captured instead of sent."""
+    from decimal import Decimal
+
+    from engine.media.episode import Makers
+    from engine.media.images import FrameMaker
+    from engine.media.render import RenderResult
+    from engine.media.voice import VoiceMaker
+    from engine.stages import media
+    from tests.fakes_media import fake_image, fake_speech
+
+    settings.work_dir = str(tmp_path / "work")
+    brand = ROOT / "brand"
+    cache = tmp_path / "work" / "cache"
+
+    def makers(_settings, ledger, client=None):
+        return Makers(
+            VoiceMaker(fake_speech, ledger, brand, cache / "voice"),
+            FrameMaker(
+                fake_image, ledger, brand, cache / "images", "google/gemini-nano-banana-2.1"
+            ),
+        )
+
+    def render_episode(ep, voice, frames, out_dir, _settings):
+        out_dir.mkdir(parents=True, exist_ok=True)
+        for name in ("episode.mp4", "preview.mp4", "thumbnail.jpg"):
+            (out_dir / name).write_bytes(b"x")
+        qc = {"passed": True, "issues": [], "notes": [], "duration_s": voice.duration_s,
+              "lufs": -14.0, "true_peak_db": -1.5, "size_mb": 30.0}  # fmt: skip
+        return RenderResult(
+            out_dir / "episode.mp4", out_dir / "preview.mp4", out_dir / "thumbnail.jpg",
+            voice.duration_s, qc,
+        )  # fmt: skip
+
+    videos: list[dict] = []
+
+    def send_video(path, caption="", buttons=None, _settings=None, **_):
+        videos.append({"path": path, "caption": caption, "buttons": buttons})
+        return 100 + len(videos)
+
+    monkeypatch.setattr(media, "makers", makers)
+    monkeypatch.setattr(media, "render_episode", render_episode)
+    monkeypatch.setattr(media, "send_video", send_video)
+    return {"videos": videos, "cost_per_image": Decimal("0.04")}

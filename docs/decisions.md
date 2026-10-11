@@ -9,7 +9,7 @@ The architecture is settled (see `adr/`). This file tracks the content decisions
 | Language | **English** | 2026-10-01 | |
 | Story structure | **Three universes**: Urban Fairy Tales 40%, Emotional Fairy Tales 30%, Bedtime Fables 30% | 2026-10-01 | Replaces the brief's 5 pillars / 2 lanes; keeps its 70/30 split. Shares live in `engine/stages/discovery.py` |
 | Core creative rules | **Your seven rules** (+5 craft rules from the brief) | 2026-10-01 | Rules 4 and 6 enforced in code |
-| Voice | **ElevenLabs Eleven v4 built-in voices through OpenRouter** (same key, ~$0.04 an episode, no subscription). Cast in `brand/voices.toml`: narrator George, Fann Brian, Tina Jessica, Shopkeeper Lily, children Laura/Liam pitch-lifted | 2026-10-10 | Built-in voices can't be cloned or tuned through OpenRouter; your own clone stays possible later with a direct ElevenLabs key. ElevenLabs retires its default voices after 2026-12-31, so expect to re-pick then. Disclose the synthetic voice on every post |
+| Voice | **ElevenLabs Eleven v4 built-in voices through OpenRouter** (same key, ~$0.04 an episode, no subscription). Cast in `brand/voices.toml`: narrator Bill, Fann Adam, Tina Jessica, Shopkeeper Lily, children Laura/Liam pitch-lifted | 2026-10-10 | Built-in voices can't be cloned or tuned through OpenRouter; your own clone stays possible later with a direct ElevenLabs key. ElevenLabs retires its default voices after 2026-12-31, so expect to re-pick then. Disclose the synthetic voice on every post |
 | Visual style | **AI-illustrated painterly frames** (night and day poles), code-animated drift, at most 2 AI video clips per episode | 2026-10-01 | Follows from the niche |
 | Image model | **Nano Banana 2.1** (`google/gemini-nano-banana-2.1`) via OpenRouter; Nano Banana 2 as fallback | 2026-10-10 | Successor to Nano Banana 2 and Pro, with reference-image editing for locked characters, at half NB2's image price (~$0.04 a frame vs ~$0.08). Released 2026-10-06, so A/B it against NB2 on the cast sheet before locking |
 | Video model | **Kling 3.0 Pro** (Kling Open Platform API) for the at most 2 AI clips per episode | 2026-10-10 | "Kimi" is Moonshot's text model; Kling is the video one. Resellers quote $0.06-0.58 per second, so confirm the official price; ~10 s a day dominates the per-episode cost |
@@ -97,3 +97,43 @@ on-time KPI then measures scheduled slots, not calendar days.
 - **No named styles:** prompts never name studios or artists. Validation rejects them (`BANNED_STYLE_TERMS`).
   The references are described by attributes instead.
 - **Children:** some stories feature children (Bedtime Fables). Keep them safe and dignified. No peril as a hook.
+
+## Phase 2 build choices (2026-10-11)
+
+Engineering defaults for voice, frames and render. Change any of them if you disagree.
+
+| Choice | Default | Why |
+|---|---|---|
+| Voice | Every line voiced on its own in its speaker's voice (`brand/voices.toml`); the line's delivery note picks an Eleven v4 tag (`[softly]`, `[whispers]`, `[slowly]`, ...); TTS lead-in silence trimmed so the scripted pauses are the only pauses | Exact line timings: shots and captions follow the real audio, not an estimate |
+| Frames | One Nano Banana 2.1 frame per shot plus the cover, 1K, upscaled locally; every cast member conditioned on their approved references (Fann: `portrait_v1` only, since `sheet_v1` has text labels); a supporting character seen twice or more gets a portrait first | Faces and outfits held across the episode (pilot: Fann and the Shopkeeper consistent in all 12 frames) |
+| Paying once | Every image and line cached on the request that made it; each purchase booked on the assets table the moment it's bought; Nano Banana 2 as the fallback model | A retry, a re-render or a reshoot never pays twice, and the daily cap counts everything |
+| Motion | Each frame drifts 4-8% (the shot's camera), 0.8 s crossfades, faint film grain and vignette. `ai_clip` shots render as still drift; AI video stays off | The house style is restraint, and it costs nothing |
+| Captions | Lora SemiBold 64 px, cream, centred at 72% height; 2-6 words cut at natural phrase breaks, two even lines of at most 26 characters; a wide soft dark halo instead of a box or outline | Readable over glowing jars and pale sheets (the 6 px shadow in the style guide wasn't) |
+| Sound | Voice; one ambience bed per shot from its sfx (rain, sea, wind or room tone); the bell, Fann's three falling notes and Tina's music box made in code; a licensed music bed if `templates/music` has one, ducked ~8 dB under the voice and shaped by the cues; loudness -14 LUFS, -1 dBTP | Sounds made in code are ours outright; music needs a license, so none is invented |
+| Approval | The 720p preview in Telegram with Approve / Skip; `/reshoot S03 [note]` redraws one frame and re-renders, and the replaced video can't be approved; Approve sends the posting kit | Phase 2's exit check is a video posted by hand on all four |
+
+**Spend, measured on the pilot (s000):** 12 frames and the cover cost $0.50 and the voice $0.04, so about
+**$0.55 of media per episode** on top of ~$0.55 of writing: about $1.10 an episode, ~$19 a month at 4 a week. A
+reshoot is $0.04. The cheapest lever left is fewer shots: 8 frames instead of 12 saves ~$0.16 an episode.
+
+**Time:** the pilot's first full run took 4 minutes with frames drawn one after another; they are now drawn 4 at a
+time. The render alone is about 75 seconds for an 80-second episode on the local PC. Estimate from `/produce` to the
+video: about 6 minutes (writing ~3, voice and frames ~1.5, render ~1.5).
+
+## Slower stories, the characters' own voices, and music (2026-10-12)
+
+Farhan watched the pilot and found three problems: no voice but the narrator's, a story that felt rushed and unclear,
+and no background music. He kept the 45-90 second length.
+
+| Problem | Cause | Change |
+|---|---|---|
+| Rushed | Eleven v4 read at ~155 wpm while the scripts were timed at 120, and the pilot packed six story turns into 87 s | Every line is measured and slowed to its speaker's pace with the pitch kept (`brand/voices.toml`: `pace_wpm`, `slow`, `min_tempo`), with a breath at each sentence break. New rules 13 (clarity) and 14 (at most five events), and "Telling it slowly" in the story bible: set up before the magic, one event per line, consequences one at a time, an ending that settles the story |
+| Unclear | Rule 3 ("never explain everything") pushed writers to skip steps | Rule 3 now reads "never explain the magic; always make the story clear". The beats were re-described as a told-aloud build-up: legend, ordinary life, the discovery, the choice, consequences, the turn, a proper ending. The critic now retells the story in five sentences and flags a gap |
+| One voice | The pilot was `narrated`, and the mode mix aimed at 40% narrated | `mixed` is the default (~65%), narrated ~15% (only when nobody would speak). The narrator never quotes a character, and a mixed script gives the characters at least two lines (both checked in code) |
+| No music | The library was empty | 28 Scott Buckley tracks (CC BY 4.0) tagged by mood. Every shot carries a music mood; each run of one mood gets its own track, crossfaded, never a track heard in the last ~4 episodes, and `none` means no music. Every post carries the tracks' credit line |
+
+To keep the video within Facebook's 90-second Reels limit once the breaths and the ending are added, a script may
+now run 45-84 s (was 90), and a storyboard may have up to 16 shots (was 14), so each event gets its own picture.
+Prompts are v4. The pilot was rewritten under these rules (mixed: the Shopkeeper and Fann speak; the losses come
+one by one; he walks home humming). The girl dreaming his dreams is now seen from behind with her face hidden,
+since canon makes her Tina (the first cut drew a nine-year-old).

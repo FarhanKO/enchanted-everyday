@@ -40,4 +40,7 @@ plainly, with names:
 - `changes`: facts that are now true and must not be contradicted: an object someone now has, a place they've been,
   a promise made, a glimpse of the other lead. Only what the episode actually shows.
 - `open_threads`: questions the episode leaves open that a later one could pick up. Include any step in Fann's
-  lost-dreams thread.
+  lost-dreams thread. Name invented details exactly (the place, the object, the stranger's name), so a later
+  episode can reuse them.
+- `closes`: ids from `<open_threads>` that this episode answers. Only a thread the episode truly answers; one it
+  only touches or deepens stays open. Lost-dreams threads stay open. Usually empty.
