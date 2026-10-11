@@ -1,4 +1,6 @@
-# Story bible: Modern Fairy Tales for Sleepless Souls
+# Story bible: The Enchanted Everyday
+
+Channel: **The Enchanted Everyday** (YouTube @TheEnchantedEveryday). Tagline: *Modern fairy tales for sleepless souls.*
 
 This file is the creative constitution. Every story agent gets it as a system prompt, so keep it short and
 concrete. Source: `modern_fairy_tales_creative_brief.pdf` (V1, 2026).
