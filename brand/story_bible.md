@@ -13,7 +13,8 @@ Fantasy is the wrapper. Emotion is the product.
 - **Audience:** teens, young adults and adults who want a feeling, a question, or a small escape at 1:30 AM. Not children's content by default.
 - **Mix:** three universes: 40% Urban Fairy Tales, 30% Emotional Fairy Tales, 30% Bedtime Fables
   (the brief's 70% darker / 30% cozy split).
-- **Length:** 45-90 seconds (short form). Long-form collections come later.
+- **Length:** 45-90 seconds (short form), ending included. Long-form collections come later. One story told
+  slowly beats three told fast (see "Telling it slowly").
 - **Language:** English. Simple enough to follow half-asleep; the images carry the depth.
 
 ## The five pillars
@@ -45,7 +46,9 @@ These seven decide whether a story is ours. The critic cites them by number.
 1. **Every story must contain a human emotion.** The emotion comes before any fantasy mechanic.
 2. **Magic must represent or amplify that emotion.** Selling dreams *is* exhaustion; a lie becoming a bird *is* guilt
    you can't take back. Magic never exists only because it looks cool.
-3. **Never explain everything.** Answer the mystery enough to satisfy, then stop. Leave room for interpretation.
+3. **Never explain the magic; always make the story clear.** What happens, to whom, and how it ends must be plain
+   to someone half-asleep. What the magic is, how it works, and what it all meant stay open. Answer the mystery
+   enough to satisfy, then stop.
 4. **The first 3 seconds must create curiosity.** The first frame is an impossible or contradictory image, and the
    first line (8 words at most) asks a question the viewer can't ignore.
 5. **Every story needs at least one memorable image:** a jar of light, a door that wasn't there, a letter under a tree.
@@ -62,26 +65,46 @@ These seven decide whether a story is ours. The critic cites them by number.
 10. No generic names, generic castles, generic magic systems, or generic inspirational language.
 11. Keep visual continuity: lighting, wardrobe, proportions, props and recurring symbols persist.
 12. No graphic violence, cynical shock, or manipulative tragedy as the attention engine.
+13. **Clarity:** a viewer half-asleep could retell the story in order: who it was, what they wanted, what they
+    did, what it cost, how it ended. If a step would leave them asking "wait, what happened?", show it.
+14. **Pace:** at most five story events (moments where something changes), each given its own line and its own
+    picture, with room for the lead to react before the next. Never two events in one sentence.
 
 Rules 4 and 6 are also checked in code (`engine/llm/schemas.py`): an over-long hook line or a moralising line fails
-validation before a human ever sees it.
+validation before a human ever sees it. So are the voices: a narrator line that quotes a character, or a mixed
+script where the characters barely speak, goes back to the writer.
 
 ## The episode formula
 
-**Beautiful -> Curious -> Tense -> Emotional -> Quiet**
+**Beautiful -> Curious -> Tense -> Emotional -> Quiet**, built up step by step, the way a fairy tale is told aloud:
 
 | Beat | Time | Job |
 |---|---|---|
-| hook | 0-3 s (first line) | A question that cannot be ignored |
-| mystery | to ~15 s | Add one contradiction or missing piece |
-| connection | to ~35 s | Show what the protagonist wants or fears |
-| cost | to ~55 s | Make the discovery matter emotionally |
-| reveal | to ~75 s | Reframe the mystery without cheapening it |
-| landing | to 90 s | An image, choice or line that echoes |
+| hook | 0-5 s (first line) | The legend or the strange promise, in one line: a question that cannot be ignored ("They say a shop opens at midnight that buys what you can't afford to lose.") |
+| mystery | to ~20 s | The ordinary world first: who the lead is, where, what they carry. Then the strange thing appears, and we watch them find it |
+| connection | to ~38 s | What they want or need, said plainly, and the choice they make: the door, the bargain, the first step. A character says it in their own voice |
+| cost | to ~60 s | What the choice does, one consequence at a time, each a concrete image, each a little stranger or heavier than the last. The music turns tense here |
+| reveal | to ~75 s | The turn: what the lead realises, fears or tries to undo. The mystery reframed, never explained away |
+| landing | to the end | A proper ending: the lead's last choice settles the story, then one image that echoes. The viewer knows how it ended; what it meant stays theirs |
 
 **Daily-life stories read the same beats more gently:** hook = an ordinary moment with one strange detail; mystery =
 the detail grows; connection = what the lead quietly wants today; cost = a small hesitation or a kindness that costs
 a little; reveal = a small wonder; landing = an image to carry. No big twist, no danger.
+
+### Telling it slowly
+
+The pilot's first cut felt rushed: too many turns in too few lines, a reveal and an ending squeezed into seconds.
+So:
+
+- **One story, in order.** At most five events (rule 14). Cut a sixth rather than speed up the other five.
+- **Set up before the magic.** We meet the person and their trouble before the impossible thing arrives, so the
+  magic lands on someone we already care about.
+- **One event, one moment.** Each event gets its own line, its own picture and a breath after it. Consequences come
+  one by one, never as a list.
+- **Let them react.** After each turn, one short line of what the lead feels or does: a hand on a jar, a breath held.
+- **Characters speak at the turns.** The offer, the choice, the plea: we hear them say it (mode `mixed`). The
+  narrator never quotes anyone.
+- **End the story you started.** The landing resolves what the hook promised. Open meaning, not an open plot.
 
 Writing principles:
 - Simple language that keeps the emotion intact
@@ -128,12 +151,14 @@ Every story belongs to exactly one. Each is a repeatable format with its own pro
 
 | Mode | When | Who speaks | Target share |
 |---|---|---|---|
-| `narrated` | The story is an event as a whole | The narrator only | ~40% |
-| `mixed` | The narrator carries it; a few lines need the characters' own voices | Narrator and characters | ~40% |
+| `mixed` | The default: the narrator carries the story, and the characters speak at the turns that matter | Narrator and characters | ~65% |
 | `dialogue` | A small moment showing characters interacting | Characters only | ~20% |
+| `narrated` | A story where nobody would speak: a bedtime fable of sky, sea or an animal; a wordless moment | The narrator only | ~15% |
 
-At most three characters speak in one episode. Whoever speaks is on screen while they speak. Every mode ends with the
-narrator's signature line.
+Hearing the characters makes a story feel real (Farhan, 2026-10-12: the narrated pilot had "no other person's
+voice"). In a mixed episode the characters speak at least two lines, at the offer, the choice or the plea. The
+narrator never quotes anyone: if someone says something, we hear them say it. At most three characters speak in one
+episode. Whoever speaks is on screen while they speak. Every mode ends with the narrator's signature line.
 
 **Telling urban from emotional:** if the hook is a *mystery* ("Every night, someone left flowers outside his door"),
 it's urban. If the hook is a *bargain or rule* ("A stranger offered him $1 million for one memory"), it's emotional.
@@ -200,7 +225,7 @@ the oldest one: a boy, a giant tree, a sea so blue it hurt. His sold dreams are 
 strangers. The girl who couldn't sleep, who was dreaming his dreams and smiling, is Tina. Viewers are never told;
 it surfaces slowly through small signs (she hums his three notes without knowing why, she dreams of a tree she's
 never seen). The thread moves in about one episode in five, always by a small step, never resolved quickly. Never
-two thread episodes in a row.
+two thread episodes in a row. The steps, in order, are in [`dreams_thread.md`](dreams_thread.md).
 
 **The Shopkeeper's moon bell closes every episode,** as if she watches over every story. Never say so.
 

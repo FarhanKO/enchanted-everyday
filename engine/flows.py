@@ -3,6 +3,7 @@
 daily_run   (scheduled) discovery to the reviewed script in Telegram; after a /redo
             (engine/redo.py) it writes, reviews and sends the next backup story
 produce     (on the owner's request) storyboard and package for a day's script
+token_check (scheduled) Meta and YouTube login health; fix-it steps to Telegram
 """
 
 from __future__ import annotations
@@ -97,6 +98,17 @@ def produce(run_date: str | None = None) -> dict:
         raise
     log.info("production complete", extra={"run_date": str(day), "results": results})
     return results
+
+
+@flow(name="token-check")
+def token_check() -> list[str]:
+    from engine.tokens import check_tokens
+
+    messages = check_tokens()
+    for message in messages:
+        alert(message)
+    log.info("token check complete", extra={"warnings": len(messages)})
+    return messages
 
 
 def run_status(run_date: date) -> dict | None:

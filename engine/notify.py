@@ -7,7 +7,9 @@ send_message() and send_document() raise, for callers that must know delivery wo
 
 from __future__ import annotations
 
+import json
 import logging
+from pathlib import Path
 from typing import Any
 
 import httpx
@@ -28,17 +30,18 @@ class TelegramNotConfigured(TelegramError):
     pass
 
 
-def _post(method: str, s: Settings, **kwargs: Any) -> None:
+def _post(method: str, s: Settings, **kwargs: Any) -> dict:
     if not (s.telegram_bot_token and s.telegram_owner_id):
         raise TelegramNotConfigured("TELEGRAM_BOT_TOKEN and TELEGRAM_OWNER_ID are not set")
     url = f"https://api.telegram.org/bot{s.telegram_bot_token.get_secret_value()}/{method}"
     try:
-        resp = httpx.post(url, timeout=30, **kwargs)
+        resp = httpx.post(url, timeout=300, **kwargs)  # long enough for a 50 MB upload
     except httpx.HTTPError as e:
         # httpx puts the URL, and so the bot token, in its messages; never let it reach logs
         raise TelegramError(f"{method} failed: {type(e).__name__}") from None
     if resp.is_error:
         raise TelegramError(f"{method} failed: HTTP {resp.status_code} {resp.text[:300]}")
+    return resp.json().get("result") or {}
 
 
 def send_message(text: str, settings: Settings | None = None) -> None:
@@ -57,6 +60,45 @@ def send_document(
         data={"chat_id": s.telegram_owner_id, "caption": caption[:CAPTION_LIMIT]},
         files={"document": (filename, content)},
     )
+
+
+def send_video(
+    path: Path,
+    caption: str = "",
+    buttons: list[list[dict]] | None = None,
+    settings: Settings | None = None,
+    *,
+    width: int = 720,
+    height: int = 1280,
+    duration: float | None = None,
+) -> int:
+    """Upload a video (Bot API limit: 50 MB) with optional inline buttons; return the message id."""
+    s = settings or get_settings()
+    data: dict[str, Any] = {
+        "chat_id": s.telegram_owner_id,
+        "caption": caption[:CAPTION_LIMIT],
+        "supports_streaming": "true",
+        "width": width,
+        "height": height,
+    }
+    if duration:
+        data["duration"] = round(duration)
+    if buttons:
+        data["reply_markup"] = json.dumps({"inline_keyboard": buttons})
+    with path.open("rb") as f:
+        result = _post("sendVideo", s, data=data, files={"video": (path.name, f, "video/mp4")})
+    return int(result["message_id"])
+
+
+def send_photo(path: Path, caption: str = "", settings: Settings | None = None) -> None:
+    s = settings or get_settings()
+    with path.open("rb") as f:
+        _post(
+            "sendPhoto",
+            s,
+            data={"chat_id": s.telegram_owner_id, "caption": caption[:CAPTION_LIMIT]},
+            files={"photo": (path.name, f)},
+        )
 
 
 def alert(text: str, settings: Settings | None = None) -> bool:

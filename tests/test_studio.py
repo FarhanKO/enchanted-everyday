@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 
+from engine.canon import Canon, OpenThread
 from engine.llm.client import LLMOutputInvalid
 from engine.llm.schemas import CriticReport, Script, Storyboard, StoryCard
 from engine.studio import MAX_ATTEMPTS, Candidate, Studio, revision_notes
@@ -153,9 +154,11 @@ def test_review_sees_only_the_story(ep):
 
 def test_a_script_that_breaks_its_mode_is_repaired(ep):
     card = StoryCard.model_validate({**ep["card"], "mode": "mixed"})
-    fixed = copy.deepcopy(ep["script"])
-    fixed["beats"][2]["lines"][0]["speaker"] = "fann"
-    s, call = studio(ep["script"], fixed)  # first answer: narrator only
+    narrated = copy.deepcopy(ep["script"])
+    for beat in narrated["beats"]:
+        for line in beat["lines"]:
+            line["speaker"] = "narrator"
+    s, call = studio(narrated, ep["script"])  # first answer: narrator only
 
     out = s.script(card)
 
@@ -165,7 +168,7 @@ def test_a_script_that_breaks_its_mode_is_repaired(ep):
 
 
 def test_story_so_far_reaches_every_story_agent(ep):
-    canon = ["The Man Who Sold His Dreams: Fann kept his oldest dream."]
+    canon = Canon(episodes=["The Man Who Sold His Dreams: Fann kept his oldest dream."])
     card = StoryCard.model_validate(ep["card"])
     draft = Script.model_validate(ep["script"])
     cards = {"cards": [{"ref": "a", "card": ep["card"]}]}
@@ -178,3 +181,70 @@ def test_story_so_far_reaches_every_story_agent(ep):
     for prompt in call.prompts:
         assert "<story_so_far>\n- The Man Who Sold His Dreams" in prompt["user"]
     assert "<recent_mix>" in call.prompts[0]["user"]
+
+
+THREAD = OpenThread("T3.1", "The Lamp That Kept Time", "Who wound the lamp?")
+
+
+def _canon(next_step: str | None = "D2") -> Canon:
+    told = 'Told so far: D1 "Three falling notes" in "Kettle".'
+    today = f"Next step: {next_step}." if next_step else "The thread moved in the latest pick."
+    return Canon(
+        threads=[THREAD],
+        dreams=f"{told}\n{today}",
+        next_step=next_step,
+        thread_ids=frozenset({THREAD.id}),
+    )
+
+
+def _cards(ep, **card):
+    return {"cards": [{"ref": "a", "card": {**ep["card"], **card}}]}
+
+
+def test_open_threads_and_the_dreams_thread_reach_the_architect(ep):
+    s, call = studio(_cards(ep, advances_dreams_thread=False, dreams_step=""))
+    s.cards([Candidate("a", "t", "p", "urban")], canon=_canon())
+    user = call.prompts[0]["user"]
+    assert "<open_threads>\n- T3.1 (The Lamp That Kept Time): Who wound the lamp?" in user
+    assert "<dreams_thread_so_far>\nTold so far: D1" in user
+    assert "<story_so_far>" not in user  # empty sections are left out
+    assert "<dreams_thread>" in call.prompts[0]["system"]  # the season plan itself
+
+
+def test_a_card_that_moves_the_thread_tells_todays_step(ep):
+    s, call = studio(
+        _cards(ep, advances_dreams_thread=True, dreams_step="D5"),
+        _cards(ep, advances_dreams_thread=True, dreams_step="D2"),
+    )
+    out = s.cards([Candidate("a", "t", "p", "urban")], canon=_canon("D2"))
+    assert out[0].card.dreams_step == "D2"
+    assert s.repairs == 1
+    assert "tells step D2; got dreams_step 'D5'" in call.prompts[1]["user"]
+
+
+def test_the_thread_rests_the_day_after_it_moves(ep):
+    s, call = studio(
+        _cards(ep, advances_dreams_thread=True, dreams_step="D2"),
+        _cards(ep, advances_dreams_thread=False, dreams_step=""),
+    )
+    out = s.cards([Candidate("a", "t", "p", "urban")], canon=_canon(None))
+    assert not out[0].card.advances_dreams_thread
+    assert "the thread rests today" in call.prompts[1]["user"]
+
+
+def test_the_packager_closes_only_open_threads(ep):
+    def pkg(*closes):
+        p = copy.deepcopy(ep["package"])
+        p["canon"]["closes"] = list(closes)
+        return p
+
+    s, call = studio(pkg("T9.9"), pkg("T3.1"))
+    out = s.package(
+        StoryCard.model_validate(ep["card"]),
+        Script.model_validate(ep["script"]),
+        Storyboard.model_validate(ep["storyboard"]),
+        _canon(),
+    )
+    assert out.canon.closes == ["T3.1"]
+    assert "<open_threads>\n- T3.1" in call.prompts[0]["user"]
+    assert "threads that aren't open: ['T9.9']" in call.prompts[1]["user"]

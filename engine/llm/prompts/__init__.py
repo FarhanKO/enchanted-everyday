@@ -17,17 +17,17 @@ from typing import get_args
 
 from engine.llm import schemas as s
 
-PROMPT_VERSION = "v2"  # v2: story types, modes and speakers, connected episodes
+PROMPT_VERSION = "v4"  # v4: told slowly and clearly, characters' own voices, music moods
 
 HERE = Path(__file__).parent
 
 # role -> brand files appended after the role prompt, in order
 ROLES: dict[str, tuple[str, ...]] = {
-    "story_architect": ("story_bible.md", "cast.toml"),
-    "script_writer": ("story_bible.md", "production_style.md", "voices.toml"),
+    "story_architect": ("story_bible.md", "dreams_thread.md", "cast.toml"),
+    "script_writer": ("story_bible.md", "dreams_thread.md", "production_style.md", "voices.toml"),
     "visual_director": ("story_bible.md", "production_style.md", "cast.toml", "sound.toml"),
     "packager": ("story_bible.md", "production_style.md"),
-    "critic": ("story_bible.md", "cast.toml"),  # reviews card + script only
+    "critic": ("story_bible.md", "dreams_thread.md", "cast.toml"),  # reviews card + script only
 }
 
 NUMBERS = {
@@ -42,6 +42,7 @@ NUMBERS = {
     "max_ai_clips": s.MAX_AI_CLIPS,
     "tolerance_s": s.DURATION_TOLERANCE_S,
     "max_speakers": s.MAX_SPEAKERS,
+    "min_mixed_lines": s.MIN_MIXED_CHARACTER_LINES,
     "speakers": ", ".join(f"`{x}`" for x in get_args(s.Speaker)),
 }
 

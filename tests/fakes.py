@@ -72,6 +72,7 @@ class FakeLLM:
         refs = re.findall(r"^- ref (\S+) ", user, re.MULTILINE)
         new = re.search(r"Also write (\d+) new", user)
         refs += ["new"] * (int(new.group(1)) if new else 0)
+        step = re.search(r"^Next step: (D\d+)", user, re.MULTILINE)  # obeys the season plan
         cards = []
         for n, ref in enumerate(refs):
             card = copy.deepcopy(self.ep["card"])
@@ -79,6 +80,8 @@ class FakeLLM:
             card["premise"] = f"Premise number {n} about {ref}, entirely different from the rest."
             card["scores"] = {"hook": 5, "emotion": 5, "visual": 5, "brand_fit": 5}
             card["scores"].update(self.scores.get(ref, {}))
+            card["advances_dreams_thread"] = bool(step)
+            card["dreams_step"] = step.group(1) if step else ""
             cards.append({"ref": ref, "card": card})
         return {"cards": cards}
 

@@ -9,7 +9,11 @@ produced today. Make each card specific enough to write from, and score it hones
 - **Candidates:** premises from the channel's slate, each with a ref and a universe.
 - Sometimes a request for **new premises** in a given universe, when the slate runs low.
 - **Recently produced titles.** Don't repeat their premise, their magic or their ending.
-- **The story so far:** what earlier episodes established. Never contradict it.
+- **The story so far:** what recent episodes established. Never contradict it.
+- **Open threads:** questions earlier episodes left open, however old, each with an id. They're the strongest
+  connections you have: a regular who sees one picked up feels rewarded for watching.
+- **The lost-dreams thread so far:** which steps of the season plan (`dreams_thread` below) have been told, and the
+  one step that may be told today, if any.
 - **The recent mix:** how recent picks split across modes and story types, and when Fann's lost-dreams thread last
   moved.
 
@@ -21,20 +25,27 @@ For every card:
 
 - **Keep the candidate's universe and the core of its premise.** Sharpen it: who the person is, what the impossible
   thing is, what it costs. `premise` is one sentence.
+- **Small enough to tell slowly** (story bible, "Telling it slowly"): one impossible thing, one choice, what it
+  costs, one ending, in at most five events. A premise that needs a second magic or a twist on top of a twist to
+  work is too big for 90 seconds: cut it down, and score it lower if it can't be.
 - **Lead:** an urban or emotional story is led by Fann or Tina (see the cast). Pick whoever fits the premise, and
   vary it against the recent titles. Adapt a premise's pronouns to the lead you choose. Bedtime fables usually use
   neither. Fann and Tina are strangers whose paths keep crossing (story bible, "Connected episodes"): they never
   formally meet, and nothing romantic is established.
 - `story_type`: `fable` for a short story whose message lives in its final image or choice; `daily` for a small
   magical moment in Fann's or Tina's ordinary day. Most picks are fables; about one in four is daily.
-- `mode`, by what the story is: an event as a whole is `narrated`; a small moment of characters interacting is
-  `dialogue`; a story that needs both is `mixed`. Steer toward the mix target using the recent mix, but never force
-  a mode the story doesn't suit.
-- `connection`: how this episode touches the shared world: a callback to the story so far, a trace of the other
-  lead, or a step in the lost-dreams thread. Every card has one, and the episode must still make full sense without
-  it.
-- `advances_dreams_thread`: true only if the episode moves Fann's lost-dreams storyline. About one pick in five;
-  never two in a row, and always a small step, never the answer.
+- `mode`: `mixed` by default: the narrator carries the story and the characters speak at the turns (the offer,
+  the choice, the plea). `dialogue` for a small moment of characters interacting. `narrated` only when nobody in the
+  story would speak: a bedtime fable of sky, sea or animals, a wordless moment. Steer toward the mix target using the
+  recent mix, but never force a mode the story doesn't suit.
+- `connection`: how this episode touches the shared world: picking up an open thread (name its id), a callback to
+  the story so far, a trace of the other lead, or a step in the lost-dreams thread. Every card has one, and the
+  episode must still make full sense without it. Prefer an open thread when one fits the premise; never bend a
+  premise to reach one.
+- `advances_dreams_thread`: true only if the episode tells the lost-dreams thread's next step, and only on a day
+  one is offered. About one pick in five; never two in a row.
+- `dreams_step`: the id of that step (e.g. `D3`) when `advances_dreams_thread` is true, else empty. Tell the step
+  as the season plan describes it, small, inside a story about something else.
 - `human_emotion` first (rule 1). `magical_element` is that emotion made literal (rule 2), and says how.
 - `visual_anchor`: one object or place concrete enough to draw and remember (rules 5 and 8).
 - `ending_image`: a final image, gesture or choice. Never a lesson (rule 6).

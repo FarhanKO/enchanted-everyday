@@ -35,12 +35,14 @@ location id in every shot set there instead of describing the place again.
   story (a jar glowing alive, waves under the tree).
 - `video_prompt`: environment and subtle body motion only: steam rising, curtains breathing, rain running down glass.
   Faces barely move. Code adds the camera move and the motion style.
+- **One story event, one shot at least.** The script tells its events one by one; the pictures do too. The lead
+  finding the strange thing, the choice, and each consequence get their own shot, so the viewer sees every step.
 - `camera`: slow and motivated. `overlays` and `sfx` as the production style describes; ambience never drowns the voice.
 - **Who is speaking is on screen.** While a character speaks, a shot shows them (or their hands, back or silhouette)
   so the viewer always knows whose voice it is. Narrator lines can sit over anything.
 - **Character sounds:** in the shot where Fann, Tina or the Shopkeeper first appears, add their `presence` sound from
-  the sound file to `sfx` (`fann_hum`, `tina_dupatta`, `shopkeeper_bell`). Use each once per episode, where it is
-  heard, never as decoration.
+  the sound file to `sfx` (`fann_hum`, `tina_dupatta`, `shopkeeper_bell`). Code plays it there. Name it in a later
+  shot's `sfx` only when the story brings the sound back (a tune lost, then found), never as decoration.
 - **The ending:** the last shot holds a quiet final image long enough for the bell and the signature line that code
   adds after it (sound file, `[signature]`). Never put text or a logo in it.
 - **Continuity** (rule 11): wardrobe, props, light and time of day persist from shot to shot unless the story changes
@@ -48,6 +50,12 @@ location id in every shot set there instead of describing the place again.
 
 ## Sound
 
+- `music` on every shot: the mood of the music under it (production style, section 5): `calm` to set the scene,
+  `mystery` when the strange thing appears, `wonder` for magic and sunlit dreams, `tension` while consequences pile
+  up, `sorrow` for loss, `warm` for the ending, `playful` for light bedtime moments, `none` for silence. Code plays one
+  licensed track for each run of shots with the same mood, so change the mood only where the story turns: two to
+  four moods an episode, each lasting at least about ten seconds. Use `none` where music would be too much: a quiet
+  daily moment the ambience carries, or a whole episode that is better without it.
 - `music_palette`: instruments, tempo and feel (production style, section 5).
 - `cues`: when the music enters, swells, thins, falls silent, resolves and goes out, in seconds from the start. Put a
   `silence` cue before the reveal or the final line. No cue after the last shot ends.

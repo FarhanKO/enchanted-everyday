@@ -13,27 +13,43 @@
 model = "elevenlabs/eleven-v4"
 fallback_model = "elevenlabs/eleven-v3"
 
+# Pace (Farhan, 2026-10-12: the pilot felt rushed). Eleven v4 reads about 155 words a minute, and
+# OpenRouter can't slow it, so each line is measured and slowed locally to its speaker's pace_wpm
+# with the pitch kept; never sped up, never below min_tempo (where speech starts to smear). A
+# role with slow = true always speaks with Eleven's [slowly] tag, which gets it near 130 wpm on
+# its own. sentence_pause_s: every sentence break inside a line lasts at least this long. Measured
+# on the pilot (2026-10-12): about 118 wpm overall, pauses included.
+pace_wpm = 125
+min_tempo = 0.8
+sentence_pause_s = 0.45
+
 [narrator]
-voice = "george"
+voice = "bill"
 backup = "brian"
-why = "British, middle-aged, warm, made for narration: the quietly confident 2 AM storyteller. Brian, deep and American, if George sounds too formal."
+slow = true
+pace_wpm = 118
+why = "Old, trustworthy and unhurried: someone who has watched this city for a long time, telling it at 2 AM. Chosen by Farhan (2026-10-12). Brian, deep and comforting, as the backup."
 sample = "[softly] There are places in this world that do not appear on any map. [short pause] Sometimes, they only open for people who are carrying something they cannot say out loud."
 
 [fann]
-voice = "brian"
-backup = "adam"
-why = "Confident and deep. American, so he never blurs with the British narrator. Adam is firmer and more commanding."
+voice = "adam"
+backup = "roger"
+pace_wpm = 128
+why = "Confident, firm and deep, and much younger than Bill, the narrator, so the two never blur. Roger, confident and more laid-back, as the backup."
 sample = "Sell my dreams? [short laugh] Fine. Name your price, and let's see if you can afford them."
 
 [tina]
 voice = "jessica"
 backup = "lily"
+pace_wpm = 128
 why = "Young, expressive and conversational: sweet, with room for shyness through [softly] and [hesitates]. Lily is warmer and more grown-up."
 sample = "[hesitates] I... I didn't think anyone would notice. [softly] But thank you. Really."
 
 [shopkeeper]
 voice = "lily"
 backup = "alice"
+slow = true
+pace_wpm = 112
 why = "Warm British narrator voice, slowed and hushed for the ageless keeper of the Midnight Shop. There is no elderly female voice among the 21."
 sample = "[slowly] Everything here costs something, dear. [short pause] Most people pay without ever noticing."
 
@@ -50,8 +66,10 @@ why = "Young and energetic, lifted +3 semitones the same way."
 sample = "I wasn't scared. [short pause] Okay, maybe a little."
 
 [old_man]
-voice = "bill"
-why = "Old, trustworthy narration voice: grandfathers, the Old Tree, anyone who has seen it all."
+voice = "george"
+slow = true
+pace_wpm = 112
+why = "Warm, British and storyteller-like: grandfathers, the Old Tree, anyone who has seen it all. Bill now narrates, so an old man who speaks gets a different voice."
 sample = "[slowly] I have watched this city grow for three hundred winters."
 
 [woman]
@@ -71,5 +89,7 @@ sample = "[low] Everyone wants something back eventually."
 
 [spirit]
 voice = "river"
+slow = true
+pace_wpm = 115
 why = "Neutral and calm, neither male nor female: the Moonkeeper, talking objects, things that aren't quite people."
 sample = "[whispers] You may borrow the light. Just return it before dawn."

@@ -1,10 +1,10 @@
 """The story studio: the agents that turn a premise into an episode.
 
-Story first: story architect -> script writer -> critic, each reading the story so far
-(engine/canon.py) so episodes connect. Production, once the owner has the
-script: visual director -> packager. Each agent returns one contract (engine/llm/schemas.py). When
-an answer breaks its contract, the agent gets its answer back with the errors and tries again, up
-to MAX_ATTEMPTS calls in all.
+Story first: story architect -> script writer -> critic, each reading the story so far, the open
+threads and the lost-dreams thread (engine/canon.py) so episodes connect. Production, once the
+owner has the script: visual director -> packager, which closes the open threads it answers. Each
+agent returns one contract (engine/llm/schemas.py). When an answer breaks its contract, the agent
+gets its answer back with the errors and tries again, up to MAX_ATTEMPTS calls in all.
 
 The studio only talks to the model through `call`, so the pipeline (StageContext.llm_json, with
 the daily spend cap) and the eval harness can each supply their own. Every call names its agent
@@ -22,6 +22,7 @@ from typing import Any, Protocol
 
 from pydantic import BaseModel
 
+from engine.canon import Canon
 from engine.llm.client import LLMOutputInvalid
 from engine.llm.prompts import system_prompt
 from engine.llm.schemas import (
@@ -38,6 +39,7 @@ from engine.llm.schemas import (
     StoryCards,
     api_schema,
     check_speakers,
+    check_voicing,
 )
 
 log = logging.getLogger(__name__)
@@ -78,8 +80,18 @@ def _notes(issues: Sequence[CriticIssue]) -> str:
     return _section("critic_notes", "\n".join(lines))
 
 
-def _canon(canon: Sequence[str]) -> str:
-    return _section("story_so_far", "\n".join(f"- {c}" for c in canon))
+def _canon(canon: Canon) -> str:
+    parts = []
+    if canon.episodes:
+        parts.append(_section("story_so_far", "\n".join(f"- {c}" for c in canon.episodes)))
+    if canon.threads:
+        lines = [f"- {t.id} ({t.episode}): {t.question}" for t in canon.threads]
+        if canon.hidden_threads:
+            lines.append(f"- ...and {canon.hidden_threads} older open thread(s), not shown.")
+        parts.append(_section("open_threads", "\n".join(lines)))
+    if canon.dreams:
+        parts.append(_section("dreams_thread_so_far", canon.dreams))
+    return "\n\n".join(parts)
 
 
 def _owner_notes(notes: Sequence[str]) -> str:
@@ -136,7 +148,7 @@ class Studio:
         new: int = 0,
         universe: str = "urban",
         recent_titles: Sequence[str] = (),
-        canon: Sequence[str] = (),
+        canon: Canon | None = None,
         mix: str = "",
     ) -> list[CandidateCard]:
         """`canon`: the story so far (engine/canon.py); `mix`: how recent picks split."""
@@ -153,8 +165,8 @@ class Studio:
             )
         if recent_titles:
             parts.append(_section("recently_produced", "\n".join(f"- {t}" for t in recent_titles)))
-        if canon:
-            parts.append(_canon(canon))
+        if canon and (block := _canon(canon)):
+            parts.append(block)
         if mix:
             parts.append(_section("recent_mix", mix))
         parts.append("Return the story cards.")
@@ -167,6 +179,8 @@ class Studio:
                 raise ValueError(f"need one card per candidate ref {refs}; got {got}")
             if sum(c.ref == "new" for c in out.cards) < new:
                 raise ValueError(f"need {new} card(s) with ref 'new'")
+            if canon is not None and canon.dreams:  # no season plan: nothing to check against
+                _check_dreams_steps(out, canon.next_step)
 
         return self._ask("story_architect", "\n\n".join(parts), StoryCards, check).cards
 
@@ -177,12 +191,12 @@ class Studio:
         previous: Script | None = None,
         notes: Sequence[CriticIssue] = (),
         owner_notes: Sequence[str] = (),
-        canon: Sequence[str] = (),
+        canon: Canon | None = None,
     ) -> Script:
         """`owner_notes`: why the owner turned down today's earlier stories (/redo)."""
         parts = [_section("story_card", _json(card))]
-        if canon:
-            parts.append(_canon(canon))
+        if canon and (block := _canon(canon)):
+            parts.append(block)
         if owner_notes:
             parts += [
                 _owner_notes(owner_notes),
@@ -200,6 +214,7 @@ class Studio:
 
         def check(out: Script) -> None:
             check_speakers(card.mode, out)
+            check_voicing(card.mode, out)
 
         return self._ask("script_writer", "\n\n".join(parts), Script, check)
 
@@ -208,7 +223,7 @@ class Studio:
         card: StoryCard,
         script: Script,
         owner_notes: Sequence[str] = (),
-        canon: Sequence[str] = (),
+        canon: Canon | None = None,
     ) -> CriticReport:
         """The story review: card and script, before any money goes into visuals."""
         parts = [
@@ -216,8 +231,8 @@ class Studio:
             _section("script", _json(script)),
             f"Spoken: {script.word_count} words, about {script.estimated_duration_s:.0f} seconds.",
         ]
-        if canon:
-            parts.append(_canon(canon))
+        if canon and (block := _canon(canon)):
+            parts.append(block)
         if owner_notes:
             parts += [
                 _owner_notes(owner_notes),
@@ -233,7 +248,7 @@ class Studio:
         script: Script,
         report: CriticReport,
         owner_notes: Sequence[str] = (),
-        canon: Sequence[str] = (),
+        canon: Canon | None = None,
     ) -> Script:
         return self.script(
             card,
@@ -267,20 +282,46 @@ class Studio:
 
         return self._ask("visual_director", user, Storyboard, check)
 
-    def package(self, card: StoryCard, script: Script, board: Storyboard) -> Package:
-        user = "\n\n".join(
-            [
-                _section("story_card", _json(card)),
-                _section("script", _json(script)),
-                _section("storyboard", _json(board)),
-                "Write the package.",
-            ]
-        )
+    def package(
+        self, card: StoryCard, script: Script, board: Storyboard, canon: Canon | None = None
+    ) -> Package:
+        """`canon`: so the canon note can close the open threads this episode answers."""
+        parts = [
+            _section("story_card", _json(card)),
+            _section("script", _json(script)),
+            _section("storyboard", _json(board)),
+        ]
+        if canon and (block := _canon(canon)):
+            parts.append(block)
+        parts.append("Write the package.")
 
         def check(pkg: Package) -> None:
             Episode(id="check", card=card, script=script, storyboard=board, package=pkg)
+            known = canon.thread_ids if canon else frozenset()
+            if unknown := sorted(set(pkg.canon.closes) - known):
+                raise ValueError(
+                    f"canon.closes names threads that aren't open: {unknown}; use ids from "
+                    "<open_threads>, or leave it empty"
+                )
 
-        return self._ask("packager", user, Package, check)
+        return self._ask("packager", "\n\n".join(parts), Package, check)
+
+
+def _check_dreams_steps(out: StoryCards, next_step: str | None) -> None:
+    """A card that moves the lost-dreams thread tells today's step, on a day it may move."""
+    for c in out.cards:
+        if not c.card.advances_dreams_thread:
+            continue
+        if next_step is None:
+            raise ValueError(
+                f"card {c.ref!r} moves the lost-dreams thread, but the thread rests today (see "
+                "<dreams_thread_so_far>); set advances_dreams_thread false and dreams_step empty"
+            )
+        if c.card.dreams_step != next_step:
+            raise ValueError(
+                f"card {c.ref!r} moves the lost-dreams thread, so it tells step {next_step}; got "
+                f"dreams_step {c.card.dreams_step!r}"
+            )
 
 
 def _repair_prompt(user: str, error: LLMOutputInvalid) -> str:

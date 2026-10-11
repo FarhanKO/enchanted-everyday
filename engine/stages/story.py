@@ -16,7 +16,8 @@ from pathlib import Path
 
 from sqlalchemy import func, select
 
-from engine.canon import story_so_far
+from engine.canon import Canon
+from engine.canon import load as load_canon
 from engine.db.models import Idea
 from engine.db.models import Script as ScriptRow
 from engine.llm.prompts import PROMPT_VERSION
@@ -31,6 +32,10 @@ MAX_REVISIONS = 1  # critic rounds after the first; each costs a rewrite and a r
 
 def _studio(ctx: StageContext) -> Studio:
     return Studio(ctx.llm_json, Path(ctx.settings.brand_dir))
+
+
+def _canon(ctx: StageContext) -> Canon:
+    return load_canon(ctx.session, Path(ctx.settings.brand_dir))
 
 
 def _card(ctx: StageContext, idea_id: int) -> StoryCard:
@@ -73,7 +78,7 @@ def _owner_notes(ctx: StageContext) -> list[str]:
 def script(ctx: StageContext) -> dict:
     idea_id = ctx.outputs["idea"]["idea_id"]
     written = _studio(ctx).script(
-        _card(ctx, idea_id), owner_notes=_owner_notes(ctx), canon=story_so_far(ctx.session)
+        _card(ctx, idea_id), owner_notes=_owner_notes(ctx), canon=_canon(ctx)
     )
     row = _new_row(ctx, idea_id, written)
     return {
@@ -90,7 +95,7 @@ def critic(ctx: StageContext) -> dict:
     card = _card(ctx, idea_id)
     draft = Script.model_validate(row.script)
     owner_notes = _owner_notes(ctx)
-    canon = story_so_far(ctx.session)
+    canon = _canon(ctx)
 
     report = studio.review(card, draft, owner_notes, canon)
     row.critic_report = report.model_dump(mode="json")
@@ -141,6 +146,7 @@ def package(ctx: StageContext) -> dict:
         _card(ctx, row.idea_id),
         Script.model_validate(row.script),
         Storyboard.model_validate(row.storyboard),
+        _canon(ctx),
     )
     row.package = pkg.model_dump(mode="json")
     return {"script_id": row.id, "title": pkg.title}

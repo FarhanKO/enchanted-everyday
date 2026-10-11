@@ -1,0 +1,278 @@
+# The licensed music beds (see README.md). One [[track]] per file in this folder.
+#
+# moods: what the track can play under, strongest first: calm, wonder, mystery, tension, sorrow,
+#        warm, playful. The storyboard gives every shot a mood; the render plays one track per run
+#        of shots with the same mood, preferring a track whose first mood it is.
+# pole:  night | day | any, the look it suits best.
+# credit: the attribution line posted with every episode that uses the track (CC BY needs it, and
+#        Scott Buckley's Content ID claims YouTube videos whose description lacks it).
+#
+# Scott Buckley's library, picked 2026-10-12 from his own descriptions for soft, drum-free,
+# fairy-tale moods: https://www.scottbuckley.com.au/library/ (CC BY 4.0, commercial use allowed
+# with credit; terms: https://www.scottbuckley.com.au/library/using-this-music/).
+
+# ---------------------------------------------------------------- calm: setting the scene
+
+[[track]]
+file = "Midvinter.mp3"
+title = "Midvinter"
+moods = ["calm", "warm"]
+pole = "night"
+note = "slow, simple lullaby for piano with soft strings"
+license = "CC BY 4.0, scottbuckley.com.au/library/midvinter, downloaded 2026-10-12"
+credit = 'Music: "Midvinter" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+[[track]]
+file = "sb_sleep_pianoonly.mp3"
+title = "Sleep (piano only)"
+moods = ["calm", "wonder"]
+pole = "night"
+note = "dreamy, floating ambient piano, like flying through a dream"
+license = "CC BY 4.0, scottbuckley.com.au/library/sleep, downloaded 2026-10-12"
+credit = 'Music: "Sleep" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+[[track]]
+file = "sb_thelongwayhome.mp3"
+title = "The Long Way Home"
+moods = ["calm", "warm"]
+pole = "any"
+note = "soft, simple nostalgic piano, almost a lullaby"
+license = "CC BY 4.0, scottbuckley.com.au/library/the-long-way-home, downloaded 2026-10-12"
+credit = 'Music: "The Long Way Home" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+[[track]]
+file = "sb_reverie.mp3"
+title = "Reverie"
+moods = ["calm", "wonder"]
+pole = "night"
+note = "intimate, dream-like effected piano, synth and strings"
+license = "CC BY 4.0, scottbuckley.com.au/library/reverie, downloaded 2026-10-12"
+credit = 'Music: "Reverie" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+[[track]]
+file = "FirstSnow.mp3"
+title = "First Snow"
+moods = ["calm", "warm"]
+pole = "night"
+note = "calm, gentle hymn for piano, strings and clarinet"
+license = "CC BY 4.0, scottbuckley.com.au/library/first-snow, downloaded 2026-10-12"
+credit = 'Music: "First Snow" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+# ---------------------------------------------------------------- wonder: discovery, magic
+
+[[track]]
+file = "EchoesOfHome.mp3"
+title = "Echoes Of Home"
+moods = ["wonder", "warm"]
+pole = "day"
+note = "warm, nostalgic orchestral, gentle"
+license = "CC BY 4.0, scottbuckley.com.au/library/echoes-of-home, downloaded 2026-10-12"
+credit = 'Music: "Echoes Of Home" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+[[track]]
+file = "Amberlight.mp3"
+title = "Amberlight"
+moods = ["wonder", "warm"]
+pole = "day"
+note = "soft, nostalgic piano and orchestra, warm and welcoming"
+license = "CC BY 4.0, scottbuckley.com.au/library/amberlight, downloaded 2026-10-12"
+credit = 'Music: "Amberlight" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+[[track]]
+file = "Reawakening.mp3"
+title = "Reawakening"
+moods = ["wonder", "playful"]
+pole = "day"
+note = "innocent piano, strings and woodwinds; meandering discovery"
+license = "CC BY 4.0, scottbuckley.com.au/library/reawakening, downloaded 2026-10-12"
+credit = 'Music: "Reawakening" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+[[track]]
+file = "HymnToTheDawn.mp3"
+title = "Hymn to the Dawn"
+moods = ["wonder", "calm"]
+pole = "day"
+note = "soft, warm floating synths and strings; a rising sun"
+license = "CC BY 4.0, scottbuckley.com.au/library/hymn-to-the-dawn, downloaded 2026-10-12"
+credit = 'Music: "Hymn to the Dawn" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+[[track]]
+file = "sb_castlesinthesky.mp3"
+title = "Castles in the Sky"
+moods = ["wonder", "playful"]
+pole = "any"
+note = "dreamy, soft, meandering piano and vibes"
+license = "CC BY 4.0, scottbuckley.com.au/library/castles-in-the-sky, downloaded 2026-10-12"
+credit = 'Music: "Castles in the Sky" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+# ---------------------------------------------------------------- mystery: the strange thing appears
+
+[[track]]
+file = "sb_insearchofsolitude.mp3"
+title = "In Search Of Solitude"
+moods = ["mystery"]
+pole = "night"
+note = "languid, mysterious strings, synth and piano"
+license = "CC BY 4.0, scottbuckley.com.au/library/in-search-of-solitude, downloaded 2026-10-12"
+credit = 'Music: "In Search Of Solitude" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+[[track]]
+file = "sb_beyondthesewalls.mp3"
+title = "Beyond These Walls"
+moods = ["mystery", "wonder"]
+pole = "night"
+note = "moody, mysterious piano, strings and synth; far-away places"
+license = "CC BY 4.0, scottbuckley.com.au/library/beyond-these-walls, downloaded 2026-10-12"
+credit = 'Music: "Beyond These Walls" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+[[track]]
+file = "ShadowsAndDust.mp3"
+title = "Shadows and Dust"
+moods = ["mystery", "tension"]
+pole = "night"
+note = "ethereal, enigmatic ambient drones, winds and strings"
+license = "CC BY 4.0, scottbuckley.com.au/library/shadows-and-dust, downloaded 2026-10-12"
+credit = 'Music: "Shadows and Dust" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+[[track]]
+file = "sb_sanctuary.mp3"
+title = "Sanctuary"
+moods = ["mystery", "tension"]
+pole = "night"
+note = "suspenseful, mysterious piano, strings and synth"
+license = "CC BY 4.0, scottbuckley.com.au/library/sanctuary, downloaded 2026-10-12"
+credit = 'Music: "Sanctuary" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+# ---------------------------------------------------------------- tension: consequences piling up
+
+[[track]]
+file = "sb_intervention_nomelody.mp3"
+title = "Intervention (no melody)"
+moods = ["tension"]
+pole = "night"
+note = "darker ambient piano, subtle thriller underscore; the mix without the melody"
+license = "CC BY 4.0, scottbuckley.com.au/library/intervention, downloaded 2026-10-12"
+credit = 'Music: "Intervention" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+[[track]]
+file = "ADragonsLullaby2023.mp3"
+title = "A Dragon's Lullaby"
+moods = ["tension", "sorrow"]
+pole = "night"
+note = "a sombre, dark lullaby with harp, solo violin and strings"
+license = "CC BY 4.0, scottbuckley.com.au/library/a-dragons-lullaby-2023, downloaded 2026-10-12"
+credit = "Music: \"A Dragon's Lullaby\" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au"
+
+[[track]]
+file = "Unraveling.mp3"
+title = "Unraveling"
+moods = ["tension", "sorrow"]
+pole = "night"
+note = "slow suspension and disbelief, grief, a smidge of hope; strings and synth"
+license = "CC BY 4.0, scottbuckley.com.au/library/unraveling, downloaded 2026-10-12"
+credit = 'Music: "Unraveling" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+[[track]]
+file = "sb_signaltonoise_nomelody.mp3"
+title = "Signal to Noise (no melody)"
+moods = ["tension", "mystery"]
+pole = "night"
+note = "warm synths over ominous low strings; dark but hopeful; the mix without the melody"
+license = "CC BY 4.0, scottbuckley.com.au/library/signal-to-noise, downloaded 2026-10-12"
+credit = 'Music: "Signal to Noise" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+# ---------------------------------------------------------------- sorrow: loss, longing
+
+[[track]]
+file = "sb_hiraeth.mp3"
+title = "Hiraeth"
+moods = ["sorrow"]
+pole = "any"
+note = "longing for a home you can't return to; calm pads, strings, yearning solo cello"
+license = "CC BY 4.0, scottbuckley.com.au/library/hiraeth, downloaded 2026-10-12"
+credit = 'Music: "Hiraeth" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+[[track]]
+file = "Penumbra.mp3"
+title = "Penumbra"
+moods = ["sorrow", "calm"]
+pole = "night"
+note = "tender, glacial, bittersweet strings and atmosphere, steeped in longing"
+license = "CC BY 4.0, scottbuckley.com.au/library/penumbra, downloaded 2026-10-12"
+credit = 'Music: "Penumbra" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+[[track]]
+file = "TheLongDark.mp3"
+title = "The Long Dark"
+moods = ["sorrow", "calm"]
+pole = "night"
+note = "melancholic ambient piano with strings and synth; long winter nights"
+license = "CC BY 4.0, scottbuckley.com.au/library/the-long-dark, downloaded 2026-10-12"
+credit = 'Music: "The Long Dark" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+[[track]]
+file = "sb_shemovedmountains.mp3"
+title = "She Moved Mountains"
+moods = ["sorrow"]
+pole = "any"
+note = "very simple ambient piano, the space between notes"
+license = "CC BY 4.0, scottbuckley.com.au/library/she-moved-mountains, downloaded 2026-10-12"
+credit = 'Music: "She Moved Mountains" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+# ---------------------------------------------------------------- warm: the ending, hope
+
+[[track]]
+file = "Moonlight.mp3"
+title = "Moonlight"
+moods = ["warm", "calm"]
+pole = "night"
+note = "simple, nostalgic piano and strings, a slow dance"
+license = "CC BY 4.0, scottbuckley.com.au/library/moonlight, downloaded 2026-10-12"
+credit = 'Music: "Moonlight" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+[[track]]
+file = "AKindOfHope.mp3"
+title = "A Kind Of Hope"
+moods = ["warm", "sorrow"]
+pole = "any"
+note = "bittersweet piano and strings, optimism with a little hesitation"
+license = "CC BY 4.0, scottbuckley.com.au/library/a-kind-of-hope, downloaded 2026-10-12"
+credit = 'Music: "A Kind Of Hope" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+[[track]]
+file = "sb_solace.mp3"
+title = "Solace"
+moods = ["warm", "calm", "wonder"]
+pole = "any"
+note = "calm strings and synth, contemplative piano and glass marimba"
+license = "CC BY 4.0, scottbuckley.com.au/library/solace, downloaded 2026-10-12"
+credit = 'Music: "Solace" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+[[track]]
+file = "sb_static.mp3"
+title = "Static"
+moods = ["warm", "sorrow"]
+pole = "any"
+note = "calm piano and strings: things lost, new things yet to come"
+license = "CC BY 4.0, scottbuckley.com.au/library/static, downloaded 2026-10-12"
+credit = 'Music: "Static" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+# ---------------------------------------------------------------- playful: gentle bedtime fables
+
+[[track]]
+file = "sb_childhood.mp3"
+title = "Childhood"
+moods = ["playful", "warm"]
+pole = "day"
+note = "simple piano and strings, the naivety of childhood"
+license = "CC BY 4.0, scottbuckley.com.au/library/childhood, downloaded 2026-10-12"
+credit = 'Music: "Childhood" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+[[track]]
+file = "sb_eidolon.mp3"
+title = "Eidolon"
+moods = ["playful", "wonder"]
+pole = "day"
+note = "bright, perky chamber piece for solo cello and harp"
+license = "CC BY 4.0, scottbuckley.com.au/library/eidolon, downloaded 2026-10-12"
+credit = 'Music: "Eidolon" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'

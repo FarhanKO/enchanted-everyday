@@ -55,6 +55,14 @@
           },
           "title": "Open Threads",
           "type": "array"
+        },
+        "closes": {
+          "description": "Ids of earlier open threads (e.g. T12.1) this episode answers. A thread it only touches stays open",
+          "items": {
+            "type": "string"
+          },
+          "title": "Closes",
+          "type": "array"
         }
       },
       "required": [
@@ -610,6 +618,12 @@
           "description": "True if this episode moves Fann's lost-dreams storyline forward",
           "title": "Advances Dreams Thread",
           "type": "boolean"
+        },
+        "dreams_step": {
+          "default": "",
+          "description": "When advances_dreams_thread is true: the id of the step this episode tells, from dreams_thread (e.g. D3). Empty otherwise",
+          "title": "Dreams Step",
+          "type": "string"
         },
         "scores": {
           "$ref": "#/$defs/StoryScores"

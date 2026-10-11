@@ -17,16 +17,38 @@ It publishes videos to accounts that the operator owns on YouTube, Instagram, Fa
   viewers, followers or any other users. It stores only aggregate statistics (views, likes, comments count,
   shares, saves, average view duration) for the operator's own posts.
 
+## YouTube API Services
+
+This app uses **YouTube API Services**. By using it you agree to be bound by the
+[YouTube Terms of Service](https://www.youtube.com/t/terms), and Google's handling of your data is described in the
+[Google Privacy Policy](https://policies.google.com/privacy).
+
+From YouTube, the app accesses only the operator's own channel: it uploads videos and sets their titles, descriptions,
+thumbnails and playlists, and it reads the channel's name and ID and its own videos' statistics (views, likes, comment
+counts, watch time). It stores the channel ID, the IDs of the videos it uploaded, and those aggregate statistics. It uses
+this data only to publish the operator's videos and to report their performance to the operator, and never shares it
+with anyone.
+
+The app's use of information received from Google APIs adheres to the
+[Google API Services User Data Policy](https://developers.google.com/terms/api-services-user-data-policy),
+including the Limited Use requirements.
+
+## Cookies and devices
+
+The app has no website or app for other people. It does not place cookies, and it does not store or read any
+information on anyone's browser or device.
+
 ## Storage and security
 
-Access tokens and statistics are stored on a private server controlled by the operator.
-Tokens are never shared with third parties and can be revoked at any time from each platform's
-connected-apps settings.
+Access tokens and statistics are stored on a private computer or server controlled by the operator.
+Tokens are never shared with third parties.
 
-## Deletion
+## Revoking access and deletion
 
-To delete all stored data, contact theenchantedeveryday@gmail.com. Revoking the app's access on a platform stops all
-further access immediately.
+Access can be revoked at any time. For YouTube, use the Google security settings page at
+https://security.google.com/settings/security/permissions; for the other platforms, use their connected-apps
+settings. Revoking access stops all further access immediately, and stored YouTube data is deleted within 7 days of
+revocation. To have all stored data deleted at any time, contact theenchantedeveryday@gmail.com.
 
 ## Contact
 

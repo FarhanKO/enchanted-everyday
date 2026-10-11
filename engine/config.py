@@ -21,6 +21,8 @@ class Settings(BaseSettings):
     dry_run: bool = True
     timezone: str = "Asia/Dhaka"
     daily_run_cron: str = "0 5 * * *"
+    login_check_cron: str = "0 10 * * *"  # engine.tokens: Meta and YouTube login health
+    login_warn_days: int = 3  # warn this many days before Meta's data access runs out
     approval_cutoff_hour: int = 12
     log_level: str = "INFO"
 
@@ -53,12 +55,26 @@ class Settings(BaseSettings):
     r2_bucket: str = "content-engine"
     r2_public_base_url: str = ""
 
+    # media (Phase 2): images and voice through OpenRouter, rendered locally with ffmpeg
+    work_dir: str = "work"  # per-day media, and the cache that stops a retry paying twice
+    image_model: str = "google/gemini-nano-banana-2.1"
+    image_fallback_model: str = "google/gemini-3.1-flash-image"  # Nano Banana 2
+    music_dir: str = "templates/music"  # licensed tracks + library.toml; empty means no music
+    render_fps: int = 30
+    render_crf: int = 20  # x264 quality for the master file; the Telegram preview is smaller
+
     # telegram
     telegram_bot_token: SecretStr | None = None
     telegram_owner_id: int | None = None
 
     # platforms
     youtube_upload_enabled: bool = False
+    youtube_client_id: str = ""
+    youtube_client_secret: SecretStr | None = None
+    youtube_refresh_token: SecretStr | None = None  # scripts/youtube_auth.py
+    meta_page_id: str = ""
+    meta_ig_user_id: str = ""
+    meta_page_access_token: SecretStr | None = None  # scripts/meta_tokens.py
 
     # monitoring
     healthcheck_ping_url: str = ""

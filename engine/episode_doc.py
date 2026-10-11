@@ -31,7 +31,8 @@ def to_markdown(ep: Episode) -> str:
     w(f"- **Visual anchor:** {card.visual_anchor}")
     w(f"- **Ending image:** {card.ending_image}")
     w(f"- **Leaves them thinking:** {card.lingering_question}")
-    thread = " _(moves the lost-dreams thread)_" if card.advances_dreams_thread else ""
+    step = f", step {card.dreams_step}" if card.dreams_step else ""
+    thread = f" _(moves the lost-dreams thread{step})_" if card.advances_dreams_thread else ""
     w(f"- **Connects:** {card.connection}{thread}")
     w(f"- **Universe:** {', '.join(card.recurring) or 'none'}\n")
 
@@ -130,6 +131,8 @@ def to_markdown(ep: Episode) -> str:
         w(f"- **Now true:** {change}")
     for open_thread in pkg.canon.open_threads:
         w(f"- **Still open:** {open_thread}")
+    if pkg.canon.closes:
+        w(f"- **Answers:** {', '.join(pkg.canon.closes)}")
     w("")
 
     w("## 12. Schema\n")

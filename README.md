@@ -7,16 +7,19 @@ The LLM writes inside fixed stages and never takes actions. Nothing posts withou
 ```
 daily:      discovery -> story card -> script -> critic -> script to Telegram
 /redo:      next backup story -> script -> critic -> script to Telegram   (with your note, if any)
-on request: storyboard -> package -> package to Telegram          (/produce; Phase 2: your voice note)
-            -> images + voice + sound -> render + QC -> approve (Telegram) -> publish -> analytics
+/produce:   storyboard -> package -> package to Telegram
+            -> voice + frames -> render + QC -> video to Telegram -> Approve / Skip
+/reshoot:   one frame redrawn (with your note, if any) -> render + QC -> video to Telegram
+next:       publish (Phase 3) -> analytics (Phase 4)
 ```
 
-**Status:** Phases 0 and 1 are built. Each daily run picks a premise, writes the script, has the critic review it
-and sends it to Telegram. Send `/produce` to the bot and it writes the storyboard and publishing package and sends
-the full production document. Send `/redo` (optionally `/redo less sad`) to turn the story down and get the
-next backup written instead. A script you'd reject never costs a storyboard. Phase 1's exit check (you'd approve 5
-of 7 daily scripts) needs a week of real runs. Next is Phase 2: voice, images, render and the approval
-buttons. See [the roadmap](#roadmap) and [docs/decisions.md](docs/decisions.md).
+**Status:** Phases 0-2 are built. Each daily run picks a premise, writes the script, has the critic review it
+and sends it to Telegram. Send `/redo` (optionally `/redo less sad`) to turn the story down and get the next backup
+written instead; a script you'd reject never costs a storyboard. Send `/produce` and the bot writes the storyboard
+and package, voices every line in the cast's voices, draws each frame with the cast's reference images, renders
+the 9:16 video with captions, sound and the signature ending, and sends it with **Approve / Skip** buttons.
+`/reshoot S03 warmer light` redraws one frame. Approve answers with the posting kit (file, cover, each platform's
+copy) to post by hand until Phase 3 automates it. See [the roadmap](#roadmap) and [docs/decisions.md](docs/decisions.md).
 
 ## Architecture
 
@@ -37,7 +40,8 @@ Design rules:
 - **Publishing is idempotent.** The `posts` table is checked, and locked, before any upload. An upload
   interrupted mid-way is flagged for a human rather than retried blind ([engine/publishers/base.py](engine/publishers/base.py)).
 - **The LLM gets text in and gives JSON out.** It gets no tools and no shell. Output is constrained by a JSON schema
-  and then re-validated: the six-beat formula, 45-90 s at narration pace, a contiguous storyboard, known characters
+  and then re-validated: the six-beat formula, 45-84 s of script at narration pace (within 90 s with the ending),
+  characters heard in their own voices rather than quoted, a contiguous storyboard with a music mood per shot, known characters
   only, at most 2 AI clips, and no named artists or studios ([engine/llm/schemas.py](engine/llm/schemas.py)).
 - **Locked prompt fragments.** Agents write only the shot-specific text. Code appends character descriptors, locations
   and the style block verbatim, so every frame shares identical identity and style text ([engine/prompting.py](engine/prompting.py)).
@@ -56,7 +60,7 @@ cp .env.example .env        # fill in what you have; DRY_RUN=true by default
 docker compose up -d --build
 docker compose run --rm worker engine check
 docker compose run --rm worker engine run       # one daily run now
-docker compose run --rm worker engine produce   # storyboard + package for today's script
+docker compose run --rm worker engine produce   # storyboard, package and video for today's script
 docker compose run --rm worker engine redo --note "less sad"   # turn today's story down
 ```
 
@@ -64,6 +68,14 @@ Validate an episode and render its review document:
 
 ```bash
 python -m engine episode stories/s000-the-man-who-sold-his-dreams/episode.json
+```
+
+Render an episode.json to video without the database (voice and frames are paid for, at most `--max-usd`;
+`--only S01` draws one frame to check the look first). Everything bought is cached under `WORK_DIR`, so a re-run
+is free:
+
+```bash
+python -m engine render stories/s000-the-man-who-sold-his-dreams/episode.json --max-usd 1
 ```
 
 Check a prompt change against the golden set (every approved `stories/*/episode.json`). This calls the real
@@ -97,15 +109,20 @@ engine/
   prompting.py       final image/video prompt assembly
   episode_doc.py     Episode JSON -> review document
   stages/            daily: discovery, idea, script + critic (story.py), deliver_script;
-                     production: storyboard + package (story.py), deliver_package; then assets, render...
+                     production: storyboard + package (story.py), deliver_package; then
+                     voice, images, render, deliver_render (media.py)
+  media/             voice track, frames, sounds made in code, timing + captions, ffmpeg render + QC;
+                     paid calls cached so nothing is bought twice (paid.py)
+  approval.py        Approve / Skip, the posting kit, /reshoot
   publishers/        idempotent publish guard; one module per platform in Phase 3
   storage.py         Cloudflare R2
-  budget.py          daily spend cap
+  budget.py          daily spend cap (LLM calls and paid media)
   redo.py            /redo: swap the day's story for the next backup
-  notify.py          Telegram alerts + dead-man's-switch ping
-bot/                 Telegram bot (/status, /produce, /redo)
+  tokens.py          daily Meta and YouTube login check, fix-it steps to Telegram
+  notify.py          Telegram alerts, videos + dead-man's-switch ping
+bot/                 Telegram bot (/status, /produce, /redo, /reshoot, Approve / Skip)
 evals/               eval results per prompt version
-templates/           fonts, caption styles, stings (Phase 2)
+templates/           caption font (Lora) and the licensed music library
 docs/                ADRs, runbook, platform setup, privacy policy
 scripts/             VPS provisioning and deploy
 ```
