@@ -1,6 +1,6 @@
 # content-engine
 
-The studio behind **Modern Fairy Tales for Sleepless Souls**: cinematic 45-90 second micro-fables about ordinary
+The studio behind **The Enchanted Everyday** (modern fairy tales for sleepless souls): cinematic 45-90 second micro-fables about ordinary
 people, strange places and very big feelings, published to YouTube Shorts, Instagram Reels, TikTok and Facebook.
 The LLM writes inside fixed stages and never takes actions. Nothing posts without a human tap.
 
