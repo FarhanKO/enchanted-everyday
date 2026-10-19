@@ -7,6 +7,7 @@ produce   write the storyboard and package for a day's script (optionally --date
 redo      turn down a day's story and write the next backup (optionally --date, --note)
 serve     start the scheduled deployments (what the worker container runs)
 tokens    check the Meta and YouTube logins; send fix-it steps to Telegram (--quiet: print only)
+publish   post the latest approved video where it isn't live yet (--render ID, --platform P)
 render    voice, draw and render an episode.json to video, no database (spends up to --max-usd)
 episode   validate an episode.json and write its human-readable episode.md
 schemas   export the agent contracts as JSON Schema files to schemas/
@@ -31,12 +32,8 @@ REQUIRED = {
         "telegram_owner_id",
     ],
     "phase 2 (video)": ["openrouter_api_key"],  # images and voice go through OpenRouter
-    "phase 3 (publishing)": [
-        "r2_account_id",
-        "r2_access_key_id",
-        "r2_secret_access_key",
-        "r2_public_base_url",
-    ],
+    # Meta takes the file directly, so R2 isn't needed; YouTube waits for the API audit
+    "phase 3 (publishing)": ["meta_page_id", "meta_ig_user_id", "meta_page_access_token"],
     "monitoring": ["healthcheck_ping_url"],
 }
 
@@ -148,6 +145,29 @@ def _recent_music(out_dir: Path) -> list[str]:
     for p in sorted(others, key=lambda p: p.stat().st_mtime, reverse=True):
         heard += [m["file"] for m in json.loads(p.read_text(encoding="utf-8")) if m.get("file")]
     return heard
+
+
+def publish(render_id: int | None, platform: str | None) -> int:
+    from engine.db.session import get_engine
+    from engine.publish import NothingToPublish, auto_platforms, publish_render, report
+
+    settings = get_settings()
+    auto = auto_platforms(settings)
+    if not auto:
+        print("-- nothing posts automatically: DRY_RUN is on, or no platform is set up")
+        return 1
+    if platform and platform not in auto:
+        print(f"-- {platform} doesn't post automatically; automatic: {', '.join(auto)}")
+        return 1
+    try:
+        outcomes = publish_render(
+            get_engine(), render_id, settings, [platform] if platform else None
+        )
+    except NothingToPublish as e:
+        print(f"-- {e}")
+        return 1
+    print(report(outcomes))
+    return 0 if all(o.status == "published" for o in outcomes) else 1
 
 
 def render_file(path: str, out: str | None, max_usd: float, only: str | None) -> int:
@@ -269,6 +289,9 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("serve")
     tok_p = sub.add_parser("tokens")
     tok_p.add_argument("--quiet", action="store_true", help="print only; send nothing")
+    pub_p = sub.add_parser("publish")
+    pub_p.add_argument("--render", type=int, help="render id (default: the latest approved)")
+    pub_p.add_argument("--platform", help="only this platform, e.g. instagram")
     ren_p = sub.add_parser("render")
     ren_p.add_argument("path", help="path to an episode.json")
     ren_p.add_argument("--out", help="output folder (default: WORK_DIR/renders/<episode folder>)")
@@ -296,6 +319,8 @@ def main(argv: list[str] | None = None) -> int:
         serve()
     elif args.cmd == "tokens":
         return tokens(args.quiet)
+    elif args.cmd == "publish":
+        return publish(args.render, args.platform)
     elif args.cmd == "render":
         return render_file(args.path, args.out, args.max_usd, args.only)
     elif args.cmd == "episode":

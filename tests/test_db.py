@@ -149,7 +149,6 @@ def _req(render_id):
     return PublishRequest(
         render_id=render_id,
         video_path="/tmp/v.mp4",
-        video_url="https://v",
         caption="c",
         title="t",
         ai_generated=False,

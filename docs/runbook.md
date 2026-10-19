@@ -10,7 +10,7 @@ All times are Dhaka (Asia/Dhaka).
 | ~05:05 | Bot sends the day's script | Read it; `/redo [note]` for another story, or `/produce` |
 | On `/produce` | Storyboard and package (sent as a document), then voice, frames, render and QC (~6 min) | Nothing |
 | After render | The video arrives with Approve / Skip | Watch it; `/reshoot S03 [note]` redraws a frame, then Approve (~5 min) |
-| On Approve | The posting kit: full file, cover, each platform's copy, where the AI labels are | Post by hand until Phase 3 |
+| On Approve | Posts to Instagram and Facebook (YouTube once its audit passes), replies with the links, then the posting kit for TikTok | Pin the comment question on each post; post to TikTok from the kit |
 | 12:00 | Approval cutoff. An unapproved day publishes from the buffer or is skipped | Nothing |
 | Audience evening | Staggered publish to all four; TikTok draft lands in your inbox | Tap Post in TikTok until automated |
 | +24 h, +7 d | Stats pulled for every post | Nothing |
@@ -39,11 +39,14 @@ Fix the cause and re-run the day with `engine run --date <day>`. Finished stages
 **Dead-man's switch fired (no check-in by 09:00).** The worker isn't running or is stuck.
 Run `docker compose ps` and restart with `docker compose up -d`. Then re-run the day.
 
-**`PublishStateUnknown`.** An upload was interrupted and the post may or may not be live. Check the platform.
-- If it's live: `UPDATE posts SET status='published', external_id='<id>', url='<url>' WHERE id=<n>;`
-- If not: `UPDATE posts SET status='failed' WHERE id=<n>;` and re-run.
+**A platform failed after Approve.** The bot's reply says which and why, in the platform's words. Fix the
+cause (often the Meta login: see the auth errors below), then send `/publish`. It posts only where the video
+isn't live yet, so a retry never double-posts. `/publish instagram` retries just that one.
+From a terminal: `engine publish` (or `engine publish --platform facebook`).
 
-Open a SQL shell with `docker compose exec postgres psql -U engine`.
+**"Stopped mid-upload, so it may already be live."** An upload was interrupted (the bot restarted, the network
+dropped). Check the platform. If the Reel is there, send `/posted instagram` and it's never posted again. If it
+isn't, send `/publish instagram` to post it again.
 
 **A frame looks wrong (face drift, extra fingers, text in the image).** `/reshoot S03` draws it again;
 `/reshoot S03 Fann faces the window, no text` adds your note to its prompt. Only that frame is paid for

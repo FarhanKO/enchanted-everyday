@@ -232,6 +232,14 @@ def test_shots_tile_the_voice_track_beat_by_beat(track, episode):
         + track.lines[track.lines.index(reveal[0]) - 1].pause_s,
         abs=1e-3,
     )
+    # the bell and the signature hold on the last shot alone: the final line plays over the
+    # final image, not over the shot before it
+    assert shots[-1].start_s <= track.lines[-1].start_s + 0.5
+    # inside a beat, the picture changes in the gap between lines, never mid-line
+    beat_of = {s.id: s.beat for s in episode.storyboard.shots}
+    cost = [s for s in shots if beat_of[s.id] == "cost"]
+    line_ends = {round(line.end_s, 3) for line in track.lines if line.beat == "cost"}
+    assert len(cost) > 1 and all(round(s.end_s, 3) in line_ends for s in cost[:-1])
 
 
 @pytest.mark.parametrize(

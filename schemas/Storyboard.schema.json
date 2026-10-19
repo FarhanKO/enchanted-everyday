@@ -230,6 +230,22 @@
           },
           "title": "Sfx",
           "type": "array"
+        },
+        "music": {
+          "default": "calm",
+          "description": "The music under this shot: calm (setting the scene, quiet nights), wonder (discovery, magic, sunlit dreams), mystery (the strange thing appears), tension (consequences piling up), sorrow (loss, longing), warm (the ending, hope), playful (light bedtime moments), or none (silence: the voice and ambience carry it)",
+          "enum": [
+            "none",
+            "calm",
+            "wonder",
+            "mystery",
+            "tension",
+            "sorrow",
+            "warm",
+            "playful"
+          ],
+          "title": "Music",
+          "type": "string"
         }
       },
       "required": [
@@ -304,13 +320,25 @@
       "items": {
         "$ref": "#/$defs/Shot"
       },
-      "maxItems": 14,
+      "maxItems": 16,
       "minItems": 5,
       "title": "Shots",
       "type": "array"
     },
     "sound": {
       "$ref": "#/$defs/Sound"
+    },
+    "fade_out": {
+      "default": "black",
+      "description": "How the last frame leaves the screen (the video always opens out of black): black (a quiet night, a sorrowful or open ending), white (a dream, a memory, waking up), glow (warm magic: a jar, a lantern, the moon bell lingering), or sunray (a morning, hope, sunlight breaking through)",
+      "enum": [
+        "black",
+        "white",
+        "glow",
+        "sunray"
+      ],
+      "title": "Fade Out",
+      "type": "string"
     }
   },
   "required": [

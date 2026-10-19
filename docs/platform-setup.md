@@ -29,8 +29,10 @@ has no published turnaround. Tick items off here as they land.
   data-access window does unless the token is refreshed
   (the 10:00 login check reminds you in Telegram, with the steps, from 3 days before; access ends
   2027-01-09 02:43 Dhaka)
-- [ ] Post a test Reel and confirm it from an account with **no** app role
-- [ ] Serve videos from a public R2 URL; set `is_ai_generated` when it applies
+- [ ] Post a test Reel and confirm it from an account with **no** app role: set `DRY_RUN=false`, approve a
+  video, and open the links the bot sends back
+- [x] Upload the file straight to Meta (resumable upload, no public URL or R2 needed); `is_ai_generated` set on
+  every Reel (`engine/publishers/meta.py`)
 - [ ] Stay under 30 API-published Reels per Page per 24 hours
 
 ## TikTok

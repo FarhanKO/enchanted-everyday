@@ -23,6 +23,20 @@ The architecture is settled (see `adr/`). This file tracks the content decisions
 | Audience timezone | _open_ | by Oct 25 | Sets the publish slot ("late-night viewers"), e.g. US evening |
 | TikTok route | _open_ | by Oct 25 | Default: manual until inbox upload is approved |
 
+## Phase 3 build choices (2026-10-12)
+
+Engineering defaults for auto-posting. Change any of them if you disagree.
+
+| Choice | Default | Why |
+|---|---|---|
+| When it posts | **The moment you tap Approve.** No publish slot yet | The audience-timezone decision is still open. Once it's made, Facebook can schedule natively (`scheduled_publish_time`); Instagram would need a scheduled job |
+| Which platforms | Instagram and Facebook whenever their `META_*` settings are filled in; YouTube when `YOUTUBE_UPLOAD_ENABLED=true` (after the audit); TikTok by hand from the kit | The MVP gate is Instagram and Facebook. YouTube API uploads stay private until the audit passes |
+| Video transfer | The rendered file is uploaded straight to Meta and YouTube (resumable uploads) | No public URL, so no R2 bucket or public bucket policy is needed to post. Meta's Instagram resumable upload is documented for apps with Facebook Login for Business; if Meta refuses it, the bot's reply says so and R2 hosting is the fallback |
+| AI disclosure | `is_ai_generated=true` on Instagram and Facebook Reels, `containsSyntheticMedia=true` on YouTube, whenever the render is AI-made | The captions carry no AI line, so the platform label is the disclosure |
+| Retries | `publish_once` per platform: a retry posts only where the video isn't live; a post interrupted mid-upload waits for you (`/posted` or `/publish <platform>`) | Never double-post |
+| Comments | The comment question isn't posted by the API. The kit reminds you to pin it | Posting comments needs extra permissions (`instagram_manage_comments`, `pages_manage_engagement`, YouTube's `force-ssl`) and a fresh login |
+| Encoding | The master now has a 2 s keyframe interval and stereo audio | Meta's Reels spec asks for a closed GOP of 2-5 s and stereo AAC at 48 kHz |
+
 ## What the niche changed in the build plan
 
 The original plan assumed a factual, news-driven niche. Fiction changes these parts:
@@ -107,7 +121,7 @@ Engineering defaults for voice, frames and render. Change any of them if you dis
 | Voice | Every line voiced on its own in its speaker's voice (`brand/voices.toml`); the line's delivery note picks an Eleven v4 tag (`[softly]`, `[whispers]`, `[slowly]`, ...); TTS lead-in silence trimmed so the scripted pauses are the only pauses | Exact line timings: shots and captions follow the real audio, not an estimate |
 | Frames | One Nano Banana 2.1 frame per shot plus the cover, 1K, upscaled locally; every cast member conditioned on their approved references (Fann: `portrait_v1` only, since `sheet_v1` has text labels); a supporting character seen twice or more gets a portrait first | Faces and outfits held across the episode (pilot: Fann and the Shopkeeper consistent in all 12 frames) |
 | Paying once | Every image and line cached on the request that made it; each purchase booked on the assets table the moment it's bought; Nano Banana 2 as the fallback model | A retry, a re-render or a reshoot never pays twice, and the daily cap counts everything |
-| Motion | Each frame drifts 4-8% (the shot's camera), 0.8 s crossfades, faint film grain and vignette. `ai_clip` shots render as still drift; AI video stays off | The house style is restraint, and it costs nothing |
+| Motion | Each frame drifts 4-8% (the shot's camera), 0.8 s crossfades, faint film grain and vignette. Opens with a 1 s fade in from black; closes with a 1.6 s fade out into the storyboard's `fade_out` (black, white, glow or sunray). `ai_clip` shots render as still drift; AI video stays off | The house style is restraint, and it costs nothing |
 | Captions | Lora SemiBold 64 px, cream, centred at 72% height; 2-6 words cut at natural phrase breaks, two even lines of at most 26 characters; a wide soft dark halo instead of a box or outline | Readable over glowing jars and pale sheets (the 6 px shadow in the style guide wasn't) |
 | Sound | Voice; one ambience bed per shot from its sfx (rain, sea, wind or room tone); the bell, Fann's three falling notes and Tina's music box made in code; a licensed music bed if `templates/music` has one, ducked ~8 dB under the voice and shaped by the cues; loudness -14 LUFS, -1 dBTP | Sounds made in code are ours outright; music needs a license, so none is invented |
 | Approval | The 720p preview in Telegram with Approve / Skip; `/reshoot S03 [note]` redraws one frame and re-renders, and the replaced video can't be approved; Approve sends the posting kit | Phase 2's exit check is a video posted by hand on all four |

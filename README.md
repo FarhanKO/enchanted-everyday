@@ -10,16 +10,20 @@ daily:      discovery -> story card -> script -> critic -> script to Telegram
 /produce:   storyboard -> package -> package to Telegram
             -> voice + frames -> render + QC -> video to Telegram -> Approve / Skip
 /reshoot:   one frame redrawn (with your note, if any) -> render + QC -> video to Telegram
-next:       publish (Phase 3) -> analytics (Phase 4)
+Approve:    Instagram + Facebook Reels posted (YouTube after its audit) -> links to Telegram
+            -> posting kit for the platforms still posted by hand (TikTok)
+next:       analytics (Phase 4)
 ```
 
-**Status:** Phases 0-2 are built. Each daily run picks a premise, writes the script, has the critic review it
+**Status:** Phases 0-3 are built. Each daily run picks a premise, writes the script, has the critic review it
 and sends it to Telegram. Send `/redo` (optionally `/redo less sad`) to turn the story down and get the next backup
 written instead; a script you'd reject never costs a storyboard. Send `/produce` and the bot writes the storyboard
 and package, voices every line in the cast's voices, draws each frame with the cast's reference images, renders
 the 9:16 video with captions, sound and the signature ending, and sends it with **Approve / Skip** buttons.
-`/reshoot S03 warmer light` redraws one frame. Approve answers with the posting kit (file, cover, each platform's
-copy) to post by hand until Phase 3 automates it. See [the roadmap](#roadmap) and [docs/decisions.md](docs/decisions.md).
+`/reshoot S03 warmer light` redraws one frame. Approve posts the Reel to Instagram and Facebook with Meta's AI
+label (and to YouTube once `YOUTUBE_UPLOAD_ENABLED=true`), replies with the links, and sends the posting kit for
+TikTok. `/publish` retries a platform that failed. Nothing posts while `DRY_RUN=true`. See
+[the roadmap](#roadmap) and [docs/decisions.md](docs/decisions.md).
 
 ## Architecture
 
@@ -114,13 +118,14 @@ engine/
   media/             voice track, frames, sounds made in code, timing + captions, ffmpeg render + QC;
                      paid calls cached so nothing is bought twice (paid.py)
   approval.py        Approve / Skip, the posting kit, /reshoot
-  publishers/        idempotent publish guard; one module per platform in Phase 3
-  storage.py         Cloudflare R2
+  publish.py         Approve -> every platform that posts automatically; /publish, /posted
+  publishers/        idempotent publish guard; meta.py (Instagram, Facebook Reels), youtube.py
+  storage.py         Cloudflare R2 (backups; publishing uploads the file directly)
   budget.py          daily spend cap (LLM calls and paid media)
   redo.py            /redo: swap the day's story for the next backup
   tokens.py          daily Meta and YouTube login check, fix-it steps to Telegram
   notify.py          Telegram alerts, videos + dead-man's-switch ping
-bot/                 Telegram bot (/status, /produce, /redo, /reshoot, Approve / Skip)
+bot/                 Telegram bot (/status, /produce, /redo, /reshoot, /publish, /posted, Approve / Skip)
 evals/               eval results per prompt version
 templates/           caption font (Lora) and the licensed music library
 docs/                ADRs, runbook, platform setup, privacy policy

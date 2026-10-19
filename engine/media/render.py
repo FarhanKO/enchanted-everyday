@@ -2,7 +2,8 @@
 
 Picture, in one ffmpeg pass: each frame drifts slowly (push-in, pull-back, pan, tilt or parallax,
 as the shot's camera says, 4-8%), shots crossfade, a faint film grain and vignette sit over
-everything, and the captions are burned in (Lora SemiBold, warm cream, soft shadow).
+everything, and the captions are burned in (Lora SemiBold, warm cream, soft shadow). It opens out of
+black and closes into the storyboard's fade_out: black, white, glow or sunray.
 
 Sound, mixed here: the voice; one ambience bed per shot from its sfx (rain, sea, wind or room
 tone), crossfaded; each recurring character's sound where they first appear; the moon bell before
@@ -37,6 +38,10 @@ log = logging.getLogger(__name__)
 W, H = 1080, 1920
 WORK_SCALE = 2  # frames are prepared at 2x so slow zooms move in sub-pixel steps
 FADE_S = 0.8
+FADE_IN_S = 1.0  # every episode opens out of black
+FADE_OUT_S = 1.6  # and closes into its fade_out colour
+LIGHT_S = 2.5  # glow and sunray: the light builds this long before the colour takes over
+FADE_COLOURS = {"black": "black", "white": "white", "glow": "0xFFE3B0", "sunray": "0xFFF3DA"}
 LUFS, TRUE_PEAK = -14.0, -1.0
 
 # levels, linear, before loudness normalisation. Speech sits near 0.075 RMS; music is levelled
@@ -169,7 +174,55 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     return head + "\n".join(events) + "\n"
 
 
-def picture_filter(shots: list[TimedShot], cameras: dict[str, str], fps: int, ass: Path) -> str:
+def sun_rays(dest: Path) -> Path:
+    """Shafts of warm sunlight from just off the top-left corner, on black (black adds nothing in
+    a screen blend), for the sunray fade-out."""
+    sx, sy = -W * 0.15, -H * 0.08
+    y, x = np.mgrid[0:H, 0:W].astype(np.float32)
+    dist = np.hypot(x - sx, y - sy)
+    angle = np.degrees(np.arctan2(y - sy, x - sx))
+    # (direction in degrees, half-width, strength): a few uneven shafts fanning down and right
+    shafts = ((30, 2.5, 0.8), (41, 1.6, 0.55), (52, 3.2, 0.9), (64, 2.0, 0.6), (77, 2.8, 0.5))
+    light = sum(k * np.exp(-(((angle - a) / w) ** 2)) for a, w, k in shafts)
+    light = light * np.clip(1 - dist / (H * 1.4), 0, 1) + np.exp(-((dist / (W * 0.45)) ** 2))
+    rgb = np.clip(light, 0, 1)[..., None] * np.array([255, 228, 172], np.float32)
+    Image.fromarray(rgb.astype(np.uint8)).filter(ImageFilter.GaussianBlur(24)).save(dest)
+    return dest
+
+
+def fades(src: str, fade_out: str, end_s: float, light: str | None = None) -> list[str]:
+    """Open out of black; close into fade_out. glow blooms the picture's own light and sunray
+    screens shafts of sun (`light`, a looped sun_rays input) over it, both building for LIGHT_S
+    before the warm colour takes over."""
+    parts, last = [], src
+    if fade_out in ("glow", "sunray"):
+        rise = max(FADE_IN_S, end_s - LIGHT_S)
+        # a screen blend, A + B - A*B/255, eased in over the last LIGHT_S
+        expr = f"A+(B-A*B/255)*clip((T-{rise:.3f})/{LIGHT_S:.3f},0,1)"
+        if fade_out == "glow":
+            parts += [f"[{last}]format=gbrp,split[base][bloom]", "[bloom]gblur=sigma=40[soft]"]
+        else:
+            parts += [f"[{last}]format=gbrp[base]", f"[{light}]format=gbrp,setsar=1[soft]"]
+        parts.append(f"[base][soft]blend=all_expr='{expr}':shortest=1[lit]")
+        last = "lit"
+    out_at = max(FADE_IN_S, end_s - FADE_OUT_S)
+    parts.append(
+        f"[{last}]fade=t=in:st=0:d={FADE_IN_S}:color=black,"
+        f"fade=t=out:st={out_at:.3f}:d={FADE_OUT_S}:color={FADE_COLOURS[fade_out]},"
+        f"format=yuv420p[out]"
+    )
+    return parts
+
+
+def picture_filter(
+    shots: list[TimedShot],
+    cameras: dict[str, str],
+    fps: int,
+    ass: Path,
+    fade_out: str = "black",
+    end_s: float | None = None,
+    light: str | None = None,
+) -> str:
     fade = min(FADE_S, min(s.duration_s for s in shots) / 2.5)
     parts = []
     for i, shot in enumerate(shots):
@@ -190,8 +243,10 @@ def picture_filter(shots: list[TimedShot], cameras: dict[str, str], fps: int, as
     fonts = ffmpeg.filter_path(fonts_dir())
     parts.append(
         f"[{last}]noise=alls=3:allf=t,vignette=angle=PI/5,"
-        f"ass=filename='{ffmpeg.filter_path(ass)}':fontsdir='{fonts}',format=yuv420p[out]"
+        f"ass=filename='{ffmpeg.filter_path(ass)}':fontsdir='{fonts}',format=yuv420p[pic]"
     )
+    end = shots[-1].end_s if end_s is None else end_s
+    parts += fades("pic", fade_out, end, light)
     return ";".join(parts)
 
 
@@ -346,7 +401,12 @@ def qc(path: Path, expect_s: float, notes: Sequence[str], ai_clips_as_stills: in
     err = ffmpeg.run(
         ["-i", str(path), "-vf", "blackdetect=d=0.5:pix_th=0.06", "-an", "-f", "null", "-"]
     )
-    blacks = re.findall(r"black_start:([\d.]+)", err)
+    # the fade in from black and a fade out to black are meant; flag only black inside the story
+    blacks = [
+        start
+        for start, end in re.findall(r"black_start:([\d.]+) black_end:([\d.]+)", err)
+        if float(end) > FADE_IN_S + 0.5 and float(start) < expect_s - FADE_OUT_S - 0.5
+    ]
 
     issues = []
     if (int(video["width"]), int(video["height"])) != (W, H):
@@ -419,15 +479,24 @@ def render(
     ass = tmp / "captions.ass"
     ass.write_text(captions_ass(caps), encoding="utf-8")
     cameras = {s.id: s.camera for s in board.shots}
-    graph = picture_filter(shots, cameras, fps, ass)
+    extra: list[str] = []
+    light = None
+    if board.fade_out == "sunray":
+        rays = sun_rays(tmp / "sun_rays.png")
+        extra = ["-loop", "1", "-framerate", str(fps), "-t", f"{voice.duration_s:.3f}",
+                 "-i", str(rays)]  # fmt: skip
+        light = f"{len(shots) + 1}:v"
+    graph = picture_filter(shots, cameras, fps, ass, board.fade_out, voice.duration_s, light)
     (tmp / "graph.txt").write_text(graph, encoding="utf-8")  # kept for debugging a render
     master = out_dir / "episode.mp4"
     ffmpeg.run(
-        ["-loglevel", "error", *inputs, "-i", str(final_mix),
+        ["-loglevel", "error", *inputs, "-i", str(final_mix), *extra,
          "-filter_complex", graph, "-map", "[out]", "-map", f"{len(shots)}:a",
          "-c:v", "libx264", "-preset", "medium", "-crf", str(crf), "-r", str(fps),
          "-maxrate", "4500k", "-bufsize", "9M", "-pix_fmt", "yuv420p",
-         "-c:a", "aac", "-b:a", "192k", "-t", f"{voice.duration_s:.3f}",
+         # Meta's Reels spec: a closed GOP of 2-5 s and stereo AAC at 48 kHz
+         "-g", str(fps * 2), "-keyint_min", str(fps * 2), "-sc_threshold", "0",
+         "-c:a", "aac", "-b:a", "192k", "-ac", "2", "-t", f"{voice.duration_s:.3f}",
          "-movflags", "+faststart", str(master)]
     )  # fmt: skip
     preview = out_dir / "preview.mp4"

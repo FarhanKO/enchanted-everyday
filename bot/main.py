@@ -1,11 +1,13 @@
 """Telegram bot (long polling, so the VPS opens no inbound port).
 
 Only TELEGRAM_OWNER_ID can talk to it; every other update is dropped before any handler runs.
-Handles /start, /status, /produce, /redo and /reshoot, and the Approve / Skip buttons. The
-worker pushes the day's script (engine/stages/deliver.py); /redo turns the story down for the next
-backup (engine/redo.py); /produce builds the storyboard, package and video, which arrives with the
-buttons (engine/stages/media.py); /reshoot redraws one frame and re-sends the video; Approve
-answers with the posting kit (engine/approval.py).
+Handles /start, /status, /produce, /redo, /reshoot, /publish and /posted, and the Approve / Skip
+buttons. The worker pushes the day's script (engine/stages/deliver.py); /redo turns the story down
+for the next backup (engine/redo.py); /produce builds the storyboard, package and video, which
+arrives with the buttons (engine/stages/media.py); /reshoot redraws one frame and re-sends the
+video. Approve posts to every platform that posts automatically (engine/publish.py) and answers
+with the posting kit for the rest (engine/approval.py); /publish retries what failed, and /posted
+settles a post that stopped mid-upload.
 """
 
 from __future__ import annotations
@@ -30,6 +32,15 @@ from engine.db.session import get_engine
 from engine.flows import daily_run, run_status, today
 from engine.flows import produce as produce_flow
 from engine.log import setup_logging
+from engine.publish import (
+    LABELS,
+    NothingToPublish,
+    auto_platforms,
+    manual_platforms,
+    mark_post,
+    publish_render,
+    report,
+)
 from engine.redo import RedoRefused, prepare_redo
 
 log = logging.getLogger(__name__)
@@ -41,7 +52,9 @@ async def start(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
         "/status - today's run\n"
         "/produce - storyboard, package and video for today's script\n"
         "/redo [note] - turn down today's story and get the next backup, e.g. /redo less sad\n"
-        "/reshoot S03 [note] - redraw one frame of today's video, e.g. /reshoot S03 warmer light"
+        "/reshoot S03 [note] - redraw one frame of today's video, e.g. /reshoot S03 warmer light\n"
+        "/publish [platform] - post the approved video where it failed, e.g. /publish instagram\n"
+        "/posted <platform> - it's live there after all; never post it again"
     )
 
 
@@ -64,6 +77,8 @@ async def status(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
 
 # one long job at a time: production and a redo both rewrite the day's run
 _busy = asyncio.Lock()
+# one round of posting at a time, so Approve and /publish never upload the same video together
+_posting = asyncio.Lock()
 
 
 async def produce(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
@@ -143,6 +158,19 @@ async def on_decision(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     if action == "skip":
         await context.bot.send_message(chat, "Skipped. Nothing from this video will be posted.")
         return
+
+    settings = get_settings()
+    auto, manual = auto_platforms(settings), manual_platforms(settings)
+    if auto:
+        names = ", ".join(LABELS[p] for p in auto)
+        await context.bot.send_message(chat, f"Approved. Posting to {names} now...")
+        await context.bot.send_message(chat, await _publish(d.render_id))
+    elif settings.dry_run:
+        await context.bot.send_message(
+            chat, "Approved. DRY_RUN is on, so nothing posts automatically: post it from the kit."
+        )
+    if not manual:
+        return
     if d.thumbnail and d.thumbnail.exists():
         await context.bot.send_photo(chat, d.thumbnail.read_bytes(), caption="Cover image")
     if d.size_mb <= DOCUMENT_LIMIT_MB:
@@ -159,8 +187,79 @@ async def on_decision(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         await context.bot.send_message(
             chat, f"The file is {d.size_mb} MB, over Telegram's limit. It's at {d.video}."
         )
-    for text in posting_kit(d.episode, d.music_credits):
+    for text in posting_kit(d.episode, d.music_credits, manual):
         await context.bot.send_message(chat, text[:4096])
+
+
+async def _publish(render_id: int | None = None, platform: str | None = None) -> str:
+    """Post (or re-post) the approved video; the outcome as one message."""
+    async with _posting:
+        try:
+            if platform:
+                # the owner checked: an interrupted attempt didn't go live, so it may run again
+                await asyncio.to_thread(mark_post, get_engine(), platform, "failed", render_id)
+            outcomes = await asyncio.to_thread(
+                publish_render,
+                get_engine(),
+                render_id,
+                None,
+                [platform] if platform else None,
+            )
+        except NothingToPublish as e:
+            return str(e)
+        except Exception:
+            log.exception("publishing failed", extra={"render_id": render_id})
+            return "Posting failed before it reached any platform. Details are in the bot's log."
+    return report(outcomes)[:4096] if outcomes else "Nothing to post."
+
+
+def _platform_arg(args: list[str] | None) -> tuple[str | None, str | None]:
+    """(platform, problem) from a command's first argument."""
+    if not args:
+        return None, None
+    name = args[0].lower()
+    auto = auto_platforms(get_settings())
+    if name not in auto:
+        return None, (
+            f"{args[0]} doesn't post automatically. Automatic: "
+            + (", ".join(auto) or "none (DRY_RUN is on, or no platform is set up)")
+        )
+    return name, None
+
+
+async def publish(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """/publish [platform]: post the latest approved video where it isn't live yet."""
+    msg = update.effective_message
+    if not auto_platforms(get_settings()):
+        await msg.reply_text(
+            "Nothing posts automatically: DRY_RUN is on, or no platform is set up."
+        )
+        return
+    platform, problem = _platform_arg(context.args)
+    if problem:
+        await msg.reply_text(problem)
+        return
+    if _posting.locked():
+        await msg.reply_text("Already posting; the result will arrive here.")
+        return
+    where = LABELS[platform] if platform else "every automatic platform"
+    await msg.reply_text(f"Posting the latest approved video to {where}...")
+    await msg.reply_text(await _publish(platform=platform))
+
+
+async def posted(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """/posted <platform>: an interrupted post went live after all; record it, never re-post."""
+    msg = update.effective_message
+    platform, problem = _platform_arg(context.args)
+    if problem or not platform:
+        await msg.reply_text(problem or "Which platform? e.g. /posted instagram")
+        return
+    try:
+        await asyncio.to_thread(mark_post, get_engine(), platform, "published")
+    except NothingToPublish as e:
+        await msg.reply_text(str(e))
+        return
+    await msg.reply_text(f"Noted: it's live on {LABELS[platform]}, so it won't be posted again.")
 
 
 async def redo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -222,8 +321,11 @@ def build_app() -> Application:
     app.add_handler(CommandHandler("produce", produce, filters=owner_only, block=False))
     app.add_handler(CommandHandler("redo", redo, filters=owner_only, block=False))
     app.add_handler(CommandHandler("reshoot", reshoot, filters=owner_only, block=False))
-    # buttons can't carry the owner filter; on_decision checks the sender itself
-    app.add_handler(CallbackQueryHandler(on_decision, pattern=r"^(approve|skip):\d+$"))
+    app.add_handler(CommandHandler("publish", publish, filters=owner_only, block=False))
+    app.add_handler(CommandHandler("posted", posted, filters=owner_only))
+    # buttons can't carry the owner filter; on_decision checks the sender itself. Approve posts,
+    # which takes minutes, so it doesn't hold up other updates
+    app.add_handler(CallbackQueryHandler(on_decision, pattern=r"^(approve|skip):\d+$", block=False))
     app.add_error_handler(on_error)
     return app
 
