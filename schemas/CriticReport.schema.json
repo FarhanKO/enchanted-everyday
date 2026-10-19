@@ -16,8 +16,8 @@
           "type": "string"
         },
         "rule": {
-          "description": "Story bible rule: 1-7 core, 8-12 craft, 0 for none",
-          "maximum": 12,
+          "description": "Story bible rule: 1-7 core, 8-14 craft, 0 for none",
+          "maximum": 14,
           "minimum": 0,
           "title": "Rule",
           "type": "integer"

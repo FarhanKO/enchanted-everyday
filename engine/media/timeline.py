@@ -2,8 +2,9 @@
 
 The storyboard plans shot lengths from a words-per-minute estimate. Once the voice exists, each
 beat's shots are stretched or squeezed, in proportion, to fill exactly the time that beat's lines
-take, so a cut never lands mid-sentence in the wrong beat. The last shot holds through the
-signature ending.
+take, so a cut never lands mid-sentence in the wrong beat. Within a beat, a cut moves to the
+nearest gap between lines, so the picture changes in the pause and each line plays over its own
+image. The last shot holds through the signature ending.
 
 Captions follow production_style.md §6: 2-6 words cut at natural phrase breaks, at most 2 lines
 of 26 characters, timed within each line in proportion to its characters. Pauses show no caption.
@@ -20,6 +21,8 @@ from engine.media.voice import VoiceTrack
 MAX_WORDS, MIN_WORDS = 6, 2
 LINE_CHARS, MAX_LINES = 26, 2
 MIN_CAPTION_S = 0.7
+SNAP_S = 2.0  # how far a cut may move to land in the gap between two lines
+MIN_SHOT_S = 1.2
 
 
 @dataclass(frozen=True)
@@ -58,10 +61,21 @@ def fit_shots(board: Storyboard, voice: VoiceTrack) -> list[TimedShot]:
     for beat in BEAT_ORDER:
         shots = [s for s in board.shots if s.beat == beat]
         start, end = bounds[beat]
+        # the shots share the spoken part; the ending holds on the last shot alone, so the final
+        # line plays over the final image
+        spoken = spans[beat][1] if beat == BEAT_ORDER[-1] else end
         planned = sum(s.duration_s for s in shots)
+        # the gaps between this beat's lines: where a line ends and its pause begins
+        gaps = [line.end_s for line in voice.lines if line.beat == beat][:-1]
         t = start
         for i, shot in enumerate(shots):
-            stop = end if i == len(shots) - 1 else t + (end - start) * shot.duration_s / planned
+            share = (spoken - start) * shot.duration_s / planned
+            stop = end if i == len(shots) - 1 else t + share
+            if i < len(shots) - 1 and gaps:
+                near = min(gaps, key=lambda g, s=stop: abs(g - s))
+                left = len(shots) - 1 - i  # shots still to place after this one
+                if abs(near - stop) <= SNAP_S and t + MIN_SHOT_S <= near <= end - left * MIN_SHOT_S:
+                    stop = near
             out.append(TimedShot(shot.id, round(t, 3), round(stop, 3)))
             t = stop
     return out

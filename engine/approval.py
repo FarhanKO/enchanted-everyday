@@ -1,9 +1,10 @@
 """The owner's verdict on a rendered video, and the frame redraws before it.
 
-Approve or Skip (the bot's buttons) is recorded once per render on the approvals table. Until
-publishing is automated (Phase 3), Approve answers with the posting kit: the full-quality file,
-the cover and each platform's copy, with where to switch on each platform's AI label. Every copy
-carries the credit line of each music track the render used (CC BY needs it).
+Approve or Skip (the bot's buttons) is recorded once per render on the approvals table. Approve
+then posts to every platform that posts automatically (engine/publish.py) and answers with the
+posting kit for the rest: the full-quality file, the cover and each platform's copy, with where
+to switch on its AI label. Every copy carries the credit line of each music track the render used
+(CC BY needs it).
 
 /reshoot S03 [note] redraws one frame (or the thumbnail) and re-renders: the note joins that
 frame's prompt, and without a note it's simply drawn again. Every other frame comes back from the
@@ -82,13 +83,13 @@ def decide(engine: Engine, render_id: int, decision: str, note: str | None = Non
         )
 
 
-AI_LABELS = (
-    "Switch on each platform's AI label when you post:\n"
-    "- YouTube: Details > Altered content > Yes\n"
-    "- Instagram: Advanced settings > Add AI label\n"
-    "- Facebook: the AI info toggle in the post settings\n"
-    "- TikTok: More options > AI-generated content"
-)
+AI_LABELS = {
+    "youtube": "- YouTube: Details > Altered content > Yes",
+    "instagram": "- Instagram: Advanced settings > Add AI label",
+    "facebook": "- Facebook: the AI info toggle in the post settings",
+    "tiktok": "- TikTok: More options > AI-generated content",
+}
+ALL_PLATFORMS = ("youtube", "instagram", "facebook", "tiktok")
 
 
 def post_copy(text: str, hashtags: list[str], credits: Sequence[str] = ()) -> str:
@@ -99,18 +100,29 @@ def post_copy(text: str, hashtags: list[str], credits: Sequence[str] = ()) -> st
     return f"{text}\n\n{' '.join(missing)}" if missing else text
 
 
-def posting_kit(ep: Episode, credits: Sequence[str] = ()) -> list[str]:
-    """The copy to paste, one message per platform so each is easy to copy on a phone."""
+def posting_kit(
+    ep: Episode, credits: Sequence[str] = (), platforms: Sequence[str] = ALL_PLATFORMS
+) -> list[str]:
+    """The copy to paste for the platforms posted by hand, one message per platform so each is
+    easy to copy on a phone. Platforms that post automatically (engine/publish.py) are left out."""
     p = ep.package.platforms
-    return [
-        f"Posting kit: {ep.package.title}\n\n{AI_LABELS}\n\n"
-        f"Pin as the first comment: {ep.package.comment_prompt}",
-        f"YOUTUBE title\n{p.youtube_title}",
-        f"YOUTUBE description\n{post_copy(p.youtube_description, p.hashtags, credits)}",
-        f"INSTAGRAM caption\n{post_copy(p.instagram_caption, p.hashtags, credits)}",
-        f"FACEBOOK caption\n{post_copy(p.facebook_caption, p.hashtags, credits)}",
-        f"TIKTOK caption\n{post_copy(p.tiktok_caption, p.hashtags, credits)}",
+    labels = "\n".join(AI_LABELS[x] for x in platforms)
+    kit = [
+        f"Posting kit: {ep.package.title}\n\nSwitch on each platform's AI label when you "
+        f"post:\n{labels}\n\nPin as the first comment: {ep.package.comment_prompt}"
     ]
+    if "youtube" in platforms:
+        kit += [
+            f"YOUTUBE title\n{p.youtube_title}",
+            f"YOUTUBE description\n{post_copy(p.youtube_description, p.hashtags, credits)}",
+        ]
+    if "instagram" in platforms:
+        kit.append(f"INSTAGRAM caption\n{post_copy(p.instagram_caption, p.hashtags, credits)}")
+    if "facebook" in platforms:
+        kit.append(f"FACEBOOK caption\n{post_copy(p.facebook_caption, p.hashtags, credits)}")
+    if "tiktok" in platforms:
+        kit.append(f"TIKTOK caption\n{post_copy(p.tiktok_caption, p.hashtags, credits)}")
+    return kit
 
 
 # ---------------------------------------------------------------- reshoot

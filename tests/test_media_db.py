@@ -135,3 +135,97 @@ def test_reshoot_refusals(db_engine, settings, fake_media, produced):
     settings.daily_spend_cap_usd = float(Decimal("0.01"))
     with pytest.raises(Refused, match="daily spend cap"):
         prepare_reshoot(db_engine, DAY, "thumb", settings)
+
+
+# ---------------------------------------------------------------- publishing (Phase 3)
+
+
+class FakePlatform:
+    """A publisher that records what it was sent; `fail` makes it turn the post down."""
+
+    def __init__(self, platform, fail=False):
+        self.platform, self.fail, self.sent = platform, fail, []
+
+    def publish(self, req):
+        from engine.publishers import PublishError, PublishResult
+
+        self.sent.append(req)
+        if self.fail:
+            raise PublishError(f"{self.platform} said: no")
+        return PublishResult(external_id=f"{self.platform}-1", url=f"https://{self.platform}/1")
+
+
+def _publishing(settings):
+    from pydantic import SecretStr
+
+    return settings.model_copy(
+        update={
+            "dry_run": False,
+            "meta_page_id": "555",
+            "meta_ig_user_id": "17841",
+            "meta_page_access_token": SecretStr("t"),
+        }
+    )
+
+
+def test_approve_posts_once_and_a_retry_posts_only_what_failed(db_engine, settings, produced):
+    from engine.db.models import Post
+    from engine.publish import NothingToPublish, mark_post, publish_render
+
+    render_id = produced["render"]["render_id"]
+    live = _publishing(settings)
+    with pytest.raises(NothingToPublish):  # not approved yet
+        publish_render(db_engine, render_id, live)
+    decide(db_engine, render_id, "approve")
+
+    fakes = {
+        "instagram": FakePlatform("instagram"),
+        "facebook": FakePlatform("facebook", fail=True),
+    }
+    pick = lambda platform, *_: fakes[platform]  # noqa: E731
+    first = publish_render(db_engine, render_id, live, make_publisher=pick)
+    assert [(o.platform, o.status) for o in first] == [
+        ("instagram", "published"),
+        ("facebook", "failed"),
+    ]
+    assert fakes["instagram"].sent[0].ai_generated
+
+    fakes["facebook"].fail = False
+    again = publish_render(db_engine, None, live, make_publisher=pick)  # None: the latest approved
+    assert [o.status for o in again] == ["published", "published"]
+    assert len(fakes["instagram"].sent) == 1  # already live: not posted twice
+    assert len(fakes["facebook"].sent) == 2
+
+    with session_scope(db_engine) as s:
+        posts = {p.platform: p for p in s.scalars(select(Post)).all()}
+    assert posts["facebook"].attempts == 2 and posts["facebook"].url == "https://facebook/1"
+    with pytest.raises(NothingToPublish, match="already has it"):
+        mark_post(db_engine, "instagram", "failed")
+
+
+def test_an_interrupted_post_waits_for_the_owner(db_engine, settings, produced):
+    from engine.db.models import Post
+    from engine.publish import mark_post, publish_render
+
+    render_id = produced["render"]["render_id"]
+    decide(db_engine, render_id, "approve")
+    with session_scope(db_engine) as s:
+        s.add(Post(render_id=render_id, platform="instagram", status="publishing", attempts=1))
+    ig = FakePlatform("instagram")
+    pick = lambda *_: ig  # noqa: E731
+    live = _publishing(settings)
+
+    out = publish_render(db_engine, render_id, live, platforms=["instagram"], make_publisher=pick)
+    assert out[0].status == "unknown" and not ig.sent
+
+    mark_post(db_engine, "instagram", "failed")  # the owner checked: it isn't live
+    out = publish_render(db_engine, render_id, live, platforms=["instagram"], make_publisher=pick)
+    assert out[0].status == "published" and len(ig.sent) == 1
+
+
+def test_dry_run_posts_nothing(db_engine, settings, produced):
+    from engine.publish import publish_render
+
+    render_id = produced["render"]["render_id"]
+    decide(db_engine, render_id, "approve")
+    assert publish_render(db_engine, render_id, settings, make_publisher=pytest.fail) == []

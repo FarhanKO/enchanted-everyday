@@ -45,6 +45,10 @@ location id in every shot set there instead of describing the place again.
   shot's `sfx` only when the story brings the sound back (a tune lost, then found), never as decoration.
 - **The ending:** the last shot holds a quiet final image long enough for the bell and the signature line that code
   adds after it (sound file, `[signature]`). Never put text or a logo in it.
+- **Fades:** code opens every episode out of black. `fade_out` picks how the last frame leaves: `black` for a quiet
+  night or a sorrowful, open ending; `white` for a dream, a memory or waking up; `glow` when warm magic lingers (a
+  jar, a lantern, the bell); `sunray` for a morning, hope or sun breaking through. Match it to the final image's light,
+  and don't reach for `black` every time.
 - **Continuity** (rule 11): wardrobe, props, light and time of day persist from shot to shot unless the story changes
   them.
 

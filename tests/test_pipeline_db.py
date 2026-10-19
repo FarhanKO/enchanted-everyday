@@ -267,7 +267,7 @@ def test_the_next_episode_reads_the_story_so_far(db_engine, settings, sent, embe
     summary = golden()["package"]["canon"]["summary"]
     for role, prompt in prompts.items():
         assert "<story_so_far>" in prompt and summary[:40] in prompt, role
-    assert "Last 1 picks: modes narrated 1, mixed 0, dialogue 0" in prompts["story architect"]
+    assert "Last 1 picks: modes mixed 1, dialogue 0, narrated 0" in prompts["story architect"]
     assert "lost-dreams thread last moved 0 pick(s) ago" in prompts["story architect"]
 
     # day one told the season plan's first step; the thread rests on day two

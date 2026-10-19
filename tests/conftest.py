@@ -66,7 +66,7 @@ def fake_media(monkeypatch, tmp_path, settings):
             ),
         )
 
-    def render_episode(ep, voice, frames, out_dir, _settings):
+    def render_episode(ep, voice, frames, out_dir, _settings, _recent_music=()):
         out_dir.mkdir(parents=True, exist_ok=True)
         for name in ("episode.mp4", "preview.mp4", "thumbnail.jpg"):
             (out_dir / name).write_bytes(b"x")

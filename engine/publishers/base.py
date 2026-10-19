@@ -1,8 +1,12 @@
 """Publisher contract and the idempotency guard every platform goes through.
 
 `publish_once` checks the posts table before uploading, so a retried run never double-posts.
-Platform modules (youtube, instagram, facebook, tiktok) arrive in Phase 3 and only implement
-`Publisher.publish`.
+Platform modules (meta.py: Instagram and Facebook; youtube.py) only implement `Publisher.publish`.
+TikTok stays manual until its inbox upload is approved.
+
+A publisher raises before the post is live, and only then: once the platform has accepted the
+post, a later hiccup (a status poll, a permalink lookup) is logged, not raised, because a raise
+marks the row failed and a retry would post it twice.
 """
 
 from __future__ import annotations
@@ -25,12 +29,15 @@ class PublishStateUnknown(RuntimeError):
     pass
 
 
+class PublishError(RuntimeError):
+    """The platform turned the post down; the message is the platform's own, safe to show."""
+
+
 @dataclass(frozen=True)
 class PublishRequest:
     render_id: int
-    video_path: str  # local file, for platforms that take an upload
-    video_url: str  # public R2 URL, for platforms that fetch (Meta)
-    caption: str
+    video_path: str  # the rendered master, uploaded as a file to every platform
+    caption: str  # the platform's own copy, music credits and hashtags included
     title: str
     ai_generated: bool  # sets containsSyntheticMedia / is_ai_generated
 

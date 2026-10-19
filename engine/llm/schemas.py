@@ -89,6 +89,8 @@ CueAction = Literal["enter", "swell", "thin", "silence", "resolve", "out"]
 # the music under a shot; the render picks a licensed track per run of shots with one mood
 # (templates/music/library.toml) and never the same one twice in a row across episodes
 MusicMood = Literal["none", "calm", "wonder", "mystery", "tension", "sorrow", "warm", "playful"]
+# every episode opens out of black; the close dissolves into one of these, matched to the ending
+FadeOut = Literal["black", "white", "glow", "sunray"]
 
 Slug = Annotated[str, StringConstraints(pattern=r"^[a-z0-9_]+$")]
 Score = Annotated[float, Field(ge=0, le=10)]
@@ -373,6 +375,13 @@ class Storyboard(_Strict):
     locations: list[Location] = Field(min_length=1)
     shots: list[Shot] = Field(min_length=MIN_SHOTS, max_length=MAX_SHOTS)
     sound: Sound
+    fade_out: FadeOut = Field(
+        default="black",  # storyboards written before fade-outs have none
+        description="How the last frame leaves the screen (the video always opens out of black): "
+        "black (a quiet night, a sorrowful or open ending), white (a dream, a memory, waking "
+        "up), glow (warm magic: a jar, a lantern, the moon bell lingering), or sunray (a "
+        "morning, hope, sunlight breaking through)",
+    )
 
     @property
     def duration_s(self) -> float:

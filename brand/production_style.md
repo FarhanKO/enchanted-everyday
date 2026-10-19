@@ -49,6 +49,10 @@ Restraint is the brand. Slow drift, rain, curtains, steam, fireflies, train ligh
 - **Overlays** (licensed loops, composited in code): rain on glass, falling rain, fireflies, dust motes, steam, film grain,
   light leak.
 - **Transitions:** slow crossfades (0.6-1.0 s) or a dip to black before the landing. No whip pans, zooms or glitch effects.
+- **Open and close:** every episode fades in from black (1 s). The close fades out (1.6 s) into one of four, chosen
+  by the storyboard's `fade_out` to suit the final image: **black** (a quiet night, sorrow, an open ending),
+  **white** (a dream, a memory, waking), **glow** (the picture's own warm light blooms, then settles to amber) or
+  **sunray** (shafts of morning sun sweep in, then settle to pale gold). Vary it across episodes.
 
 Every video prompt gets the `video_suffix` from `style.toml` appended in code.
 
