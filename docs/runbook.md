@@ -19,6 +19,18 @@ All times are Dhaka (Asia/Dhaka).
 
 Keep three approved videos in the buffer so exams or travel never break the streak.
 
+## Running on your PC instead of a server
+
+Put the PC to **sleep** at night, not shut down: a Windows task wakes it at 04:45 on run days, starts Docker
+Desktop and the stack (`scripts/pc_wake.ps1`) and keeps it awake until 14:00 so `/produce` and Approve work
+from your phone. A power cut or a restart that leaves you signed out skips the day. The log is
+`work/pc_wake.log`.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\pc_schedule.ps1              # install or update the task
+powershell -ExecutionPolicy Bypass -File scripts\pc_schedule.ps1 -Uninstall   # remove it
+```
+
 ## Commands (on the VPS, in /opt/content-engine)
 
 ```bash
