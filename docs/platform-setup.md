@@ -49,7 +49,9 @@ has no published turnaround. Tick items off here as they land.
 
 ## Infrastructure
 
-- [ ] Hostinger KVM 2 (Ubuntu 24.04), SSH key added in the panel
+- [ ] A server with Ubuntu 24.04 and your SSH key added in the panel: Oracle Cloud Always Free
+      (VM.Standard.A1.Flex, ARM; upgrade the account to Pay As You Go so an idle free server isn't
+      reclaimed) or a paid VPS such as Hostinger KVM 2
 - [ ] Run `scripts/provision_vps.sh`, then confirm `ssh app@<vps>` works
 - [ ] Cloudflare R2 bucket + API token (object read/write on that bucket only); public access or a custom domain for `R2_PUBLIC_BASE_URL`
 - [ ] Anthropic API key with a monthly spend limit set in the Console
