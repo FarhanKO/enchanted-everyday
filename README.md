@@ -130,6 +130,7 @@ evals/               eval results per prompt version
 templates/           caption font (Lora) and the licensed music library
 docs/                ADRs, runbook, platform setup, privacy policy
 scripts/             VPS provisioning and deploy
+*.html, .nojekyll    the public site (home, privacy, terms), served by GitHub Pages from the repo root
 ```
 
 ## Roadmap

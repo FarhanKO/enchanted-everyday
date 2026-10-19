@@ -9,3 +9,5 @@ docs
 data
 work
 *.mp4
+*.html
+.nojekyll
