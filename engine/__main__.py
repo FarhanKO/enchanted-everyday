@@ -5,7 +5,8 @@ check     report missing settings and test the database connection
 run       run the daily flow once (optionally for --date YYYY-MM-DD)
 produce   write the storyboard and package for a day's script (optionally --date)
 redo      turn down a day's story and write the next backup (optionally --date, --note)
-serve     start the scheduled deployments (what the worker container runs)
+serve     start the scheduled deployments (what the worker container runs); first catches up
+          on today's run if the machine was off at run time
 tokens    check the Meta and YouTube logins; send fix-it steps to Telegram (--quiet: print only)
 publish   post the latest approved video where it isn't live yet (--render ID, --platform P)
 render    voice, draw and render an episode.json to video, no database (spends up to --max-usd)
@@ -17,11 +18,14 @@ eval      rewrite and review every golden episode's script; compare with the las
 from __future__ import annotations
 
 import argparse
+import logging
 import sys
 from pathlib import Path
 
 from engine.config import get_settings
 from engine.log import setup_logging
+
+log = logging.getLogger(__name__)
 
 # settings each phase needs; `check` reports the gaps
 REQUIRED = {
@@ -104,9 +108,17 @@ def serve() -> None:
     from prefect import serve as serve_all
     from prefect.schedules import Cron
 
-    from engine.flows import daily_run, token_check
+    from engine.flows import daily_run, missed_daily_run, token_check
 
     settings = get_settings()
+    # Catch up first, so the schedule can't start the same day alongside it. Finished stages are
+    # skipped, so the day's script is never sent twice.
+    if day := missed_daily_run(settings):
+        log.info("catching up on a missed daily run", extra={"run_date": str(day)})
+        try:
+            daily_run(run_date=str(day))
+        except Exception:
+            log.exception("catch-up run failed")  # daily_run has already sent the alert
     serve_all(
         daily_run.to_deployment(
             name="daily",

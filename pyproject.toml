@@ -8,6 +8,7 @@ dependencies = [
     "alembic>=1.14,<2",
     "anthropic>=0.70",
     "boto3>=1.35,<2",
+    "cronsim>=2.6,<3",  # the catch-up check after a missed DAILY_RUN_CRON (engine/flows.py)
     "fastembed>=0.7,<1",  # local MiniLM embeddings over ONNX, no torch
     "feedparser>=6.0,<7",
     "httpx>=0.27,<1",

@@ -11,7 +11,9 @@ from __future__ import annotations
 import logging
 from datetime import UTC, date, datetime
 
+from cronsim import CronSim
 from prefect import flow, task
+from sqlalchemy import Engine
 
 from engine.config import Settings, get_settings
 from engine.db.models import Run
@@ -109,6 +111,23 @@ def token_check() -> list[str]:
         alert(message)
     log.info("token check complete", extra={"warnings": len(messages)})
     return messages
+
+
+def missed_daily_run(
+    settings: Settings, now: datetime | None = None, engine: Engine | None = None
+) -> date | None:
+    """Today, when today's DAILY_RUN_CRON time has passed and the day never got going: the machine
+    was off or asleep at run time (a PC that was shut down, a server that was down), or it stopped
+    mid-run. A run that finished or failed is left alone; a failure has already sent its alert."""
+    now = now or datetime.now(settings.tz)
+    last = next(iter(CronSim(settings.daily_run_cron, now.astimezone(settings.tz), reverse=True)))
+    if last.date() != now.astimezone(settings.tz).date():
+        return None
+    with session_scope(engine) as s:
+        run = s.query(Run).filter(Run.run_date == last.date()).one_or_none()
+        if run is not None and run.status not in ("pending", "running"):
+            return None
+    return last.date()
 
 
 def run_status(run_date: date) -> dict | None:

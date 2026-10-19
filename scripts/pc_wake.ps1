@@ -1,5 +1,6 @@
 # Run-day helper for running the stack on a Windows PC instead of a server.
-# The scheduled task from scripts/pc_schedule.ps1 wakes the PC from sleep and runs this. It starts
+# The scheduled task from scripts/pc_schedule.ps1 runs this when it wakes the PC from sleep on a
+# run day and whenever you sign in (after a shutdown, the worker then catches up on a missed run). It starts
 # Docker Desktop if it isn't running, brings the stack up, and keeps the PC from going back to sleep
 # until -AwakeUntil, so /produce, /reshoot and Approve still work from your phone. After that,
 # Windows is free to sleep again. The screen may turn off; only the system is kept awake.
@@ -39,7 +40,7 @@ function DockerUp {
     return ($LASTEXITCODE -eq 0)
 }
 
-Log "woke up; keeping the PC awake until $AwakeUntil"
+Log "started; keeping the PC awake until $AwakeUntil"
 if (-not (DockerUp)) {
     Log "starting Docker Desktop"
     Start-Process (Join-Path $dockerHome "Docker Desktop.exe")

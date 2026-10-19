@@ -23,8 +23,10 @@ Keep three approved videos in the buffer so exams or travel never break the stre
 
 Put the PC to **sleep** at night, not shut down: a Windows task wakes it at 04:45 on run days, starts Docker
 Desktop and the stack (`scripts/pc_wake.ps1`) and keeps it awake until 14:00 so `/produce` and Approve work
-from your phone. A power cut or a restart that leaves you signed out skips the day. The log is
-`work/pc_wake.log`.
+from your phone. The same task runs whenever you sign in, so after a shutdown, a power cut or a
+restart the stack starts as soon as you turn the PC on and sign in, and the worker catches up on a
+run day's missed 05:00 run then (`engine serve` checks at start; finished stages are skipped, so
+nothing is sent twice). Posting still waits for your Approve. The log is `work/pc_wake.log`.
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts\pc_schedule.ps1              # install or update the task
