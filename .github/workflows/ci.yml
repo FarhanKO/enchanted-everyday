@@ -27,7 +27,7 @@ jobs:
     env:
       TEST_DATABASE_URL: postgresql+psycopg://test:test@localhost:5432/test
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-24.04
     needs: test
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - run: docker build -t content-engine:ci .
       - name: smoke test the image
         run: docker run --rm content-engine:ci engine --help
