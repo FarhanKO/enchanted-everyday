@@ -99,6 +99,12 @@
       },
       "title": "Beats",
       "type": "array"
+    },
+    "closing_line": {
+      "default": "",
+      "description": "The story's message in one short line, shown in italics over the last image after the story ends. Never spoken. At most 12 words, quiet and image-like, never a lesson",
+      "title": "Closing Line",
+      "type": "string"
     }
   },
   "required": [

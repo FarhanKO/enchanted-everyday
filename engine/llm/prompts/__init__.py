@@ -17,7 +17,7 @@ from typing import get_args
 
 from engine.llm import schemas as s
 
-PROMPT_VERSION = "v5"  # v5: assigned leads (Tina/Fann mix), D10 where they meet
+PROMPT_VERSION = "v6"  # v6: no spoken goodnight or bell; an italic closing message
 
 HERE = Path(__file__).parent
 
@@ -32,6 +32,7 @@ ROLES: dict[str, tuple[str, ...]] = {
 
 NUMBERS = {
     "max_hook_words": s.MAX_HOOK_WORDS,
+    "max_closing_words": s.MAX_CLOSING_WORDS,
     "min_words": s.MIN_WORDS,
     "max_words": s.MAX_WORDS,
     "pace_wpm": s.PACE_WPM,

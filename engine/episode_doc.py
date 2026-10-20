@@ -45,6 +45,8 @@ def to_markdown(ep: Episode) -> str:
             who = "" if line.speaker == "narrator" else f"**{speaker_label(line.speaker)}:** "
             w(f"> {who}{line.text}{pause}  ")
         w("")
+    if script.closing_line:
+        w(f"**ON SCREEN, AFTER THE LANDING:** _{script.closing_line}_\n")
 
     w("## 2. Storyboard\n")
     w("| Shot | Time | Beat | Camera | Motion | What we see |")

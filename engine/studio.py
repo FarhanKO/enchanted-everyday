@@ -221,6 +221,8 @@ class Studio:
         def check(out: Script) -> None:
             check_speakers(card.mode, out)
             check_voicing(card.mode, out)
+            if not out.closing_line.strip():
+                raise ValueError("closing_line is empty; every script ends on its message")
 
         return self._ask("script_writer", "\n\n".join(parts), Script, check)
 

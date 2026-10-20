@@ -106,17 +106,17 @@ Faces drifting between shots is the most common failure in AI-illustrated storie
 
 | Layer | Use | Avoid |
 |---|---|---|
-| Music | Felt or soft piano, distant strings, restrained pads, subtle magical tones (celesta, glass) | Trailer swells, constant crescendos, music that tells the viewer how to feel |
+| Music | Slow, melancholic waltzes and lullabies: strings, harp or harpsichord, felt piano, music box, a soft choir; a dreamy, reverb-washed feel; a dark-cinematic build under the cost and the reveal | Drums and beats, constant crescendos, music that tells the viewer how to feel |
 | Ambience | Rain, room tone, wind, birds, trains, street ambience, kettle steam | Loops that overpower the voice or repeat obviously |
 | Silence | A real beat before a reveal or the final line | Filling every second |
 
-**Signature ending:** the final frame holds about 3 seconds; a single soft brass bell chime (the Shopkeeper's moon
-bell) plays, and the narrator says "Goodnight, sleepless soul." barely above a whisper. Every episode, every mode.
-Code adds both after the script's landing ([`sound.toml`](sound.toml), `[signature]`).
+**The ending:** after the landing the final frame holds 4-6 seconds. The story's message (the script's
+`closing_line`) fades in, centred, in italics, while the music swells, then everything fades out together. Nothing is
+spoken after the landing, and there is no bell (Farhan, 2026-10-20).
 
 **Character sounds:** each recurring character has a sound heard where they first appear and a short musical motif
 laid under that moment: Fann hums three falling notes (low felt piano); Tina's dupatta rustles (a music box answers
-with four rising notes); the Shopkeeper's moon bell rings. Details in [`sound.toml`](sound.toml).
+with four rising notes). Details in [`sound.toml`](sound.toml).
 
 **Music follows the story.** Every shot carries a music mood, and each run of shots with one mood plays its own
 licensed track from [`templates/music`](../templates/music/README.md), crossfading where the story turns:

@@ -19,7 +19,7 @@ Many tracks also carry a second mood (Solace is warm, calm and wonder), so each 
 **How a track is picked:** first one not heard in the last ~4 episodes (the render reads the music earlier renders
 used), then one whose strongest mood it is, then one that suits the episode's look (night or day). So the same
 music doesn't play under every video. Each section is levelled to the same loudness, starts from the top of its
-track, fades out under the bell and the signature line, and sits well under the voice: about 8 dB below it in the
+track, swells under the closing message and fades out with the picture, and sits well under the voice: about 8 dB below it in the
 pauses and 13 dB while someone speaks. An episode whose storyboard says `none` throughout has no music at all.
 
 ## Credits: every post names its music

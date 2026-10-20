@@ -359,6 +359,12 @@
           },
           "title": "Beats",
           "type": "array"
+        },
+        "closing_line": {
+          "default": "",
+          "description": "The story's message in one short line, shown in italics over the last image after the story ends. Never spoken. At most 12 words, quiet and image-like, never a lesson",
+          "title": "Closing Line",
+          "type": "string"
         }
       },
       "required": [
@@ -749,7 +755,7 @@
         },
         "fade_out": {
           "default": "black",
-          "description": "How the last frame leaves the screen (the video always opens out of black): black (a quiet night, a sorrowful or open ending), white (a dream, a memory, waking up), glow (warm magic: a jar, a lantern, the moon bell lingering), or sunray (a morning, hope, sunlight breaking through)",
+          "description": "How the last frame leaves the screen (the video always opens out of black): black (a quiet night, a sorrowful or open ending), white (a dream, a memory, waking up), glow (warm magic: a jar, a lantern, a lingering light), or sunray (a morning, hope, sunlight breaking through)",
           "enum": [
             "black",
             "white",

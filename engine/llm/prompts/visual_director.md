@@ -40,14 +40,15 @@ location id in every shot set there instead of describing the place again.
 - `camera`: slow and motivated. `overlays` and `sfx` as the production style describes; ambience never drowns the voice.
 - **Who is speaking is on screen.** While a character speaks, a shot shows them (or their hands, back or silhouette)
   so the viewer always knows whose voice it is. Narrator lines can sit over anything.
-- **Character sounds:** in the shot where Fann, Tina or the Shopkeeper first appears, add their `presence` sound from
-  the sound file to `sfx` (`fann_hum`, `tina_dupatta`, `shopkeeper_bell`). Code plays it there. Name it in a later
+- **Character sounds:** in the shot where Fann or Tina first appears, add their `presence` sound from the sound file
+  to `sfx` (`fann_hum`, `tina_dupatta`). Code plays it there. The Shopkeeper has no sound; there is no bell. Name it in a later
   shot's `sfx` only when the story brings the sound back (a tune lost, then found), never as decoration.
-- **The ending:** the last shot holds a quiet final image long enough for the bell and the signature line that code
-  adds after it (sound file, `[signature]`). Never put text or a logo in it.
+- **The ending:** the last shot holds a quiet final image for 4-6 seconds after the landing while the script's
+  closing message fades in over it, centred, in italics. Leave calm space in the middle of the frame for that line
+  (sky, a wall, a dark window), and never put text or a logo in the picture itself.
 - **Fades:** code opens every episode out of black. `fade_out` picks how the last frame leaves: `black` for a quiet
   night or a sorrowful, open ending; `white` for a dream, a memory or waking up; `glow` when warm magic lingers (a
-  jar, a lantern, the bell); `sunray` for a morning, hope or sun breaking through. Match it to the final image's light,
+  jar, a lantern); `sunray` for a morning, hope or sun breaking through. Match it to the final image's light,
   and don't reach for `black` every time.
 - **Continuity** (rule 11): wardrobe, props, light and time of day persist from shot to shot unless the story changes
   them.
@@ -61,6 +62,7 @@ location id in every shot set there instead of describing the place again.
   four moods an episode, each lasting at least about ten seconds. Use `none` where music would be too much: a quiet
   daily moment the ambience carries, or a whole episode that is better without it.
 - `music_palette`: instruments, tempo and feel (production style, section 5).
-- `cues`: when the music enters, swells, thins, falls silent, resolves and goes out, in seconds from the start. Put a
-  `silence` cue before the reveal or the final line. No cue after the last shot ends.
+- `cues`: when the music enters, swells, thins, falls silent, resolves and goes out, in seconds from the start.
+  Build suspense: thin the music as the cost piles up, put a `silence` cue just before the reveal, and a `swell` at
+  the landing's last line so the music rises under the closing message. No cue after the last shot ends.
 - `ambience`: the room tone and environment sounds under the whole episode.

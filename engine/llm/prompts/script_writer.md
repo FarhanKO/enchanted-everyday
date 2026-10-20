@@ -12,7 +12,7 @@ style's narration section; the voice cast is in the voices file.
   It is spoken over an impossible or contradictory first frame, so it can be strange on its own. A legend works
   well: "They say...", "In this city, people say...".
 - **Length:** ${min_words}-${max_words} spoken words in total. At ${pace_wpm} words per minute plus the scripted
-  pauses, the episode must run ${min_s}-${max_s} seconds (the signature ending adds a few more). Aim for 70-82: use the
+  pauses, the episode must run ${min_s}-${max_s} seconds (the closing message's hold adds a few more). Aim for 70-82: use the
   time for room, not for more story.
 - `speaker` on every line, one of: ${speakers}. Fixed cast speak as themselves (`fann`, `tina`, `shopkeeper`).
   Anyone else speaks through the voice role that fits them (`woman`, `old_man`, `child_girl`, ...); name them in the
@@ -36,8 +36,12 @@ style's narration section; the voice cast is in the voices file.
   its own line, spoken by them. (A letter or a sign the narrator reads aloud has no quotation marks either.)
 - At most ${max_speakers} characters speak in one episode. Character lines are short and natural, the way people
   actually talk at night: half-sentences, hesitations, things left unsaid.
-- **Never write the closing line.** Every episode ends with the bell and the narrator's signature line, which code
-  adds after your landing. Your last line is the landing itself.
+- **Your last spoken line is the landing itself.** Nothing is spoken after it: no sign-off, no goodnight.
+- `closing_line`: the story's message in one short line, at most ${max_closing_words} words. It is never spoken: after
+  the landing, it fades in on screen in italics over the last image while the music swells. Write it like the last
+  line of a poem the story earned, in the story's own images, not a lesson about life: "Some doors open only for
+  the ones who stay." rather than "We should always be patient." It must not repeat the landing, and the story must
+  still make full sense without it.
 
 ## Telling it slowly
 

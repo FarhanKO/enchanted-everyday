@@ -1,15 +1,16 @@
 """Render: frames, voice and sound into the finished 1080x1920 video, then QC.
 
 Picture, in one ffmpeg pass: each frame drifts slowly (push-in, pull-back, pan, tilt or parallax,
-as the shot's camera says, 4-8%), shots crossfade, a faint film grain and vignette sit over
-everything, and the captions are burned in (Lora SemiBold, warm cream, soft shadow). It opens out of
+as the shot's camera says, 4-8%), shots crossfade (a quick dissolve inside a beat; between beats
+a slow dip through black, and a long dissolve into the landing), a faint film grain and vignette sit
+over everything, and the captions are burned in (Lora SemiBold, warm cream, soft shadow). After the
+story, the closing message fades in, centred, in italics, over the held last image. It opens out of
 black and closes into the storyboard's fade_out: black, white, glow or sunray.
 
 Sound, mixed here: the voice; one ambience bed per shot from its sfx (rain, sea, wind or room
-tone), crossfaded; each recurring character's sound where they first appear; the moon bell before
-the signature line; and the music, a licensed track for each stretch of the story matched to its
-mood (engine/media/music.py), ducked under the voice. Then loudness-normalised in two passes to
--14 LUFS, -1 dBTP.
+tone), crossfaded; each recurring character's sound where they first appear; and the music, a
+licensed track for each stretch of the story matched to its mood (engine/media/music.py), ducked
+under the voice. Then loudness-normalised in two passes to -14 LUFS, -1 dBTP.
 
 `ai_clip` shots are drawn as still frames with drift until AI video is switched on.
 """
@@ -37,7 +38,9 @@ log = logging.getLogger(__name__)
 
 W, H = 1080, 1920
 WORK_SCALE = 2  # frames are prepared at 2x so slow zooms move in sub-pixel steps
-FADE_S = 0.8
+FADE_S = 0.8  # the dissolve between shots inside a beat
+DIP_S = 1.2  # between beats: a slow dip through black, a breath between chapters
+LANDING_FADE_S = 1.6  # into the landing: a long, soft dissolve
 FADE_IN_S = 1.0  # every episode opens out of black
 FADE_OUT_S = 1.6  # and closes into its fade_out colour
 LIGHT_S = 2.5  # glow and sunray: the light builds this long before the colour takes over
@@ -52,12 +55,12 @@ VOICE_GAIN = 1.0
 MUSIC_GAIN = 0.3
 BED_GAIN = 0.05
 PRESENCE_GAIN = 0.35
-BELL_GAIN = 0.45
 
 # #F6EEDF; #1A1530 at ~70% (ASS colours are &HAABBGGRR). The shadow is a soft halo: the same
 # text widened and blurred, so captions read over a glowing jar without a box or a hard outline.
 CREAM, SHADOW = "&H00DFEEF6", "&H4D30151A"
 CAPTION_Y = int(H * 0.72)
+MESSAGE_Y = int(H * 0.47)  # the closing message sits a little above the centre
 
 
 @dataclass
@@ -154,6 +157,8 @@ Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle,
 Alignment, MarginL, MarginR, MarginV, Encoding
 Style: Caption,{font},64,{CREAM},{CREAM},{CREAM},{CREAM},600,0,0,0,100,100,0,0,1,0,0,2,60,60,0,1
 Style: Shadow,{font},64,{SHADOW},{SHADOW},{SHADOW},{SHADOW},600,0,0,0,100,100,0,0,1,5,0,2,60,60,0,1
+Style: Message,{font},62,{CREAM},{CREAM},{CREAM},{CREAM},500,1,0,0,100,100,1,0,1,0,0,5,60,60,0,1
+Style: Halo,{font},62,{SHADOW},{SHADOW},{SHADOW},{SHADOW},500,1,0,0,100,100,1,0,1,6,0,5,60,60,0,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -162,6 +167,16 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     for cap in caps:
         text = r"\N".join(ass_escape(line) for line in cap.lines)
         start, end = ass_time(cap.start_s), ass_time(cap.end_s)
+        if cap.message:  # the closing message: centred, italic, a slow fade in and out
+            events.append(
+                f"Dialogue: 0,{start},{end},Halo,,0,0,0,,"
+                f"{{\\pos({W // 2},{MESSAGE_Y + 3})\\blur12\\fad(900,700)}}{text}"
+            )
+            events.append(
+                f"Dialogue: 1,{start},{end},Message,,0,0,0,,"
+                f"{{\\pos({W // 2},{MESSAGE_Y})\\fad(900,700)}}{text}"
+            )
+            continue
         # a blurred dark copy just below, then the crisp cream text on top
         events.append(
             f"Dialogue: 0,{start},{end},Shadow,,0,0,0,,"
@@ -214,6 +229,26 @@ def fades(src: str, fade_out: str, end_s: float, light: str | None = None) -> li
     return parts
 
 
+def transitions(
+    shots: list[TimedShot], beats: dict[str, str] | None = None
+) -> list[tuple[str, float]]:
+    """(xfade transition, seconds) into each shot after the first. Inside a beat, a quick
+    dissolve; between beats, a slow dip through black, except out of the hook (keep the opening
+    moving) and into the landing (a long dissolve). Each is kept short enough that a shot is never
+    all transition."""
+    out = []
+    for prev, cur in zip(shots, shots[1:], strict=False):
+        a, b = (beats or {}).get(prev.id), (beats or {}).get(cur.id)
+        if a is None or a == b or a == "hook":
+            kind, d = "fade", FADE_S
+        elif b == "landing":
+            kind, d = "fade", LANDING_FADE_S
+        else:
+            kind, d = "fadeblack", DIP_S
+        out.append((kind, min(d, prev.duration_s / 2.5, cur.duration_s / 2.5)))
+    return out
+
+
 def picture_filter(
     shots: list[TimedShot],
     cameras: dict[str, str],
@@ -222,11 +257,13 @@ def picture_filter(
     fade_out: str = "black",
     end_s: float | None = None,
     light: str | None = None,
+    beats: dict[str, str] | None = None,
 ) -> str:
-    fade = min(FADE_S, min(s.duration_s for s in shots) / 2.5)
+    """`beats`: shot id -> beat, for the transitions between beats."""
+    joins = transitions(shots, beats)
     parts = []
     for i, shot in enumerate(shots):
-        length = shot.duration_s + (fade if i < len(shots) - 1 else 0)
+        length = shot.duration_s + (joins[i][1] if i < len(shots) - 1 else 0)
         frames = max(2, round(length * fps))
         parts.append(
             f"[{i}:v]zoompan={motion(cameras[shot.id], frames)}:d={frames}:s={W}x{H}:fps={fps},"
@@ -235,8 +272,9 @@ def picture_filter(
     last = "v0"
     for i in range(1, len(shots)):
         out = f"x{i}"
+        kind, d = joins[i - 1]
         parts.append(
-            f"[{last}][v{i}]xfade=transition=fade:duration={fade:.3f}:"
+            f"[{last}][v{i}]xfade=transition={kind}:duration={d:.3f}:"
             f"offset={shots[i].start_s:.3f}[{out}]"
         )
         last = out
@@ -318,7 +356,6 @@ def mix_audio(
     mix = v * VOICE_GAIN + beds(shots, board, v.size) * BED_GAIN
     for at, sound_id in presences(shots, board, brand_dir):
         _place(mix, synth.PRESENCE[sound_id](), at, PRESENCE_GAIN)
-    _place(mix, synth.moon_bell(), voice.bell_at_s, BELL_GAIN)
     if any(c.track is not None for c in cues):
         mix += music.bed(cues, board, shots, v) * MUSIC_GAIN
     return mix
@@ -392,7 +429,14 @@ def music_notes(cues: Sequence[music.Cue], library_empty: bool) -> list[str]:
     return [f"no music track for mood {m}: add one to templates/music" for m in missing]
 
 
-def qc(path: Path, expect_s: float, notes: Sequence[str], ai_clips_as_stills: int) -> dict:
+def qc(
+    path: Path,
+    expect_s: float,
+    notes: Sequence[str],
+    ai_clips_as_stills: int,
+    dips: Sequence[tuple[float, float]] = (),
+) -> dict:
+    """`dips`: (start, end) of the planned dips through black between beats."""
     info = ffmpeg.probe(path)
     video = next(s for s in info["streams"] if s["codec_type"] == "video")
     audio = [s for s in info["streams"] if s["codec_type"] == "audio"]
@@ -405,7 +449,9 @@ def qc(path: Path, expect_s: float, notes: Sequence[str], ai_clips_as_stills: in
     blacks = [
         start
         for start, end in re.findall(r"black_start:([\d.]+) black_end:([\d.]+)", err)
-        if float(end) > FADE_IN_S + 0.5 and float(start) < expect_s - FADE_OUT_S - 0.5
+        if float(end) > FADE_IN_S + 0.5
+        and float(start) < expect_s - FADE_OUT_S - 0.5
+        and not any(a - 0.3 <= float(start) and float(end) <= b + 0.3 for a, b in dips)
     ]
 
     issues = []
@@ -486,7 +532,15 @@ def render(
         extra = ["-loop", "1", "-framerate", str(fps), "-t", f"{voice.duration_s:.3f}",
                  "-i", str(rays)]  # fmt: skip
         light = f"{len(shots) + 1}:v"
-    graph = picture_filter(shots, cameras, fps, ass, board.fade_out, voice.duration_s, light)
+    beats = {s.id: s.beat for s in board.shots}
+    graph = picture_filter(
+        shots, cameras, fps, ass, board.fade_out, voice.duration_s, light, beats=beats
+    )
+    dips = [
+        (shots[i + 1].start_s, shots[i + 1].start_s + d)
+        for i, (kind, d) in enumerate(transitions(shots, beats))
+        if kind == "fadeblack"
+    ]
     (tmp / "graph.txt").write_text(graph, encoding="utf-8")  # kept for debugging a render
     master = out_dir / "episode.mp4"
     ffmpeg.run(
@@ -512,7 +566,7 @@ def render(
 
     by_id = {s.id: s for s in board.shots}
     clips = sum(by_id[s.id].motion == "ai_clip" for s in shots)
-    report = qc(master, voice.duration_s, music_notes(cues, not tracks), clips)
+    report = qc(master, voice.duration_s, music_notes(cues, not tracks), clips, dips)
     report["music"] = [c.to_json() for c in cues if c.track is not None]
     report["music_credits"] = music.credits(cues)
     return RenderResult(master, preview, cover, report["duration_s"], report)

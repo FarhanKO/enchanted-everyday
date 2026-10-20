@@ -25,9 +25,10 @@ from pydantic import (
 
 # --- brand constants (see brand/story_bible.md and brand/production_style.md)
 PACE_WPM = 120  # bedtime narration pace; the voice stage slows each line to it (voices.toml)
-# the script's own length; the voice's breaths and the signature ending add ~6 s, so the video stays
-# within 90 s (Facebook's Reels API takes 3-90 s)
+# the script's own length; the voice's breaths and the closing message's hold add ~6 s, so the video
+# stays within 90 s (Facebook's Reels API takes 3-90 s)
 MIN_DURATION_S, MAX_DURATION_S = 45, 84
+MAX_CLOSING_WORDS = 12  # the italic message at the end, read in one breath
 MIN_WORDS, MAX_WORDS = 80, 170
 MAX_HOOK_WORDS = 8  # ~3-4 s spoken; the first frame carries the image from 0 s (rule 4)
 MAX_AI_CLIPS = 2
@@ -210,6 +211,12 @@ class Script(_Strict):
     title: str
     narration_direction: str = Field(description="Overall voice direction for this episode")
     beats: list[Beat] = Field(description="Exactly six beats, in formula order")
+    closing_line: str = Field(
+        default="",  # scripts written before 2026-10-20 have none
+        description="The story's message in one short line, shown in italics over the last image "
+        f"after the story ends. Never spoken. At most {MAX_CLOSING_WORDS} words, quiet and "
+        "image-like, never a lesson",
+    )
 
     @property
     def lines(self) -> list[Line]:
@@ -237,10 +244,14 @@ class Script(_Strict):
             raise ValueError(
                 f"hook line is {hook_words} words; max {MAX_HOOK_WORDS} (3-second rule)"
             )
-        for line in self.lines:
+        for text in [*(line.text for line in self.lines), self.closing_line]:
             for pattern in MORAL_PATTERNS:
-                if re.search(pattern, line.text, re.IGNORECASE):
-                    raise ValueError(f"moral-of-the-story line (rule 6): {line.text!r}")
+                if re.search(pattern, text, re.IGNORECASE):
+                    raise ValueError(f"moral-of-the-story line (rule 6): {text!r}")
+        if word_count(self.closing_line) > MAX_CLOSING_WORDS:
+            raise ValueError(
+                f"closing_line is {word_count(self.closing_line)} words; max {MAX_CLOSING_WORDS}"
+            )
         if not MIN_WORDS <= self.word_count <= MAX_WORDS:
             raise ValueError(f"script is {self.word_count} words; need {MIN_WORDS}-{MAX_WORDS}")
         dur = self.estimated_duration_s
@@ -386,7 +397,7 @@ class Storyboard(_Strict):
         default="black",  # storyboards written before fade-outs have none
         description="How the last frame leaves the screen (the video always opens out of black): "
         "black (a quiet night, a sorrowful or open ending), white (a dream, a memory, waking "
-        "up), glow (warm magic: a jar, a lantern, the moon bell lingering), or sunray (a "
+        "up), glow (warm magic: a jar, a lantern, a lingering light), or sunray (a "
         "morning, hope, sunlight breaking through)",
     )
 

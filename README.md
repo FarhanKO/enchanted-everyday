@@ -19,7 +19,7 @@ next:       analytics (Phase 4)
 and sends it to Telegram. Send `/redo` (optionally `/redo less sad`) to turn the story down and get the next backup
 written instead; a script you'd reject never costs a storyboard. Send `/produce` and the bot writes the storyboard
 and package, voices every line in the cast's voices, draws each frame with the cast's reference images, renders
-the 9:16 video with captions, sound and the signature ending, and sends it with **Approve / Skip** buttons.
+the 9:16 video with captions, sound and the italic closing message, and sends it with **Approve / Skip** buttons.
 `/reshoot S03 warmer light` redraws one frame. Approve posts the Reel to Instagram and Facebook with Meta's AI
 label (and to YouTube once `YOUTUBE_UPLOAD_ENABLED=true`), replies with the links, and sends the posting kit for
 TikTok. `/publish` retries a platform that failed. Nothing posts while `DRY_RUN=true`. See

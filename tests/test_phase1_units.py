@@ -234,13 +234,12 @@ def test_voice_cast_covers_every_speaker():
     assert roles == set(get_args(Speaker))
 
 
-def test_signature_and_character_sounds_are_defined():
+def test_character_sounds_are_defined_and_there_is_no_signature():
     import tomllib
 
     sound = tomllib.loads((ROOT / "brand" / "sound.toml").read_text(encoding="utf-8"))
-    assert sound["signature"]["line"] == "Goodnight, sleepless soul."
-    assert set(sound["characters"]) == {"fann", "tina", "shopkeeper"}
-    assert sound["signature"]["bell"] == sound["characters"]["shopkeeper"]["presence"]
+    assert "signature" not in sound  # no bell and no spoken sign-off (2026-10-20)
+    assert set(sound["characters"]) == {"fann", "tina"}
 
 
 def test_script_message_names_character_speakers():

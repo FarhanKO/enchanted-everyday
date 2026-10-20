@@ -34,7 +34,7 @@ log = logging.getLogger(__name__)
 MOODS = tuple(m for m in get_args(MusicMood) if m != "none")
 MIN_SECTION_S = 8.0  # shorter runs join a neighbour
 CROSSFADE_S = 2.0
-END_FADE_S = 3.0  # the music fades out under the bell and the signature line
+END_FADE_S = 3.0  # the music fades out with the picture, after the closing message
 RECENT_USES = 10  # tracks heard this recently (about the last four episodes) are passed over
 TARGET_RMS = 0.1  # every section is levelled to this before the mix gain
 DUCK = 0.45  # how far the music dips under a spoken line (~5 dB, on top of the mix gain)

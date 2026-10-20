@@ -54,7 +54,7 @@ def test_production_ends_with_the_video_and_its_buttons(db_engine, settings, fak
 
     assets = _assets(db_engine)
     kinds = [a.kind for a in assets]
-    assert kinds.count("voice") == voice_lines + 1  # every line, and the signature
+    assert kinds.count("voice") == voice_lines  # every line; nothing is spoken after the landing
     assert kinds.count("image") == shots + 1  # every shot, and the cover
     assert all(a.license and a.script_id == out["package"]["script_id"] for a in assets)
 

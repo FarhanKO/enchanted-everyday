@@ -53,6 +53,8 @@ _A legend told to one listener at 2 AM: low, warm, unhurried, close to the mic. 
 > That night, he dreamed of the tree. Beneath it, a letter. _[pause 0.6s]_  
 > It said: Thank you. Keep this one. _[pause 0.9s]_  
 
+**ON SCREEN, AFTER THE LANDING:** _Some dreams are too old to sell._
+
 ## 2. Storyboard
 
 | Shot | Time | Beat | Camera | Motion | What we see |

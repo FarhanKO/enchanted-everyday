@@ -17,7 +17,7 @@ from engine.media.openrouter import OpenRouterMedia
 from engine.media.paid import Ledger
 from engine.media.render import RenderResult, render
 from engine.media.timeline import captions, fit_shots
-from engine.media.voice import VoiceMaker, VoiceTrack, load_signature
+from engine.media.voice import VoiceMaker, VoiceTrack
 
 
 @dataclass
@@ -58,7 +58,7 @@ def render_episode(
     sounds different."""
     brand = Path(settings.brand_dir)
     shots = fit_shots(ep.storyboard, voice)
-    caps = captions(voice, load_signature(brand)["line"])
+    caps = captions(voice, ep.script.closing_line)
     return render(
         board=ep.storyboard,
         shots=shots,

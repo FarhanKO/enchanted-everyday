@@ -22,8 +22,8 @@ from engine.llm.schemas import (
 from engine.media import ffmpeg
 from engine.media.images import FrameMaker
 from engine.media.paid import CapLedger
-from engine.media.render import render
-from engine.media.timeline import captions, fit_shots
+from engine.media.render import render, transitions
+from engine.media.timeline import TimedShot, captions, fit_shots
 from engine.media.voice import VoiceMaker
 from tests.fakes_media import fake_image, fake_speech
 
@@ -39,6 +39,7 @@ def short_episode() -> tuple[Script, Storyboard]:
     script = Script.model_construct(
         title="t",
         narration_direction="calm",
+        closing_line="Some dreams are too old to sell.",
         beats=[
             Beat.model_construct(
                 name=b,
@@ -82,7 +83,7 @@ def test_render_makes_a_vertical_video_with_sound_and_captions(tmp_path):
 
     result = render(
         board=board, shots=shots, frames=shot_frames, voice=voice,
-        caps=captions(voice, "Goodnight, sleepless soul."), out_dir=tmp_path / "out",
+        caps=captions(voice, "Some dreams are too old to sell."), out_dir=tmp_path / "out",
         brand_dir=BRAND, music_dir=tmp_path / "no-music", seed="t", thumb_src=shot_frames["S01"],
         thumb_text="HIS LAST DREAM",
     )  # fmt: skip
@@ -97,6 +98,20 @@ def test_render_makes_a_vertical_video_with_sound_and_captions(tmp_path):
     assert [i for i in qc["issues"] if "Shorts here are" not in i] == []
     assert any("no music" in n for n in qc["notes"])
     assert result.preview.exists() and result.thumbnail.exists()
-    assert (tmp_path / "out" / "build" / "captions.ass").read_text(encoding="utf-8").count(
-        "Goodnight, sleepless soul."
-    ) == 2  # the shadow and the text
+    ass = (tmp_path / "out" / "build" / "captions.ass").read_text(encoding="utf-8")
+    assert ass.count("to sell.") == 2  # the closing message: its halo and the italic text
+    assert ",Halo,," in ass and ",Message,," in ass and "Goodnight" not in ass
+
+
+def test_beats_change_through_black_and_the_landing_dissolves_in():
+    beats = {"S1": "hook", "S2": "mystery", "S3": "mystery", "S4": "cost", "S5": "landing"}
+    shots = [TimedShot(sid, 5.0 * i, 5.0 * (i + 1)) for i, sid in enumerate(beats)]
+
+    assert transitions(shots, beats) == [
+        ("fade", 0.8),  # out of the hook: keep the opening moving
+        ("fade", 0.8),  # inside a beat
+        ("fadeblack", 1.2),  # between beats: a dip through black
+        ("fade", 1.6),  # into the landing: a long dissolve
+    ]
+    short = [TimedShot("S3", 0, 1.0), TimedShot("S4", 1.0, 6.0)]
+    assert transitions(short, beats) == [("fadeblack", 0.4)]  # no longer than a short shot allows

@@ -24,10 +24,10 @@ Every episode carries all five, so a viewer knows it's ours within seconds:
 1. **The visual identity:** ink-and-watercolour characters in painted gouache worlds; the same faces and outfits every
    time (`cast.toml`, `style.toml`).
 2. **The narrator's personality:** see "Narrator" below.
-3. **The signature ending:** the last image holds, the Shopkeeper's moon bell chimes, and the narrator says
-   "Goodnight, sleepless soul." Code adds the line and the bell (`sound.toml`); writers never write them.
-4. **The characters' sounds:** Fann hums three falling notes, Tina's dupatta rustles to a music-box answer, the
-   Shopkeeper's moon bell rings (`sound.toml`).
+3. **The closing message:** after the landing, the last image holds and the story's message fades in, in italics,
+   while the music swells; nothing more is spoken (the script's `closing_line`).
+4. **The characters' sounds:** Fann hums three falling notes; Tina's dupatta rustles to a music-box answer
+   (`sound.toml`).
 5. **Connected stories:** every episode stands alone, and every episode touches the same world (see "Connected
    episodes").
 
@@ -52,9 +52,11 @@ These seven decide whether a story is ours. The critic cites them by number.
 4. **The first 3 seconds must create curiosity.** The first frame is an impossible or contradictory image, and the
    first line (8 words at most) asks a question the viewer can't ignore.
 5. **Every story needs at least one memorable image:** a jar of light, a door that wasn't there, a letter under a tree.
-6. **No moral-of-the-story endings.**
+6. **No moral-of-the-story endings.** The story ends on an image or a choice, never on a lesson.
    - Not: "And that's why we should always appreciate our family."
    - Instead: "That night, he finally answered the phone."
+   - After the landing, the story's message appears once on screen, in italics, never spoken: one quiet line in the
+     story's own images, like the last line of a poem ("Some doors open only for the ones who stay."), never advice.
 7. **Leave the viewer with something to think about:** a choice, a gesture, an object, or a question they'll carry
    to bed.
 
@@ -142,8 +144,8 @@ Every story belongs to exactly one. Each is a repeatable format with its own pro
 
 **Two story types,** across all three universes:
 
-- **Fable** (most episodes): a short story that delivers a message, but the message lives in the final image or
-  choice. Rule 6 still holds: it is never stated.
+- **Fable** (most episodes): a short story that delivers a message. The message lives in the final image or choice;
+  only the closing line on screen puts it into words, once, quietly (rule 6).
 - **Daily** (about one in four): a small, magical moment in Fann's or Tina's ordinary day, with fairytale aesthetics:
   the kettle that sings only for her, the bus stop where the rain falls upward.
 
@@ -158,7 +160,7 @@ Every story belongs to exactly one. Each is a repeatable format with its own pro
 Hearing the characters makes a story feel real (Farhan, 2026-10-12: the narrated pilot had "no other person's
 voice"). In a mixed episode the characters speak at least two lines, at the offer, the choice or the plea. The
 narrator never quotes anyone: if someone says something, we hear them say it. At most three characters speak in one
-episode. Whoever speaks is on screen while they speak. Every mode ends with the narrator's signature line.
+episode. Whoever speaks is on screen while they speak. Every mode ends on the closing message, on screen.
 
 **Telling urban from emotional:** if the hook is a *mystery* ("Every night, someone left flowers outside his door"),
 it's urban. If the hook is a *bargain or rule* ("A stranger offered him $1 million for one memory"), it's emotional.
@@ -228,8 +230,6 @@ strangers. The girl who couldn't sleep, who was dreaming his dreams and smiling,
 it surfaces slowly through small signs (she hums his three notes without knowing why, she dreams of a tree she's
 never seen). The thread moves in about one episode in five, always by a small step, never resolved quickly. Never
 two thread episodes in a row. The steps, in order, are in [`dreams_thread.md`](dreams_thread.md).
-
-**The Shopkeeper's moon bell closes every episode,** as if she watches over every story. Never say so.
 
 ## Titles and comment prompts
 

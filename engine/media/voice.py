@@ -1,11 +1,11 @@
 """The voice track: every script line in its speaker's voice, the scripted pauses as real silence,
-and the signature ending.
+and a quiet hold at the end.
 
 Each line is voiced on its own, so its exact start and end are known: shots and captions are timed
 to the real audio, not to an estimate. A line's delivery note picks the Eleven v4 audio tag it is
 spoken with ([softly], [whispers], ...); children's voices are pitch-lifted locally
-(brand/voices.toml). After the landing, the Shopkeeper's moon bell chimes and the narrator says
-the signature line (brand/sound.toml); agents never write it.
+(brand/voices.toml). After the landing the last image holds in silence while the script's closing
+line, the story's message, appears in italics (render); nothing more is spoken.
 
 Pace: Eleven v4 reads faster than a story told at 2 AM, and OpenRouter can't slow it. So each line
 is measured and, when it runs faster than its speaker's `pace_wpm`, slowed locally with the pitch
@@ -35,8 +35,13 @@ log = logging.getLogger(__name__)
 
 MIN_GAP_S = 0.12  # a breath between lines even when the script asks for no pause
 SENTENCE_GAP_S = 0.22  # a silence inside a line at least this long is a sentence break
-BELL_TO_LINE_S = 1.1  # the bell rings, then the narrator speaks under its tail
-TAIL_S = 1.2  # after the signature line, before the video ends
+# the closing message: it fades in a beat after the last line, stays long enough to read slowly,
+# and the video ends a moment after it (the picture fades out over that moment)
+MESSAGE_DELAY_S = 0.6
+MESSAGE_BASE_S, MESSAGE_PER_WORD_S = 1.6, 0.3
+MESSAGE_MIN_S, MESSAGE_MAX_S = 3.0, 4.5
+TAIL_S = 1.2
+HOLD_S = 2.5  # the ending's length when a script has no closing line (written before they existed)
 
 # delivery-note words -> Eleven v4 audio tag; the first match in the note wins, plus [slowly]
 _TAGS = (
@@ -67,9 +72,9 @@ class VoiceLine:
 class VoiceTrack:
     path: Path
     lines: list[VoiceLine]
-    bell_at_s: float
-    signature_start_s: float
-    signature_end_s: float
+    story_end_s: float  # the last line and its pause are over; the ending holds from here
+    message_start_s: float  # the closing message on screen (start == end: none)
+    message_end_s: float
     duration_s: float
     cost_usd: Decimal
 
@@ -77,9 +82,9 @@ class VoiceTrack:
         return {
             "path": str(self.path),
             "lines": [asdict(line) for line in self.lines],
-            "bell_at_s": self.bell_at_s,
-            "signature_start_s": self.signature_start_s,
-            "signature_end_s": self.signature_end_s,
+            "story_end_s": self.story_end_s,
+            "message_start_s": self.message_start_s,
+            "message_end_s": self.message_end_s,
             "duration_s": self.duration_s,
             "cost_usd": str(self.cost_usd),
         }
@@ -89,9 +94,10 @@ class VoiceTrack:
         return cls(
             path=Path(data["path"]),
             lines=[VoiceLine(**line) for line in data["lines"]],
-            bell_at_s=data["bell_at_s"],
-            signature_start_s=data["signature_start_s"],
-            signature_end_s=data["signature_end_s"],
+            # tracks voiced before 2026-10-20 ended on a bell and a spoken line instead
+            story_end_s=data.get("story_end_s", data.get("bell_at_s")),
+            message_start_s=data.get("message_start_s", data.get("signature_start_s")),
+            message_end_s=data.get("message_end_s", data.get("signature_end_s")),
             duration_s=data["duration_s"],
             cost_usd=Decimal(data["cost_usd"]),
         )
@@ -145,9 +151,14 @@ def load_cast(brand_dir: Path) -> dict:
         return tomllib.load(f)
 
 
-def load_signature(brand_dir: Path) -> dict:
-    with open(brand_dir / "sound.toml", "rb") as f:
-        return tomllib.load(f)["signature"]
+def message_span(story_end_s: float, closing_line: str) -> tuple[float, float, float]:
+    """(message start, message end, video end) for the ending after story_end_s."""
+    words = word_count(closing_line)
+    if not words:
+        return story_end_s, story_end_s, story_end_s + HOLD_S
+    start = story_end_s + MESSAGE_DELAY_S
+    on = min(MESSAGE_MAX_S, max(MESSAGE_MIN_S, MESSAGE_BASE_S + MESSAGE_PER_WORD_S * words))
+    return start, start + on, start + on + TAIL_S
 
 
 class VoiceMaker:
@@ -155,7 +166,6 @@ class VoiceMaker:
         self.speak = speak
         self.ledger = ledger
         self.cast = load_cast(brand_dir)
-        self.signature = load_signature(brand_dir)
         self.cache_dir = cache_dir
         self.spent = Decimal(0)
 
@@ -225,23 +235,17 @@ class VoiceMaker:
                 t += length + pause
                 index += 1
 
-        sig = self.signature
-        bell_at = t
-        spoken = self._line_audio(sig["voice"], sig["line"], sig["delivery"])
-        pieces.append(np.zeros(int(BELL_TO_LINE_S * RATE), np.float32))
-        sig_start = bell_at + BELL_TO_LINE_S
-        sig_end = sig_start + spoken.size / RATE
-        end = max(sig_end + TAIL_S, bell_at + float(sig["hold_s"]))
-        pieces += [spoken, np.zeros(int((end - sig_end) * RATE), np.float32)]
+        msg_start, msg_end, end = message_span(t, script.closing_line)
+        pieces.append(np.zeros(int((end - t) * RATE), np.float32))
 
         track = np.concatenate(pieces)
         ffmpeg.write_wav(out, track)
         return VoiceTrack(
             path=out,
             lines=lines,
-            bell_at_s=bell_at,
-            signature_start_s=sig_start,
-            signature_end_s=sig_end,
+            story_end_s=t,
+            message_start_s=msg_start,
+            message_end_s=msg_end,
             duration_s=track.size / RATE,
             cost_usd=self.spent,
         )

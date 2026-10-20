@@ -1,8 +1,8 @@
 """Sounds made in code, so they are ours outright: no license to track, the same every episode.
 
-The Shopkeeper's moon bell, Fann's three falling felt-piano notes, Tina's dupatta rustle and her
-four rising music-box notes (brand/sound.toml), and the ambience beds (rain, room tone, wind,
-sea). Everything is 48 kHz mono float32; the mixer sets the levels.
+Fann's three falling felt-piano notes, Tina's dupatta rustle and her four rising music-box notes
+(brand/sound.toml), and the ambience beds (rain, room tone, wind, sea). Everything is 48 kHz mono
+float32; the mixer sets the levels.
 """
 
 from __future__ import annotations
@@ -50,23 +50,6 @@ def reverb(x: np.ndarray, seconds: float = 2.4, wet: float = 0.3, seed: int = 7)
     tail = np.fft.irfft(np.fft.rfft(x, n) * np.fft.rfft(ir, n), n)[:n].astype(np.float32)
     dry = np.concatenate([x, np.zeros(ir.size, np.float32)])
     return dry * (1 - wet) + _norm(tail, float(np.max(np.abs(x)))) * wet
-
-
-def moon_bell(freq: float = 1568.0) -> np.ndarray:
-    """One soft, high brass chime with a long, gentle tail."""
-    t = _t(3.5)
-    partials = (
-        (1.0, 1.0, 2.6),
-        (2.0, 0.32, 1.4),
-        (2.76, 0.45, 1.1),
-        (4.07, 0.2, 0.6),
-        (5.4, 0.12, 0.4),
-    )
-    x = sum(a * np.sin(2 * np.pi * freq * r * t) * np.exp(-t / d) for r, a, d in partials)
-    strike = _band(_rng(1).standard_normal(t.size).astype(np.float32), 2000, 9000)
-    x = x + 0.15 * strike * np.exp(-t / 0.004)
-    x = x * np.minimum(1, t / 0.002)  # no click
-    return _norm(reverb(_norm(x), seconds=2.8, wet=0.35))
 
 
 def _felt_piano_note(freq: float, seconds: float) -> np.ndarray:
@@ -121,7 +104,6 @@ def dupatta_rustle() -> np.ndarray:
 
 
 PRESENCE = {
-    "shopkeeper_bell": lambda: _norm(moon_bell(), 0.4),
     "fann_hum": fann_motif,
     "tina_dupatta": lambda: _sequence([dupatta_rustle(), tina_motif()], 0.5),
 }

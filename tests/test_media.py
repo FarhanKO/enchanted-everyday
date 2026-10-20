@@ -100,21 +100,21 @@ def test_voice_slows_a_fast_speaker(tmp_path, episode):
         assert wpm < 135
 
 
-def test_voice_track_times_every_line_and_adds_the_signature(tmp_path, episode):
+def test_voice_track_times_every_line_and_holds_for_the_message(tmp_path, episode):
     speak = Counting(fake_speech)
     ledger = CapLedger(Decimal("1"))
     track = VoiceMaker(speak, ledger, BRAND, tmp_path / "cache").make(
         episode.script, tmp_path / "voice.wav"
     )
     lines = episode.script.lines
-    assert len(track.lines) == len(lines) and len(speak.calls) == len(lines) + 1
+    assert len(track.lines) == len(lines) and len(speak.calls) == len(lines)  # nothing after
     for a, b in zip(track.lines, track.lines[1:], strict=False):
         assert b.start_s == pytest.approx(a.end_s + a.pause_s, abs=0.01)  # the scripted pause
     assert track.lines[0].start_s == 0
-    assert track.signature_start_s > track.bell_at_s >= track.lines[-1].end_s
-    assert track.duration_s - track.bell_at_s >= 3.0  # the final frame holds under the bell
-    assert speak.calls[-1][0] == "[whispers] [slowly] Goodnight, sleepless soul."
-    assert speak.calls[-1][2] == voice.load_cast(BRAND)["narrator"]["voice"]
+    assert track.message_start_s > track.story_end_s >= track.lines[-1].end_s
+    assert 3.0 <= track.message_end_s - track.message_start_s <= 4.5  # long enough to read
+    assert track.duration_s - track.message_end_s == pytest.approx(voice.TAIL_S, abs=0.01)
+    assert "Goodnight" not in " ".join(call[0] for call in speak.calls)
     assert ledger.spent_usd == track.cost_usd > 0
 
 
@@ -125,7 +125,7 @@ def test_voice_is_paid_for_once(tmp_path, episode):
         VoiceMaker(speak, ledger, BRAND, tmp_path / "cache").make(
             episode.script, tmp_path / "v.wav"
         )
-    assert len(speak.calls) == len(episode.script.lines) + 1
+    assert len(speak.calls) == len(episode.script.lines)
     assert ledger.spent_usd == 0  # the second run came from the cache
 
 
@@ -265,10 +265,12 @@ def test_caption_lines_are_short_and_even():
 
 
 def test_captions_follow_the_voice(track):
-    caps = captions(track, "Goodnight, sleepless soul.")
-    assert caps[-1].lines == ["Goodnight, sleepless soul."]
-    assert caps[-1].start_s == pytest.approx(track.signature_start_s)
-    for c in caps:
+    caps = captions(track, "Some dreams are too old to sell.")
+    *spoken, message = caps
+    assert message.message and not any(c.message for c in spoken)
+    assert message.lines == ["Some dreams are too old", "to sell."]
+    assert message.start_s == pytest.approx(track.message_start_s)
+    for c in spoken:
         assert 2 <= sum(len(line.split()) for line in c.lines) <= 6 or len(c.lines[0].split()) <= 2
         assert all(len(line) <= 26 for line in c.lines) and len(c.lines) <= 2
     for a, b in zip(caps, caps[1:], strict=False):
@@ -294,7 +296,7 @@ def test_every_camera_move_has_a_motion(camera):
 
 
 def test_signature_sounds_are_ours_and_audible():
-    for make in (synth.moon_bell, synth.fann_motif, synth.tina_motif, synth.dupatta_rustle):
+    for make in (synth.fann_motif, synth.tina_motif, synth.dupatta_rustle):
         sound = make()
         assert sound.size > 0 and 0.2 < float(abs(sound).max()) <= 1.0
     assert synth.bed_kind(["rain on the window"]) == "rain"

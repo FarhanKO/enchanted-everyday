@@ -4,15 +4,17 @@ The storyboard plans shot lengths from a words-per-minute estimate. Once the voi
 beat's shots are stretched or squeezed, in proportion, to fill exactly the time that beat's lines
 take, so a cut never lands mid-sentence in the wrong beat. Within a beat, a cut moves to the
 nearest gap between lines, so the picture changes in the pause and each line plays over its own
-image. The last shot holds through the signature ending.
+image. The last shot holds through the ending, under the closing message.
 
 Captions follow production_style.md §6: 2-6 words cut at natural phrase breaks, at most 2 lines
 of 26 characters, timed within each line in proportion to its characters. Pauses show no caption.
+The closing message is one caption of its own, in italics, wrapped to MESSAGE_WIDTH.
 """
 
 from __future__ import annotations
 
 import re
+import textwrap
 from dataclasses import dataclass
 
 from engine.llm.schemas import BEAT_ORDER, Storyboard
@@ -21,6 +23,7 @@ from engine.media.voice import VoiceTrack
 MAX_WORDS, MIN_WORDS = 6, 2
 LINE_CHARS, MAX_LINES = 26, 2
 MIN_CAPTION_S = 0.7
+MESSAGE_WIDTH = 24  # characters per line of the closing message
 SNAP_S = 2.0  # how far a cut may move to land in the gap between two lines
 MIN_SHOT_S = 1.2
 
@@ -41,6 +44,7 @@ class Caption:
     start_s: float
     end_s: float
     lines: list[str]
+    message: bool = False  # the closing message: italic, centred, slow fade
 
 
 def fit_shots(board: Storyboard, voice: VoiceTrack) -> list[TimedShot]:
@@ -49,7 +53,7 @@ def fit_shots(board: Storyboard, voice: VoiceTrack) -> list[TimedShot]:
         span = spans.setdefault(line.beat, [line.start_s, line.end_s + line.pause_s])
         span[1] = line.end_s + line.pause_s
     # beats tile the track: each starts where the previous ended; the first at 0, the last runs
-    # through the bell and the signature line to the end
+    # through the ending and the closing message to the end
     bounds: dict[str, tuple[float, float]] = {}
     t = 0.0
     for i, beat in enumerate(BEAT_ORDER):
@@ -192,9 +196,8 @@ def phrases(text: str) -> list[list[str]]:
     return merged
 
 
-def captions(voice: VoiceTrack, signature_line: str) -> list[Caption]:
+def captions(voice: VoiceTrack, closing_line: str = "") -> list[Caption]:
     timed = [(line.start_s, line.end_s, line.text) for line in voice.lines]
-    timed.append((voice.signature_start_s, voice.signature_end_s, signature_line))
     out: list[Caption] = []
     for start, end, text in timed:
         chunks = phrases(text)
@@ -209,4 +212,7 @@ def captions(voice: VoiceTrack, signature_line: str) -> list[Caption]:
     for i in range(len(out) - 1):
         if out[i].end_s > out[i + 1].start_s:
             out[i] = Caption(out[i].start_s, out[i + 1].start_s, out[i].lines)
+    if closing_line.strip() and voice.message_end_s > voice.message_start_s:
+        lines = textwrap.wrap(closing_line.strip(), MESSAGE_WIDTH)
+        out.append(Caption(voice.message_start_s, voice.message_end_s, lines, message=True))
     return out
