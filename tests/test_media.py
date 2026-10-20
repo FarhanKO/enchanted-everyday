@@ -326,7 +326,7 @@ def test_the_music_library_covers_every_mood():
     for mood in music.MOODS:
         assert sum(mood in e["moods"] for e in entries) >= 2, mood
     for e in entries:
-        assert e["license"] and "Scott Buckley" in e["credit"], e["file"]
+        assert e["license"] and e["credit"].startswith("Music: "), e["file"]
         assert set(e["moods"]) <= set(music.MOODS), e["file"]
 
 
@@ -382,6 +382,19 @@ def test_music_is_relevant_and_varies_between_episodes():
     assert second[0].track.path.name not in heard  # the next episode sounds different
     assert second[1].track.path.name == "both"  # tension too, from its second-choice track
     assert music.credits(first) == [f"Music: {n}" for n in heard]
+
+
+def test_the_owners_preferred_sound_comes_first_while_fresh():
+    plain = _track("plain", ["calm"])
+    liked = music.Track(
+        Path("liked"), "liked", ("calm", "sorrow"), "any", "CC BY 4.0", "", 0.0, True
+    )
+    secs = [music.Section("calm", 0, 20, "night")]
+    # preferred even though calm is only its first mood too, and whatever the seed
+    for seed in ("a", "b", "c"):
+        assert music.choose(secs, [plain, liked], recent=[], seed=seed)[0].track is liked
+    # but never at the cost of repeating what the last episodes played
+    assert music.choose(secs, [plain, liked], recent=["liked"], seed="a")[0].track is plain
 
 
 def test_music_bed_crossfades_sections_and_ducks_under_the_voice(episode):

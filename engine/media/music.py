@@ -5,7 +5,8 @@ The storyboard gives every shot a music mood (calm, wonder, mystery, tension, so
 playful, or none). Runs of shots with one mood become sections; a run shorter than MIN_SECTION_S
 joins its neighbour, so the music never flickers. Each section gets a track from
 templates/music/library.toml whose moods include it: first one not heard in recent episodes, then
-one whose strongest mood it is, then one that suits the section's look (night or day). A `none`
+one marked `prefer` (the owner's chosen sound), then one whose strongest mood it is, then one that
+suits the section's look (night or day). A `none`
 section is silence, so the voice and the ambience carry it; an episode can have no music at all.
 
 Sections crossfade, each is levelled to the same loudness, the storyboard's cues shape it (thin,
@@ -49,6 +50,7 @@ class Track:
     license: str
     credit: str = ""
     gain_db: float = 0.0
+    prefer: bool = False  # the owner's chosen sound: played first when it fits and is fresh
 
 
 @dataclass(frozen=True)
@@ -114,6 +116,7 @@ def library(music_dir: Path) -> list[Track]:
                 license=e["license"],
                 credit=e.get("credit", ""),
                 gain_db=float(e.get("gain_db", 0.0)),
+                prefer=bool(e.get("prefer", False)),
             )
         )
     return tracks
@@ -177,6 +180,7 @@ def choose(
             heard = RECENT_USES - recent.index(name) if name in recent else 0
             return (
                 heard,  # not heard lately first; otherwise the one heard longest ago
+                0 if t.prefer else 1,  # then the owner's preferred sound
                 t.moods.index(sec.mood),  # the track's strongest mood first
                 0 if t.pole in (sec.pole, "any") else 1,
                 hashlib.sha256(f"{seed}:{name}".encode()).hexdigest(),  # varied, reproducible

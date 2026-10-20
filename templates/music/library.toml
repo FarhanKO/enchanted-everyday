@@ -276,3 +276,155 @@ pole = "day"
 note = "bright, perky chamber piece for solo cello and harp"
 license = "CC BY 4.0, scottbuckley.com.au/library/eidolon, downloaded 2026-10-12"
 credit = 'Music: "Eidolon" by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au'
+
+# ================================================================ the chosen sound (2026-10-20)
+#
+# Farhan's references: Indila's "Love Story" (orchestral, slowed + reverb, epic dark cinematic), "Golden Brown"
+# mashups, Enya's "Caribbean Blue": slow melancholic waltzes, harp, strings, music box, a dark build. Those are
+# copyrighted, so these free-licence tracks carry the same feel. `prefer = true`: the render plays them first
+# whenever one fits the mood and hasn't been heard lately; Scott Buckley fills in otherwise.
+#
+# Kevin MacLeod, incompetech.com, CC BY 4.0 (commercial use with credit, the attribution code below verbatim).
+# He doesn't register them with YouTube Content ID; a false claim by a third party is disputed with the credit.
+
+[[track]]
+file = "km_gymnopedie1.mp3"
+title = "Gymnopedie No. 1"
+moods = ["calm", "sorrow"]
+pole = "night"
+prefer = true
+note = "Satie's slow 3/4 piano waltz: elegant, slightly dark, pensive"
+license = "CC BY 4.0, incompetech.com (Kevin MacLeod), downloaded 2026-10-20"
+credit = 'Music: "Gymnopedie No. 1" Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/'
+
+[[track]]
+file = "km_gymnopedie3.mp3"
+title = "Gymnopedie No. 3"
+moods = ["sorrow", "calm"]
+pole = "night"
+prefer = true
+note = "slow waltz, haunting high melody, ends on a very dark chord"
+license = "CC BY 4.0, incompetech.com (Kevin MacLeod), downloaded 2026-10-20"
+credit = 'Music: "Gymnopedie No. 3" Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/'
+
+[[track]]
+file = "km_rainswillfall.mp3"
+title = "Rains Will Fall"
+moods = ["sorrow", "warm"]
+pole = "any"
+prefer = true
+note = "mournful piano waltz with gentle strings; hope comes and goes. A soft drum kit"
+license = "CC BY 4.0, incompetech.com (Kevin MacLeod), downloaded 2026-10-20"
+credit = 'Music: "Rains Will Fall" Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/'
+
+[[track]]
+file = "km_courtofthequeen.mp3"
+title = "Court of the Queen"
+moods = ["warm", "wonder"]
+pole = "any"
+prefer = true
+note = "slow regal waltz: pizzicato, strings and horns, harp and celesta; turns serious in the third minute"
+license = "CC BY 4.0, incompetech.com (Kevin MacLeod), downloaded 2026-10-20"
+credit = 'Music: "Court of the Queen" Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/'
+
+[[track]]
+file = "km_frostwaltz.mp3"
+title = "Frost Waltz"
+moods = ["mystery", "wonder"]
+pole = "night"
+prefer = true
+note = "celesta and glockenspiel waltz, a music-box feel, over strings and horns; calm but mysterious"
+license = "CC BY 4.0, incompetech.com (Kevin MacLeod), downloaded 2026-10-20"
+credit = 'Music: "Frost Waltz" Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/'
+
+[[track]]
+file = "km_fairytalewaltz.mp3"
+title = "Fairytale Waltz"
+moods = ["wonder", "playful"]
+pole = "day"
+prefer = true
+note = "celesta, oboe and cello; written as a fairy-tale overture"
+license = "CC BY 4.0, incompetech.com (Kevin MacLeod), downloaded 2026-10-20"
+credit = 'Music: "Fairytale Waltz" Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/'
+
+[[track]]
+file = "km_darkestchild.mp3"
+title = "Darkest Child"
+moods = ["mystery", "tension"]
+pole = "night"
+prefer = true
+note = "a childlike celesta over a faint harp and deep bass; a creepy dream"
+license = "CC BY 4.0, incompetech.com (Kevin MacLeod), downloaded 2026-10-20"
+credit = 'Music: "Darkest Child" Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/'
+
+[[track]]
+file = "km_dreamyflashback.mp3"
+title = "Dreamy Flashback"
+moods = ["wonder", "mystery"]
+pole = "night"
+prefer = true
+note = "harp arpeggios, bells and pizzicato in a lydian loop: dreamy, suspended"
+license = "CC BY 4.0, incompetech.com (Kevin MacLeod), downloaded 2026-10-20"
+credit = 'Music: "Dreamy Flashback" Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/'
+
+[[track]]
+file = "km_skyecuillin.mp3"
+title = "Skye Cuillin"
+moods = ["wonder", "warm"]
+pole = "day"
+prefer = true
+note = "Celtic new age: harp, whistle, fiddle, choir, lots of delay. The nearest to Caribbean Blue"
+license = "CC BY 4.0, incompetech.com (Kevin MacLeod), downloaded 2026-10-20"
+credit = 'Music: "Skye Cuillin" Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/'
+
+[[track]]
+file = "km_lamentation.mp3"
+title = "Lamentation"
+moods = ["sorrow"]
+pole = "night"
+prefer = true
+note = "slow solo harp"
+license = "CC BY 4.0, incompetech.com (Kevin MacLeod), downloaded 2026-10-20"
+credit = 'Music: "Lamentation" Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/'
+
+[[track]]
+file = "km_forthefallen.mp3"
+title = "For the Fallen"
+moods = ["tension", "warm"]
+pole = "any"
+prefer = true
+note = "symphonic chords and glockenspiel building with emotion: the dark-cinematic build. Marching drums from the midpoint"
+license = "CC BY 4.0, incompetech.com (Kevin MacLeod), downloaded 2026-10-20"
+credit = 'Music: "For the Fallen" Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/'
+
+[[track]]
+file = "km_timepasses.mp3"
+title = "Time Passes"
+moods = ["sorrow", "warm"]
+pole = "any"
+prefer = true
+note = "bittersweet and somewhat dark; ends brightly on an open major chord"
+license = "CC BY 4.0, incompetech.com (Kevin MacLeod), downloaded 2026-10-20"
+credit = 'Music: "Time Passes" Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/'
+
+# OpenGameArt, CC BY 4.0
+
+[[track]]
+file = "oga_fairytaledream.mp3"
+title = "Fairytale Dream"
+moods = ["sorrow", "wonder"]
+pole = "night"
+prefer = true
+note = "melancholic, nostalgic music-box waltz"
+license = "CC BY 4.0, opengameart.org/content/fairytale-dream (spenceryk99), downloaded 2026-10-20"
+credit = 'Music: "Fairytale Dream" by spenceryk99 (opengameart.org/content/fairytale-dream). Licensed under CC BY 4.0.'
+
+[[track]]
+file = "oga_bittersweetending.mp3"
+title = "Bittersweet Ending"
+moods = ["sorrow", "warm"]
+pole = "night"
+prefer = true
+note = "sad 3/4 piano waltz; the composer has Content ID disabled. Converted from the FLAC"
+license = "CC BY 4.0, opengameart.org/content/bittersweet-ending (Arold Valda), downloaded 2026-10-20"
+credit = 'Music: "Bittersweet Ending" by Arold Valda. Licensed under CC BY 4.0.'
