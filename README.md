@@ -52,7 +52,8 @@ Design rules:
 - **Contracts are repaired, not trusted.** An answer that breaks its contract goes back to the agent with the
   errors, up to 3 tries. The critic's notes drive one script revision; a rejected story falls back to a backup
   idea ([engine/studio.py](engine/studio.py)). Each agent can run on its own model and effort (`LLM_MODELS`,
-  `LLM_EFFORTS`); by default all use Opus 5.5, with the script writer and critic at high effort.
+  `LLM_EFFORTS`); by default the story ideas, script and critic use Opus 5.5 (script writer and critic at high
+  effort), and the storyboard and package use Sonnet 5.5.
 - **A hard daily spend cap.** Every LLM call is costed and committed before the next one is allowed ([engine/budget.py](engine/budget.py)).
 
 ## Quick start (local)

@@ -97,6 +97,9 @@ def test_production_builds_on_the_reviewed_script(db_engine, settings, sent, emb
     out = run(PRODUCTION, db_engine, settings, llm)
 
     assert llm.roles[-2:] == ["visual director", "packaging"]
+    # the storyboard and package on Sonnet; the story itself stays on Opus
+    assert [model for _, model, _ in llm.calls[-2:]] == ["claude-sonnet-5-5"] * 2
+    assert {model for _, model, _ in llm.calls[:-2]} == {"claude-opus-5-5"}
     (row,) = _scripts(db_engine)
     assert row.id == daily["critic"]["script_id"] == out["deliver_package"]["script_id"]
     assert row.storyboard and row.package

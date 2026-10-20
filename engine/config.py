@@ -39,10 +39,15 @@ class Settings(BaseSettings):
     anthropic_api_key: SecretStr | None = None
     llm_model: str = "claude-opus-5-5"
     llm_effort: str = "medium"
-    # per-agent overrides, as JSON in the env, e.g. LLM_MODELS={"packager": "claude-sonnet-5-5"}
-    llm_models: dict[str, str] = {}
+    # per-agent overrides, as JSON in the env, e.g. LLM_MODELS={"packager": "claude-sonnet-5-5"}.
+    # The storyboard and package run on Sonnet (half Opus's price); the story ideas, script and
+    # critic stay on Opus, where the story's quality is decided (Farhan, 2026-10-20)
+    llm_models: dict[str, str] = {
+        "visual_director": "claude-sonnet-5-5",
+        "packager": "claude-sonnet-5-5",
+    }
     llm_efforts: dict[str, str] = {"script_writer": "high", "critic": "high"}
-    daily_spend_cap_usd: float = 2.00
+    daily_spend_cap_usd: float = 2.50  # a full episode is ~$2.1-2.4 (2026-10-20)
 
     # embeddings (local, for the near-duplicate story check)
     embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
