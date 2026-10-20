@@ -193,8 +193,10 @@ These persist across episodes. Reuse them often; never contradict their rules. T
 
 ### Cast
 
-**Fann and Tina are the leads.** One of them is the protagonist of every urban and emotional episode; alternate who
-leads, and the other may appear in passing. Bedtime fables can skip them or use one of them as the storyteller.
+**Fann and Tina are the leads of every episode,** bedtime fables included (the lead tells the fable or it happens to
+them). Code assigns each day's lead to keep the mix: until they meet (season plan step D10), **Tina leads 65%** and
+**Fann 35%**, and the other may appear only in passing. From the episode where they meet, the tally restarts: **40%
+together, 30% Tina, 30% Fann.**
 
 | Character | Who they are |
 |---|---|
@@ -217,8 +219,8 @@ its connection, and the story so far (what earlier episodes established) is neve
 
 **Fann and Tina are strangers whose paths keep crossing.** They live in the same city and keep almost meeting: she
 sits in the train seat he just left, his scarf snags on the café chair she takes, they shelter under the same
-awning a minute apart. They never formally meet and nothing romantic is established. That belongs to a later season,
-and it is the owner's decision.
+awning a minute apart. They don't formally meet until the season plan's step D10, after a long time of almost.
+Nothing romantic is established; that is the owner's decision.
 
 **The long thread: Fann's lost dreams.** In the pilot (s000), Fann sold his dreams at the Midnight Shop and kept only
 the oldest one: a boy, a giant tree, a sea so blue it hurt. His sold dreams are out in the city, being dreamed by

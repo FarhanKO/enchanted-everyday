@@ -22,7 +22,7 @@ from typing import Any, Protocol
 
 from pydantic import BaseModel
 
-from engine.canon import Canon
+from engine.canon import MEETING_STEP, Canon, tells_meeting
 from engine.llm.client import LLMOutputInvalid
 from engine.llm.prompts import system_prompt
 from engine.llm.schemas import (
@@ -150,8 +150,10 @@ class Studio:
         recent_titles: Sequence[str] = (),
         canon: Canon | None = None,
         mix: str = "",
+        lead: tuple[str, str] | None = None,
     ) -> list[CandidateCard]:
-        """`canon`: the story so far (engine/canon.py); `mix`: how recent picks split."""
+        """`canon`: the story so far (engine/canon.py); `mix`: how recent picks split; `lead`:
+        today's lead and the tally behind it (canon.next_lead)."""
         parts = []
         if candidates:
             lines = []
@@ -169,6 +171,8 @@ class Studio:
             parts.append(block)
         if mix:
             parts.append(_section("recent_mix", mix))
+        if lead:
+            parts.append(_section("lead", lead[1]))
         parts.append("Return the story cards.")
 
         refs = [c.ref for c in candidates]
@@ -181,6 +185,8 @@ class Studio:
                 raise ValueError(f"need {new} card(s) with ref 'new'")
             if canon is not None and canon.dreams:  # no season plan: nothing to check against
                 _check_dreams_steps(out, canon.next_step)
+            if lead:
+                _check_leads(out, lead[0])
 
         return self._ask("story_architect", "\n\n".join(parts), StoryCards, check).cards
 
@@ -322,6 +328,16 @@ def _check_dreams_steps(out: StoryCards, next_step: str | None) -> None:
                 f"card {c.ref!r} moves the lost-dreams thread, so it tells step {next_step}; got "
                 f"dreams_step {c.card.dreams_step!r}"
             )
+
+
+def _check_leads(out: StoryCards, lead: str) -> None:
+    """Every card has today's lead, so a /redo backup keeps the mix too. The episode where Fann
+    and Tina meet is theirs together."""
+    for c in out.cards:
+        want = "both" if tells_meeting(c.card.model_dump()) else lead
+        if c.card.lead != want:
+            why = f"it tells {MEETING_STEP}, where they meet" if want == "both" else "see <lead>"
+            raise ValueError(f"card {c.ref!r} must have lead {want!r} ({why}); got {c.card.lead!r}")
 
 
 def _repair_prompt(user: str, error: LLMOutputInvalid) -> str:

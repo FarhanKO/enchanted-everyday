@@ -15,7 +15,7 @@ from pathlib import Path
 from sqlalchemy import select
 
 from engine.canon import load as load_canon
-from engine.canon import recent_mix
+from engine.canon import next_lead, recent_mix
 from engine.db.models import DiscoveryItem, Idea
 from engine.embeddings import get_embedder
 from engine.llm.schemas import StoryCard
@@ -121,6 +121,7 @@ def run(ctx: StageContext) -> dict:
         recent_titles=recent,
         canon=load_canon(ctx.session, brand_dir),
         mix=recent_mix(ctx.session),
+        lead=next_lead(ctx.session),
     )
 
     by_ref = {c.ref: c for c in candidates}

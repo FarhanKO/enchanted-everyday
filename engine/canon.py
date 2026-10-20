@@ -12,7 +12,8 @@ still open). The story agents read three things, gathered by `load`:
 The pilot (s000) is in the story bible and the season plan, so it needs no note here.
 
 `recent_mix` tells the story architect how recent picks split across modes and story types, so it
-can steer toward the mix targets in the story bible.
+can steer toward the mix targets in the story bible. `next_lead` goes further for who leads: it
+assigns the day's lead from every pick so far, and the studio holds each card to it.
 """
 
 from __future__ import annotations
@@ -34,6 +35,12 @@ CANON_EPISODES = 8  # latest produced episodes every story agent sees in full
 OPEN_THREADS = 20  # open threads shown besides the lost-dreams ones, newest first
 MIX_WINDOW = 10  # picks the mix is measured over
 MODE_TARGET = {"mixed": 0.65, "dialogue": 0.2, "narrated": 0.15}  # Farhan, 2026-10-12
+# Who leads each episode, every universe included (Farhan, 2026-10-20). Until the episode that
+# tells MEETING_STEP, Fann and Tina lead apart; from that episode on, the tally restarts with the
+# second mix.
+LEAD_TARGET = {"tina": 0.65, "fann": 0.35}
+LEAD_TARGET_MET = {"both": 0.40, "tina": 0.30, "fann": 0.30}
+MEETING_STEP = "D10"
 USED = ("picked", "published")  # ideas that count as told
 DREAMS_FILE = "dreams_thread.md"
 STEP = re.compile(r"^### (D\d+)\. (.+)$", re.MULTILINE)
@@ -192,6 +199,51 @@ def dreams_status(session: Session, brand_dir: Path) -> tuple[str, str | None]:
         "and no other."
     )
     return "\n".join(lines), upcoming[0]
+
+
+def tells_meeting(card: dict[str, Any]) -> bool:
+    return bool(card.get("advances_dreams_thread")) and card.get("dreams_step") == MEETING_STEP
+
+
+def choose_lead(cards: Sequence[dict[str, Any]]) -> tuple[str, str]:
+    """Today's lead and what the story architect is told about it, from every pick's card, oldest
+    first. The lead goes to whoever is furthest below their share, so the mix holds over any
+    stretch: 65/35 runs tina, fann, tina, tina, fann, ... Cards from before leads existed don't
+    count."""
+    met = next((i for i, c in enumerate(cards) if tells_meeting(c)), None)
+    target = LEAD_TARGET if met is None else LEAD_TARGET_MET
+    counted = [
+        c["lead"] for c in cards[(0 if met is None else met + 1) :] if c.get("lead") in target
+    ]
+    counts = Counter(counted)
+    n = len(counted) + 1
+    order = list(target)  # ties go to the bigger share, which comes first
+    lead = max(order, key=lambda who: (target[who] * n - counts[who], -order.index(who)))
+
+    phase = (
+        "Fann and Tina haven't met yet"
+        if met is None
+        else f"Fann and Tina have met ({MEETING_STEP}); the mix restarted then"
+    )
+    so_far = ", ".join(f"{who} {counts[who]}" for who in target)
+    want = ", ".join(f"{who} {round(share * 100)}%" for who, share in target.items())
+    lines = [
+        f"{phase}. Leads so far: {so_far} (target {want}).",
+        f"Today's lead: {lead}. Every card has lead {lead!r}"
+        + (
+            ", except a card that tells " + MEETING_STEP + ", which has lead 'both'."
+            if met is None
+            else "."
+        ),
+    ]
+    return lead, "\n".join(lines)
+
+
+def next_lead(session: Session) -> tuple[str, str]:
+    cards = session.scalars(
+        select(Idea.card).where(Idea.status.in_(USED)).order_by(Idea.created_at)
+    ).all()
+    return choose_lead([c for c in cards if c])
 
 
 def recent_mix(session: Session, window: int = MIX_WINDOW) -> str:

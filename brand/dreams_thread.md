@@ -24,8 +24,8 @@ she was thanking, and never sent it. The Impossible Post Office delivered it any
   strange, lovely detail. Only regulars see the step.
 - **What a step invents becomes canon.** The canon note records it, and later steps reuse it. Steps marked
   *reuses* depend on an earlier step's detail: find it in the dreams-thread section or the story so far.
-- **Never:** say that Tina is the dreamer, let Fann and Tina meet or speak to each other, suggest romance, or give
-  Fann his dreams back. Those are the owner's decisions for a later season.
+- **Never:** say that Tina is the dreamer, let Fann and Tina meet or speak to each other before D10, suggest
+  romance, or give Fann his dreams back. Those are the owner's decisions for a later season.
 
 ## Steps
 
@@ -80,7 +80,15 @@ Fann and Tina are in the same place on the same night, a minute apart, each faci
 Cafe suits it. His three notes and her dupatta's music-box answer sound together for a moment. Neither looks up at
 the right time.
 
-## After D9
+### D10. They meet
 
-The thread rests. No card moves it until the owner adds the next steps here. What happens when Fann and Tina finally
-meet, and whether he ever gets his dreams back, is the owner's call.
+After a long time of almost, Fann and Tina are in the same place and this time one of them looks up. They meet over
+something small and ordinary: a dropped glove, the last dry seat, an umbrella that only covers one. She hums the
+three falling notes without thinking, and he knows them. Neither says why that matters. The episode ends with them
+still talking, not with a promise. Its lead is both of them. From here on they know each other, and about two
+episodes in five are theirs together.
+
+## After D10
+
+The thread rests. No card moves it until the owner adds the next steps here. Whether romance follows, whether she
+learns she was dreaming his dreams, and whether he ever gets them back, is the owner's call.

@@ -57,6 +57,18 @@
           "title": "Mode",
           "type": "string"
         },
+        "lead": {
+          "default": "",
+          "description": "Who leads the episode: the lead given in <lead> (fann, tina, or both sharing the story). Bedtime fables too, with the lead as the storyteller or the one it happens to",
+          "enum": [
+            "",
+            "fann",
+            "tina",
+            "both"
+          ],
+          "title": "Lead",
+          "type": "string"
+        },
         "premise": {
           "description": "One sentence: ordinary person + impossible element + stakes",
           "title": "Premise",

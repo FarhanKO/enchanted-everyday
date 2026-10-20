@@ -28,10 +28,11 @@ For every card:
 - **Small enough to tell slowly** (story bible, "Telling it slowly"): one impossible thing, one choice, what it
   costs, one ending, in at most five events. A premise that needs a second magic or a twist on top of a twist to
   work is too big for 90 seconds: cut it down, and score it lower if it can't be.
-- **Lead:** an urban or emotional story is led by Fann or Tina (see the cast). Pick whoever fits the premise, and
-  vary it against the recent titles. Adapt a premise's pronouns to the lead you choose. Bedtime fables usually use
-  neither. Fann and Tina are strangers whose paths keep crossing (story bible, "Connected episodes"): they never
-  formally meet, and nothing romantic is established.
+- **Lead:** every card has today's lead from `<lead>`: `fann`, `tina`, or `both` sharing the story as equals. That
+  holds in every universe: a bedtime fable is told by its lead or happens to them. Shape each premise around that
+  lead and adapt its pronouns. Until they meet (lost-dreams step D10), Fann and Tina are strangers whose paths keep
+  crossing (story bible, "Connected episodes"): the other may appear only in passing, and they never formally meet.
+  Nothing romantic is established.
 - `story_type`: `fable` for a short story whose message lives in its final image or choice; `daily` for a small
   magical moment in Fann's or Tina's ordinary day. Most picks are fables; about one in four is daily.
 - `mode`: `mixed` by default: the narrator carries the story and the characters speak at the turns (the offer,

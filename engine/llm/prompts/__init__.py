@@ -17,7 +17,7 @@ from typing import get_args
 
 from engine.llm import schemas as s
 
-PROMPT_VERSION = "v4"  # v4: told slowly and clearly, characters' own voices, music moods
+PROMPT_VERSION = "v5"  # v5: assigned leads (Tina/Fann mix), D10 where they meet
 
 HERE = Path(__file__).parent
 

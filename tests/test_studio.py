@@ -248,3 +248,23 @@ def test_the_packager_closes_only_open_threads(ep):
     assert out.canon.closes == ["T3.1"]
     assert "<open_threads>\n- T3.1" in call.prompts[0]["user"]
     assert "threads that aren't open: ['T9.9']" in call.prompts[1]["user"]
+
+
+def test_every_card_takes_todays_lead(ep):
+    s, call = studio(_cards(ep, lead="fann"), _cards(ep, lead="tina"))
+    out = s.cards([Candidate("a", "t", "p", "urban")], lead=("tina", "Today's lead: tina."))
+    assert out[0].card.lead == "tina"
+    assert "<lead>\nToday's lead: tina." in call.prompts[0]["user"]
+    assert "must have lead 'tina' (see <lead>); got 'fann'" in call.prompts[1]["user"]
+
+
+def test_the_episode_where_they_meet_is_led_by_both(ep):
+    meeting = {"advances_dreams_thread": True, "dreams_step": "D10"}
+    s, call = studio(_cards(ep, lead="tina", **meeting), _cards(ep, lead="both", **meeting))
+    out = s.cards(
+        [Candidate("a", "t", "p", "urban")],
+        canon=_canon("D10"),
+        lead=("tina", "Today's lead: tina."),
+    )
+    assert out[0].card.lead == "both"
+    assert "must have lead 'both' (it tells D10, where they meet)" in call.prompts[1]["user"]

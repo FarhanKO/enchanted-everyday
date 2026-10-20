@@ -9,6 +9,7 @@ from collections import deque
 from decimal import Decimal
 from typing import Any
 
+from engine.canon import tells_meeting
 from engine.llm.client import LLMResult, parse_as
 from tests.conftest import GOLDEN_EPISODE
 
@@ -73,6 +74,7 @@ class FakeLLM:
         new = re.search(r"Also write (\d+) new", user)
         refs += ["new"] * (int(new.group(1)) if new else 0)
         step = re.search(r"^Next step: (D\d+)", user, re.MULTILINE)  # obeys the season plan
+        lead = re.search(r"^Today's lead: (\w+)\.", user, re.MULTILINE)  # and the lead mix
         cards = []
         for n, ref in enumerate(refs):
             card = copy.deepcopy(self.ep["card"])
@@ -82,6 +84,7 @@ class FakeLLM:
             card["scores"].update(self.scores.get(ref, {}))
             card["advances_dreams_thread"] = bool(step)
             card["dreams_step"] = step.group(1) if step else ""
+            card["lead"] = "both" if tells_meeting(card) else (lead.group(1) if lead else "")
             cards.append({"ref": ref, "card": card})
         return {"cards": cards}
 

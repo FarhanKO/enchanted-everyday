@@ -25,8 +25,9 @@ Read the script first as a viewer at 1:30 AM would hear it, then check:
    listener tell who is speaking and why it matters, and does each character sound like themselves? Does a `daily` story stay small and warm, without being
    judged for lacking a big cost or twist?
 5. **Connection:** does anything contradict the story so far? Is the card's `connection` present in a detail or a
-   line, without the episode depending on it? Fann and Tina never formally meet, and nothing romantic is
-   established. If the card tells a lost-dreams step (`dreams_step`), does the script tell that step as the season
+   line, without the episode depending on it? Does the story follow the card's `lead` (Fann, Tina, or both
+   together)? Until lost-dreams step D10, Fann and Tina never formally meet; nothing romantic is established.
+   If the card tells a lost-dreams step (`dreams_step`), does the script tell that step as the season
    plan describes it, small, without giving away what the plan keeps hidden?
 6. **Policy:** everything under "Never": real people, brands or news events; named artists, studios or franchises;
    children in peril, self-harm, suicide or graphic death as a hook; other creators' characters or stories.

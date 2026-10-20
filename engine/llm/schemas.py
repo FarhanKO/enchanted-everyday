@@ -62,6 +62,7 @@ MORAL_PATTERNS = (
 Universe = Literal["urban", "emotional", "bedtime"]
 StoryType = Literal["fable", "daily"]
 Mode = Literal["narrated", "dialogue", "mixed"]
+Lead = Literal["", "fann", "tina", "both"]  # "": cards from before leads were assigned
 # who says a line: the narrator, a fixed cast id, or a voice role for anyone else (voices.toml)
 Speaker = Literal[
     "narrator",
@@ -138,6 +139,12 @@ class StoryCard(_Strict):
         description="Who speaks. narrated: the story is an event as a whole; only the narrator. "
         "dialogue: a small moment of characters interacting; only the characters. mixed: the "
         "narrator carries the story and characters speak their key lines"
+    )
+    lead: Lead = Field(
+        default="",
+        description="Who leads the episode: the lead given in <lead> (fann, tina, or both "
+        "sharing the story). Bedtime fables too, with the lead as the storyteller or the one it "
+        "happens to",
     )
     premise: str = Field(description="One sentence: ordinary person + impossible element + stakes")
     human_emotion: str = Field(description="The feeling the story is really about (rule 1)")
