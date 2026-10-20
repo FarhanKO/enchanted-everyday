@@ -13,9 +13,9 @@ GOLDEN_EPISODE = ROOT / "stories" / "s000-the-man-who-sold-his-dreams" / "episod
 
 
 @pytest.fixture
-def settings() -> Settings:
-    # _env_file=None: tests never read a developer's real .env
-    return Settings(_env_file=None, daily_spend_cap_usd=1.0)
+def settings(tmp_path) -> Settings:
+    # _env_file=None: tests never read a developer's real .env; work files go to a temp folder
+    return Settings(_env_file=None, daily_spend_cap_usd=1.0, work_dir=str(tmp_path / "work"))
 
 
 @pytest.fixture

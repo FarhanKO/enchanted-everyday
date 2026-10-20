@@ -6,11 +6,13 @@ either both or neither. A retry of a finished stage returns its saved output wit
 
 from __future__ import annotations
 
+import json
 import logging
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, date, datetime
 from decimal import Decimal
+from pathlib import Path
 from typing import Any, TypeVar
 
 from pydantic import BaseModel
@@ -56,7 +58,28 @@ class StageContext:
             system=system, user=user, schema=schema, model=llm_model, effort=effort
         )
         record_llm_cost(self.engine, self.run_id, result.cost_usd)
+        self._log_call(role, llm_model, effort, result)
         return parse_as(result, model)
+
+    def _log_call(self, role: str | None, model: str, effort: str, result: Any) -> None:
+        """One line per call in WORK_DIR/runs/<day>/llm_calls.jsonl, so what each agent costs
+        survives container rebuilds (the logs don't). Best effort: never fails the stage."""
+        line = {
+            "at": datetime.now(UTC).isoformat(timespec="seconds"),
+            "role": role,
+            "model": result.model or model,
+            "effort": effort,
+            "input_tokens": result.input_tokens,
+            "output_tokens": result.output_tokens,
+            "cost_usd": str(result.cost_usd),
+        }
+        path = Path(self.settings.work_dir) / "runs" / str(self.run_date) / "llm_calls.jsonl"
+        try:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            with path.open("a", encoding="utf-8") as f:
+                f.write(json.dumps(line) + "\n")
+        except OSError:
+            log.warning("could not record the call's cost", extra={"path": str(path)})
 
 
 StageFn = Callable[[StageContext], dict[str, Any] | None]

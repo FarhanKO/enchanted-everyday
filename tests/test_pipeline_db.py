@@ -4,7 +4,9 @@ The daily run goes from discovery to the reviewed script; production adds the st
 package to that script and sends the full package.
 """
 
+import json
 from datetime import date
+from pathlib import Path
 
 import pytest
 from sqlalchemy import select
@@ -83,6 +85,10 @@ def test_the_daily_run_ends_with_a_reviewed_script(db_engine, settings, sent, em
         assert set(run_row.stages) == set(DAILY)
         assert {v["status"] for v in run_row.stages.values()} == {"done"}
         assert run_row.llm_cost_usd > 0
+    # what each agent cost, kept with the day's work files
+    calls = (Path(settings.work_dir) / "runs" / str(DAY) / "llm_calls.jsonl").read_text()
+    roles = [json.loads(line)["role"] for line in calls.splitlines()]
+    assert roles == ["story_architect", "script_writer", "critic"]
 
 
 def test_production_builds_on_the_reviewed_script(db_engine, settings, sent, embedder, fake_media):

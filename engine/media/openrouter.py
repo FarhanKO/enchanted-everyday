@@ -31,8 +31,11 @@ BASE_URL = "https://openrouter.ai/api/v1"
 # to check the daily cap before paying. An unknown model is priced at the dearest known one.
 IMAGE_ESTIMATE_USD = {
     "google/gemini-nano-banana-2.1": Decimal("0.040"),
-    "google/gemini-3.1-flash-image": Decimal("0.080"),
+    "google/gemini-3.1-flash-image": Decimal("0.070"),  # paid $0.068-0.069 a 1K frame, 2026-10-20
 }
+# models whose OpenRouter endpoint takes no reference images (supports_image_reference: false,
+# 2026-10-20): a frame conditioned on the cast's references goes straight to the next model
+NO_IMAGE_REFERENCES = {"google/gemini-nano-banana-2.1"}
 SPEECH_USD_PER_CHAR = {
     "elevenlabs/eleven-v4": Decimal("0.00004"),
     "elevenlabs/eleven-v3": Decimal("0.00004"),

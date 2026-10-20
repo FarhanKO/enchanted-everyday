@@ -201,6 +201,34 @@ def test_frames_fall_back_to_the_second_model(tmp_path, episode):
     assert [c[1] for c in draw.calls] == ["google/gemini-nano-banana-2.1", "nb2"]
 
 
+def test_a_frame_with_references_skips_the_model_that_cannot_take_them(tmp_path, episode):
+    draw = Counting(fake_image)
+    _frames(tmp_path, draw)[0].make(episode.storyboard)
+    model_for = {  # drawn in parallel, so match calls to shots by their prompt
+        s.id: next(c[1] for c in draw.calls if s.image_prompt.rstrip(". ") in c[0])
+        for s in episode.storyboard.shots
+    }
+    assert model_for["S02"] == "nb2"  # Fann, with his reference portrait
+    assert model_for["S04"] == "google/gemini-nano-banana-2.1"  # no references: the cheaper one
+
+
+def test_the_picture_bill_is_checked_before_the_first_purchase(tmp_path, episode):
+    draw = Counting(fake_image)
+    maker, ledger = _frames(tmp_path, draw, cap="0.30")  # a few frames' worth, not 16
+    with pytest.raises(BudgetExceeded):
+        maker.make(episode.storyboard, episode.package.thumbnail)
+    assert draw.calls == [] and ledger.spent_usd == 0  # nothing bought, nothing wasted
+
+
+def test_a_reshoot_is_priced_for_its_one_new_frame(tmp_path, episode):
+    draw = Counting(fake_image)
+    _frames(tmp_path, draw)[0].make(episode.storyboard)
+    n = len(draw.calls)
+    maker, _ = _frames(tmp_path, draw, cap="0.08")  # one frame at the dearer price, not 16
+    maker.make(episode.storyboard, takes={"S04": 2})
+    assert len(draw.calls) == n + 1
+
+
 def test_full_prompt_order():
     p = full_prompt("Fann at the door", "text, watermark", ["Fann"], None)
     assert p.startswith("A single vertical 9:16 illustration")

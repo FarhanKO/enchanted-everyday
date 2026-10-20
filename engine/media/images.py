@@ -20,7 +20,7 @@ from pathlib import Path
 
 from engine import prompting
 from engine.llm.schemas import Storyboard, Thumbnail
-from engine.media.openrouter import Image, MediaError, image_estimate
+from engine.media.openrouter import NO_IMAGE_REFERENCES, Image, MediaError, image_estimate
 from engine.media.paid import Ledger, cache_key
 
 log = logging.getLogger(__name__)
@@ -104,17 +104,31 @@ class FrameMaker:
         names = {c.id: c.name for c in board.characters}
         return [names.get(cid, cid) for cid in character_ids if cid in refs_for]
 
+    def _models_for(self, refs: list[Path]) -> list[str]:
+        """The models to try, in order: one that can't take references is skipped when there are
+        some (the cast's faces depend on them)."""
+        able = [m for m in self.models if not (refs and m in NO_IMAGE_REFERENCES)]
+        return able or self.models
+
+    def estimate(self, refs: list[Path]) -> Decimal:
+        """What one image may cost: the dearest model it could end up drawn by."""
+        return max(image_estimate(m) for m in self._models_for(refs))
+
+    def _path(self, prompt: str, refs: list[Path], take: int = 1) -> Path:
+        # keyed on the configured model, not the one that drew it, so a fallback's image is reused
+        key = cache_key(self.models[0], prompt, *refs, *([f"take {take}"] if take > 1 else []))
+        return self.cache_dir / f"{key}.png"
+
     def image(self, prompt: str, refs: list[Path], label: str, take: int = 1) -> Path:
         """One image, from the cache or paid for once; the fallback model if the first fails.
 
         `take` > 1 asks for a fresh drawing of the same prompt (a /reshoot without a note).
         """
-        key = cache_key(self.models[0], prompt, *refs, *([f"take {take}"] if take > 1 else []))
-        path = self.cache_dir / f"{key}.png"
+        path = self._path(prompt, refs, take)
         if path.exists():
             return path
         last: Exception | None = None
-        for model in self.models:
+        for model in self._models_for(refs):
             self.ledger.check(image_estimate(model))
             try:
                 img = self.draw(prompt, model, refs)
@@ -132,16 +146,15 @@ class FrameMaker:
             return path
         raise MediaError(f"no image model could draw {label}: {last}")
 
-    def _portraits(self, board: Storyboard) -> dict[str, Path]:
+    def _portrait_prompts(self, board: Storyboard) -> dict[str, str]:
+        """A portrait prompt for each supporting character seen in more than one shot."""
         seen = Counter(cid for shot in board.shots for cid in shot.characters)
-        out: dict[str, Path] = {}
         style = character_style(self.brand_dir)
-        for c in board.characters:
-            if c.id in self.cast or seen[c.id] < 2:
-                continue
-            prompt = PORTRAIT.format(descriptor=c.descriptor, character_style=style)
-            out[c.id] = self.image(prompt, [], f"portrait:{c.id}")
-        return out
+        return {
+            c.id: PORTRAIT.format(descriptor=c.descriptor, character_style=style)
+            for c in board.characters
+            if c.id not in self.cast and seen[c.id] >= 2
+        }
 
     def _scene(
         self,
@@ -150,9 +163,8 @@ class FrameMaker:
         board: Storyboard,
         portraits: dict[str, Path],
         note: str | None,
-        label: str,
-        take: int = 1,
-    ) -> Path:
+    ) -> tuple[str, list[Path]]:
+        """A shot's full prompt and its reference images."""
         refs = self._references(character_ids, portraits)
         with_refs = {
             cid
@@ -160,8 +172,7 @@ class FrameMaker:
             if cid in portraits or self.cast.get(cid, {}).get("references")
         }
         names = self._names(character_ids, board, with_refs)
-        prompt = full_prompt(content.prompt, content.negative, names, note)
-        return self.image(prompt, refs, label, take)
+        return full_prompt(content.prompt, content.negative, names, note), refs
 
     def make(
         self,
@@ -176,32 +187,43 @@ class FrameMaker:
         Frames already bought come back from the cache, so a reshoot pays only for what changed.
         """
         notes, takes = notes or {}, takes or {}
-        frames = Frames(portraits=self._portraits(board))  # first: shots are conditioned on them
-        jobs = [
+        # Plan every image first. A portrait's file is known before it is drawn (it is named
+        # after its prompt), so the shots that use it can be planned too.
+        portrait_prompts = self._portrait_prompts(board)
+        planned = {cid: self._path(p, []) for cid, p in portrait_prompts.items()}
+        scenes = [
             (shot.id, prompting.image_prompt(shot, board), shot.characters) for shot in board.shots
         ]
         if thumbnail is not None:
-            jobs.append(
+            scenes.append(
                 ("thumbnail", prompting.thumbnail_prompt(thumbnail, board), thumbnail.characters)
             )
+        jobs = []  # (label, prompt, refs, take)
+        for label, content, characters in scenes:
+            prompt, refs = self._scene(content, characters, board, planned, notes.get(label))
+            jobs.append((label, prompt, refs, takes.get(label, 1)))
+
+        # The whole bill against the cap before the first purchase: a day that can't afford its
+        # pictures stops here, not after paying for most of them.
+        to_buy = [[] for p in portrait_prompts.values() if not self._path(p, []).exists()]
+        to_buy += [r for _, p, r, t in jobs if not self._path(p, r, t).exists()]
+        if to_buy:
+            self.ledger.check(sum((self.estimate(r) for r in to_buy), Decimal(0)))
+
+        portraits = {
+            cid: self.image(p, [], f"portrait:{cid}") for cid, p in portrait_prompts.items()
+        }
+        frames = Frames(portraits=portraits)
 
         def draw(job):
-            label, content, characters = job
-            return self._scene(
-                content,
-                characters,
-                board,
-                frames.portraits,
-                notes.get(label),
-                label,
-                takes.get(label, 1),
-            )
+            label, prompt, refs, take = job
+            return self.image(prompt, refs, label, take)
 
         # a few at a time: ~15 s each, so a 13-frame episode takes about a minute, not three.
         # Concurrent budget checks can overshoot the cap by at most PARALLEL - 1 images.
         with ThreadPoolExecutor(PARALLEL) as pool:
             paths = list(pool.map(draw, jobs))
-        for (label, _, _), path in zip(jobs, paths, strict=True):
+        for (label, *_), path in zip(jobs, paths, strict=True):
             if label == "thumbnail":
                 frames.thumbnail = path
             else:
