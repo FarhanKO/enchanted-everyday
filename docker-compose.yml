@@ -33,7 +33,7 @@ services:
     logging: *logging
 
   prefect-server:
-    image: prefecthq/prefect:3.8.7-python3.12
+    image: prefecthq/prefect:3.9.1.dev2-python3.12
     command: prefect server start --host 0.0.0.0
     environment:
       PREFECT_API_DATABASE_CONNECTION_URL: postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/prefect
